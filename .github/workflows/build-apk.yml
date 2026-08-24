@@ -22,7 +22,6 @@ jobs:
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.x'
           channel: 'stable'
           cache: true
 
@@ -36,7 +35,7 @@ jobs:
 
       - name: Build Rider App APK
         working-directory: mobile/apps/rider_app
-        run: flutter build apk --release --split-per-abi
+        run: flutter build apk --release
 
       # 2. Build Driver App APK
       - name: Install Driver App Dependencies
@@ -45,17 +44,17 @@ jobs:
 
       - name: Build Driver App APK
         working-directory: mobile/apps/driver_app
-        run: flutter build apk --release --split-per-abi
+        run: flutter build apk --release
 
       # 3. Upload APK Artifacts
       - name: Upload Rider App APK
         uses: actions/upload-artifact@v4
         with:
-          name: 3altayer-rider-apk
-          path: mobile/apps/rider_app/build/app/outputs/flutter-apk/*.apk
+          name: 3altayer-rider-release-apk
+          path: mobile/apps/rider_app/build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload Driver App APK
         uses: actions/upload-artifact@v4
         with:
-          name: 3altayer-driver-apk
-          path: mobile/apps/driver_app/build/app/outputs/flutter-apk/*.apk
+          name: 3altayer-driver-release-apk
+          path: mobile/apps/driver_app/build/app/outputs/flutter-apk/app-release.apk
