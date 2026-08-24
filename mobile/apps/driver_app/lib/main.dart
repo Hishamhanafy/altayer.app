@@ -125,7 +125,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       case 0:
         return _buildRadarTab();
       case 1:
-        return _buildWalletTab();
+        return _buildWalletTab(context);
       case 2:
         return _buildQuestsTab();
       case 3:
@@ -284,7 +284,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   }
 
   // 2. Wallet & Settlement
-  Widget _buildWalletTab() {
+  Widget _buildWalletTab(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -430,7 +430,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             child: Column(
               children: [
                 const ListTile(
-                  leading: Icon(Icons.money_off, color: Colors.rose),
+                  leading: Icon(Icons.money_off, color: Colors.redAccent),
                   title: Text('الراكب لم يدفع الأجرة كاش', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
                   subtitle: Text('طلب تعويض فوري في المحفظة', style: TextStyle(fontSize: 10, color: Colors.white54)),
                   trailing: Icon(Icons.chevron_left, color: Colors.white38),

@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "app.altayer.driver_app"
-    compileSdk = 36
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
