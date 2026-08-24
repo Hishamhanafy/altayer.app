@@ -277,8 +277,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               ),
             ),
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   // 2. Wallet & Settlement
