@@ -7,7 +7,7 @@ void main() {
 }
 
 class AltayerRiderApp extends StatelessWidget {
-  const AltayerRiderApp({Key? key}) : super(key: key);
+  const AltayerRiderApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,6 @@ class AltayerRiderApp extends StatelessWidget {
           primary: Color(0xFFEA580C),
           secondary: Color(0xFFF97316),
           surface: Color(0xFF0F172A),
-          background: Color(0xFF020617),
         ),
         textTheme: GoogleFonts.cairoTextTheme(ThemeData.dark().textTheme),
       ),
@@ -43,7 +42,7 @@ class AltayerRiderApp extends StatelessWidget {
 }
 
 class RiderHomeScreen extends StatefulWidget {
-  const RiderHomeScreen({Key? key}) : super(key: key);
+  const RiderHomeScreen({super.key});
 
   @override
   State<RiderHomeScreen> createState() => _RiderHomeScreenState();
@@ -53,30 +52,8 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   String _mode = 'BIDDING'; // BIDDING or INSTANT
   int _proposedFare = 75;
   bool _isSearching = false;
-  bool _driverAccepted = false;
-  String _appliedPromo = 'ALTAYER50';
-  int _discount = 25;
-
-  final List<Map<String, dynamic>> _sampleBids = [
-    {
-      'driver': 'كابتن محمود السيد',
-      'car': 'تويوتا كورولا 2022',
-      'plate': 'أ ب ج 1234',
-      'rating': 4.9,
-      'trips': 340,
-      'fare': 75,
-      'eta': 3,
-    },
-    {
-      'driver': 'كابتن أحمد فؤاد',
-      'car': 'هيونداي إلنترا 2024',
-      'plate': 'ط ك ل 9101',
-      'rating': 4.8,
-      'trips': 512,
-      'fare': 85,
-      'eta': 5,
-    },
-  ];
+  final String _appliedPromo = 'ALTAYER50';
+  final int _discount = 25;
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +111,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEA580C).withOpacity(0.2),
+                            color: const Color(0xFFEA580C).withValues(alpha: 0.2),
                             shape: BoxShape.circle,
                           ),
                           child: const Icon(Icons.directions_car, color: Color(0xFFEA580C), size: 40),
@@ -192,15 +169,15 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: _mode == 'BIDDING' ? const Color(0xFFEA580C).withOpacity(0.2) : const Color(0xFF1E293B),
+                                color: _mode == 'BIDDING' ? const Color(0xFFEA580C).withValues(alpha: 0.2) : const Color(0xFF1E293B),
                                 border: Border.all(
                                   color: _mode == 'BIDDING' ? const Color(0xFFEA580C) : Colors.transparent,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              child: Column(
-                                children: const [
+                              child: const Column(
+                                children: [
                                   Text('🤝 مزايدة وتفاوض', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFEA580C))),
                                   Text('حدد سعرك المقترح', style: TextStyle(fontSize: 10, color: Colors.white54)),
                                 ],
@@ -215,15 +192,15 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                             child: Container(
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: _mode == 'INSTANT' ? const Color(0xFF3B82F6).withOpacity(0.2) : const Color(0xFF1E293B),
+                                color: _mode == 'INSTANT' ? const Color(0xFF3B82F6).withValues(alpha: 0.2) : const Color(0xFF1E293B),
                                 border: Border.all(
                                   color: _mode == 'INSTANT' ? const Color(0xFF3B82F6) : Colors.transparent,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(14),
                               ),
-                              child: Column(
-                                children: const [
+                              child: const Column(
+                                children: [
                                   Text('⚡ حجز فوري', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF3B82F6))),
                                   Text('سعر ثابت وكابتن سريع', style: TextStyle(fontSize: 10, color: Colors.white54)),
                                 ],
@@ -273,8 +250,8 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF10B981).withOpacity(0.15),
-                        border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
+                        color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                        border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.4)),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(

@@ -7,7 +7,7 @@ void main() {
 }
 
 class AltayerDriverApp extends StatelessWidget {
-  const AltayerDriverApp({Key? key}) : super(key: key);
+  const AltayerDriverApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,6 @@ class AltayerDriverApp extends StatelessWidget {
           primary: Color(0xFF10B981),
           secondary: Color(0xFFEA580C),
           surface: Color(0xFF0F172A),
-          background: Color(0xFF020617),
         ),
         textTheme: GoogleFonts.cairoTextTheme(ThemeData.dark().textTheme),
       ),
@@ -43,7 +42,7 @@ class AltayerDriverApp extends StatelessWidget {
 }
 
 class DriverHomeScreen extends StatefulWidget {
-  const DriverHomeScreen({Key? key}) : super(key: key);
+  const DriverHomeScreen({super.key});
 
   @override
   State<DriverHomeScreen> createState() => _DriverHomeScreenState();
@@ -72,9 +71,9 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               child: const Text('🚗', style: TextStyle(fontSize: 16)),
             ),
             const SizedBox(width: 8),
-            Column(
+            const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('كابتن محمود السيد', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
                 Text('تويوتا كورولا 2022 • ⭐ 4.9', style: TextStyle(fontSize: 10, color: Color(0xFF10B981))),
               ],
@@ -88,7 +87,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: _isOnline ? const Color(0xFF10B981).withOpacity(0.2) : const Color(0xFF334155),
+                color: _isOnline ? const Color(0xFF10B981).withValues(alpha: 0.2) : const Color(0xFF334155),
                 border: Border.all(color: _isOnline ? const Color(0xFF10B981) : Colors.transparent),
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -100,7 +99,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           ),
         ],
       ),
-      body: _buildCurrentTab(),
+      body: _buildCurrentTab(context),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
@@ -120,7 +119,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     );
   }
 
-  Widget _buildCurrentTab() {
+  Widget _buildCurrentTab(BuildContext context) {
     switch (_currentIndex) {
       case 0:
         return _buildRadarTab();
@@ -151,7 +150,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF10B981).withOpacity(0.2),
+                      color: const Color(0xFF10B981).withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.navigation, color: Color(0xFF10B981), size: 36),
@@ -201,22 +200,22 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         border: Border.all(color: const Color(0xFFEA580C), width: 2),
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Column(
+                      child: const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text('🤝 طلب مزايدة جديد!', style: TextStyle(color: Color(0xFFEA580C), fontWeight: FontWeight.bold, fontSize: 13)),
                               Text('يبعد 1.2 كم (3 د)', style: TextStyle(color: Colors.white54, fontSize: 11)),
                             ],
                           ),
-                          const SizedBox(height: 8),
-                          const Text('📍 ميدان التحرير ➡️ 🏁 سيتي ستارز (12.5 كم)', style: TextStyle(fontSize: 12, color: Colors.white)),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8),
+                          Text('📍 ميدان التحرير ➡️ 🏁 سيتي ستارز (12.5 كم)', style: TextStyle(fontSize: 12, color: Colors.white)),
+                          SizedBox(height: 8),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               Text('سعر الزبون المقترح:', style: TextStyle(color: Colors.white54, fontSize: 12)),
                               Text('75.00 ج.م', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white)),
                             ],
@@ -280,7 +279,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
           ),
         ],
       );
-    }
   }
 
   // 2. Wallet & Settlement
@@ -391,11 +389,11 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             decoration: BoxDecoration(
               color: const Color(0xFF0F172A),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFEA580C).withOpacity(0.4)),
+              border: Border.all(color: const Color(0xFFEA580C).withValues(alpha: 0.4)),
             ),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text('تارجت ساعات الذروة المسائية 🌙', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.white)),
                 SizedBox(height: 4),
                 Text('أنجز 6 مشاوير بين 5:00 م و 9:00 م (التقدم: 4 من 6)', style: TextStyle(fontSize: 11, color: Colors.white70)),
@@ -427,16 +425,16 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: const Color(0xFF334155)),
             ),
-            child: Column(
+            child: const Column(
               children: [
-                const ListTile(
+                ListTile(
                   leading: Icon(Icons.money_off, color: Colors.redAccent),
                   title: Text('الراكب لم يدفع الأجرة كاش', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
                   subtitle: Text('طلب تعويض فوري في المحفظة', style: TextStyle(fontSize: 10, color: Colors.white54)),
                   trailing: Icon(Icons.chevron_left, color: Colors.white38),
                 ),
-                const Divider(color: Color(0xFF1E293B)),
-                const ListTile(
+                Divider(color: Color(0xFF1E293B)),
+                ListTile(
                   leading: Icon(Icons.toll, color: Colors.amber),
                   title: Text('استرداد رسوم كارتة وبوابات', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
                   subtitle: Text('إرفاق صورة الإيصال واسترداد القيمة', style: TextStyle(fontSize: 10, color: Colors.white54)),
