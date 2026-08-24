@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل الشراء والتجهيز العملي - منصة عالطاير (3altayer.app)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ea580c;
+      --secondary: #0f172a;
+      --emerald: #10b981;
+      --blue: #2563eb;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f8fafc;
+      color: var(--text);
+      line-height: 1.6;
+      padding: 30px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.06);
+      padding: 40px 50px;
+    }
+
+    .header-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .logo-area { display: flex; align-items: center; gap: 15px; }
+    .logo-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--primary), #f97316);
+      color: white; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; font-weight: 900;
+      box-shadow: 0 8px 16px rgba(234, 88, 12, 0.25);
+    }
+
+    .title-area h1 { font-size: 20px; font-weight: 900; color: var(--secondary); }
+    .title-area p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+    .print-btn {
+      background: var(--primary);
+      color: white; border: none;
+      padding: 10px 22px; font-size: 13px; font-weight: 700;
+      border-radius: 12px; cursor: pointer; font-family: 'Cairo', sans-serif;
+      box-shadow: 0 6px 12px rgba(234, 88, 12, 0.2);
+      transition: 0.2s;
+    }
+    .print-btn:hover { background: #c2410c; }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-right: 5px solid var(--primary);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .step-header h3 {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-badge {
+      background: #fff7ed;
+      border: 1px solid #ffedd5;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+
+    .step-details {
+      font-size: 12.5px;
+      color: var(--text);
+      space-y: 6px;
+    }
+
+    .step-details p { margin-bottom: 6px; }
+
+    .link-tag {
+      display: inline-block;
+      background: #f1f5f9;
+      color: var(--blue);
+      border: 1px solid #cbd5e1;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .code-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 8px;
+      display: block;
+      direction: ltr;
+      text-align: left;
+    }
+
+    @media print {
+      body { padding: 0; background: white; }
+      .container { border: none; box-shadow: none; padding: 15px; max-width: 100%; }
+      .print-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-banner">
+      <div class="logo-area">
+        <div class="logo-icon">⚡</div>
+        <div class="title-area">
+          <h1>دليل الشراء والتجهيز العملي خطوة بخطوة (من أين تشتري كل بند؟)</h1>
+          <p>الدليل الإرشادي المعتمد لإطلاق منصة "عالطاير" (3altayer.app) لايف 🇪🇬</p>
+        </div>
+      </div>
+      <button class="print-btn" onclick="window.print()">🖨️ طباعة الدليل / حفظ PDF</button>
+    </div>
+
+    <!-- Step 1: Domain -->
+    <div class="step-card">
+      <div class="step-header">
+        <h3>1. شراء الدومين والنطاق الرسمي (Domain Registration)</h3>
+        <span class="step-badge">التكلفة: ~12$ - 15$ سنوياً</span>
+      </div>
+      <div class="step-details">
+        <p><strong>من أين تشتري:</strong> موقع <a href="https://www.namecheap.com" target="_blank" class="link-tag">www.namecheap.com</a> أو <a href="https://www.godaddy.com" target="_blank" class="link-tag">GoDaddy</a>.</p>
+        <p><strong>الاسم المقترح للبحث:</strong> <code>3altayer.app</code> أو <code>3altayer.com</code>.</p>
+        <p><strong>الخطوات:</strong> ابحث عن الاسم واشتريه بالفيزا مع تفعيل ميزة (Free Whois Privacy) لإخفاء بياناتك الشخصية مجاناً.</p>
+      </div>
+    </div>
+
+    <!-- Step 2: Server -->
+    <div class="step-card" style="border-right-color: var(--blue);">
+      <div class="step-header">
+        <h3>2. شراء السيرفر السحابي (Cloud VPS Hosting)</h3>
+        <span class="step-badge" style="color: var(--blue); background: #eff6ff; border-color: #dbeafe;">التكلفة: ~16€ - 24€ شهرياً (~900 - 1,250 ج.م)</span>
+      </div>
+      <div class="step-details">
+        <p><strong>من أين تشتري:</strong> موقع <strong>Hetzner Cloud</strong> (الأفضل والأرخص عالمياً) <a href="https://www.hetzner.com/cloud" target="_blank" class="link-tag">www.hetzner.com/cloud</a> أو <a href="https://www.digitalocean.com" target="_blank" class="link-tag">DigitalOcean</a>.</p>
+        <p><strong>المواصفات المختارة (Plan):</strong> خطة <strong>CPX31</strong> (4 vCPU / 8 GB RAM / 160 GB NVMe) بنظام تشغيل <strong>Ubuntu 24.04 LTS</strong>.</p>
+        <p><strong>موقع السيرفر (Location):</strong> اختر (Germany / Falkenstein أو Finland) لأنها الأسرع اتصالاً بمصر (Ping أقل من 50ms).</p>
+      </div>
+    </div>
+
+    <!-- Step 3: App Store Accounts -->
+    <div class="step-card" style="border-right-color: var(--emerald);">
+      <div class="step-header">
+        <h3>3. فتح حسابات مطورين متاجر التطبيقات (Google Play & Apple)</h3>
+        <span class="step-badge" style="color: #065f46; background: #ecfdf5; border-color: #a7f3d0;">جوجل: 25$ مرة واحدة | أبل: 99$ سنوياً</span>
+      </div>
+      <div class="step-details">
+        <p><strong>حساب Google Play للأندرويد:</strong> ادخل على <a href="https://play.google.com/console/signup" target="_blank" class="link-tag">play.google.com/console/signup</a> وسجل بحساب Gmail وادفع 25$ بالفيزا لمرة واحدة مدى الحياة.</p>
+        <p><strong>حساب Apple للآيفون:</strong> ادخل على <a href="https://developer.apple.com/programs/enroll" target="_blank" class="link-tag">developer.apple.com/programs/enroll</a> وسجل بحساب Apple ID واشترك بـ 99$ سنوياً.</p>
+      </div>
+    </div>
+
+    <!-- Step 4: SMS Gateway -->
+    <div class="step-card">
+      <div class="step-header">
+        <h3>4. بوابة رسائل الـ SMS وكود الـ OTP في مصر</h3>
+        <span class="step-badge">التكلفة: ~0.35 قرش / رسالة (شحن بالجنيه)</span>
+      </div>
+      <div class="step-details">
+        <p><strong>من أين تشتري:</strong> موقع <strong>SMS Misr</strong> <a href="https://www.smsmisr.com" target="_blank" class="link-tag">www.smsmisr.com</a> أو <strong>VictoryLink</strong> <a href="https://www.victorylink.com" target="_blank" class="link-tag">www.victorylink.com</a> أو <strong>Taqnyat</strong>.</p>
+        <p><strong>الخطوات:</strong> افتح حساباً واشحن باقة أولية (مثلاً 500 ج.م عبر إنستاباي أو فودافون كاش أو فوري) واحصل على (API Key & Sender ID باسم المنصة: <code>3altayer</code>).</p>
+      </div>
+    </div>
+
+    <!-- Step 5: Google Maps Platform -->
+    <div class="step-card" style="border-right-color: var(--blue);">
+      <div class="step-header">
+        <h3>5. خرائط جوجل الرسمية ومفتاح الـ API (Google Maps Platform)</h3>
+        <span class="step-badge" style="color: var(--emerald); background: #ecfdf5; border-color: #a7f3d0;">التكلفة: مجاناً 100% (مغطاة بالـ 200$ المجانية من جوجل)</span>
+      </div>
+      <div class="step-details">
+        <p><strong>من أين تستخرجها:</strong> ادخل على <a href="https://console.cloud.google.com" target="_blank" class="link-tag">console.cloud.google.com</a>.</p>
+        <p><strong>الخدمات المراد تفعيلها (APIs):</strong> (Maps SDK for Android, Maps SDK for iOS, Places API, Geocoding API).</p>
+        <p><strong>المفتاح:</strong> انسخ الـ <code>GOOGLE_MAPS_API_KEY</code> وضعه في ملف <code>.env</code> في مشروعنا.</p>
+      </div>
+    </div>
+
+    <!-- Step 6: Cloudflare -->
+    <div class="step-card" style="border-right-color: var(--emerald);">
+      <div class="step-header">
+        <h3>6. حماية السيرفر والـ SSL المجاني (Cloudflare)</h3>
+        <span class="step-badge">التكلفة: مجاناً 100% (FREE)</span>
+      </div>
+      <div class="step-details">
+        <p><strong>من أين تشترك:</strong> ادخل على <a href="https://www.cloudflare.com" target="_blank" class="link-tag">www.cloudflare.com</a> واضغط (Sign Up Free).</p>
+        <p><strong>الخطوات:</strong> أضف الدومين، وانقل الـ Nameservers من Namecheap إلى Cloudflare ليتم تفعيل الحماية ضد الـ DDoS وشهادات الـ SSL التلقائية.</p>
+      </div>
+    </div>
+
+    <!-- Step 7: Payment Gateway -->
+    <div class="step-card">
+      <div class="step-header">
+        <h3>7. بوابات الدفع الإلكتروني في مصر (Paymob / Fawry)</h3>
+        <span class="step-badge">التكلفة: 0$ اشتراك ثابت (نسبة عند كل معاملة ناجحة)</span>
+      </div>
+      <div class="step-details">
+        <p><strong>من أين تشترك:</strong> موقع <strong>Paymob</strong> <a href="https://www.paymob.com" target="_blank" class="link-tag">www.paymob.com</a> أو <strong>Fawry</strong> أو <strong>Kashier</strong>.</p>
+        <p><strong>الهدف:</strong> تمكين الكباتن والركاب من شحن المحافظ ودفع الكروت البنكية والمحافظ الهاتفية (فودافون كاش، أورنج، اتصالات، وي).</p>
+      </div>
+    </div>
+
+    <!-- Ready to Deploy Note -->
+    <div style="background: #0f172a; color: white; border-radius: 16px; padding: 20px; text-align: center; margin-top: 25px;">
+      <h4 style="color: #38bdf8; font-size: 14px; font-weight: 800; margin-bottom: 6px;">⚡ خطوة الربط السريعة بعد الشراء:</h4>
+      <p style="font-size: 12px; color: #cbd5e1;">
+        بمجرد شراء السيرفر والدومين واستخراج المفاتيح، نضعها في ملف <code>d:\3altayer.app\.env</code> ويتم رفع النظام وتشغيله لايف في أقل من 5 دقائق!
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="border-top: 1px solid var(--border); margin-top: 30px; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text-muted);">
+      <span>جميع الحقوق محفوظة © 2026 - منصة عالطاير (3altayer.app)</span>
+      <span>دليل التجهيز والمشتريات التقنية 🇪🇬</span>
+    </div>
+  </div>
+
+</body>
+</html>

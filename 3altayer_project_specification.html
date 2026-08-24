@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>وثيقة المواصفات الفنية والمعمارية - مشروع عالطاير (3altayer.app)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ea580c;
+      --primary-dark: #c2410c;
+      --primary-light: #fff7ed;
+      --dark: #0f172a;
+      --slate: #334155;
+      --muted: #64748b;
+      --light-bg: #f8fafc;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --blue: #2563eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--light-bg);
+      color: var(--slate);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 50px 60px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      border: 1px solid var(--border);
+    }
+
+    .header {
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 30px;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .logo-icon {
+      width: 55px;
+      height: 55px;
+      background: linear-gradient(135deg, var(--primary), #f97316);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #ffffff;
+      box-shadow: 0 6px 15px rgba(234, 88, 12, 0.3);
+    }
+
+    .logo-text h1 {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--dark);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text p {
+      font-size: 14px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .meta-badge {
+      text-align: left;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .meta-badge span {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+      margin: 35px 0 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-right: 4px solid var(--primary);
+      padding-right: 12px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--slate);
+      margin: 20px 0 10px 0;
+    }
+
+    p {
+      margin-bottom: 15px;
+      font-size: 15px;
+      color: var(--slate);
+    }
+
+    .card {
+      background: var(--light-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .mode-card {
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+      transition: all 0.2s ease;
+    }
+
+    .mode-card.instant {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .mode-card.bidding {
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+
+    .mode-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .mode-card.instant .mode-title { color: var(--blue); }
+    .mode-card.bidding .mode-title { color: var(--primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--light-bg);
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .badge-egp {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-tech {
+      background: #f1f5f9;
+      color: #475569;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+    }
+
+    ul {
+      list-style: none;
+      padding-right: 0;
+      margin-bottom: 15px;
+    }
+
+    li {
+      position: relative;
+      padding-right: 22px;
+      margin-bottom: 8px;
+      font-size: 14.5px;
+    }
+
+    li::before {
+      content: "✓";
+      position: absolute;
+      right: 0;
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .print-btn-bar {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .btn-print {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        background: #ffffff;
+      }
+      .container {
+        border: none;
+        box-shadow: none;
+        padding: 20px;
+        max-width: 100%;
+      }
+      .print-btn-bar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="print-btn-bar">
+      <button class="btn-print" onclick="window.print()">🖨️ طباعة / حفظ كـ PDF (Save as PDF)</button>
+    </div>
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-container">
+        <div class="logo-icon">⚡</div>
+        <div class="logo-text">
+          <h1>منصة عالطاير (3altayer.app)</h1>
+          <p>وثيقة المواصفات الفنية والمعمارية لنظام نقل الركاب الهجين</p>
+        </div>
+      </div>
+      <div class="meta-badge">
+        <div>جمهورية مصر العربية 🇪🇬</div>
+        <span>العملة: الجنيه المصري (EGP)</span>
+      </div>
+    </div>
+
+    <!-- 1. الرؤية ونموذج العمل -->
+    <h2>1. الرؤية ونموذج العمل الهجين (Hybrid Ride-Hailing Model)</h2>
+    <p>
+      منصة <strong>"عالطاير"</strong> هي منصة نقل وتوصيل ركاب ذكية تدمج بين أقوى نموذجين في السوق (أوبر + إن درايفر):
+    </p>
+
+    <div class="grid-2">
+      <div class="mode-card instant">
+        <div class="mode-title">⚡ النمط الفوري (Instant Ride - Uber Style)</div>
+        <p style="font-size: 13.5px; color: #1e3a8a;">
+          • تسعير ثابت ومحدد مسبقاً بناءً على المسافة والوقت.<br>
+          • بحث آلي وإسناد لأقرب كابتن متاح (Auto-Dispatching) خلال 15 ثانية.<br>
+          • عمولة التطبيق: <strong>15%</strong>.
+        </p>
+      </div>
+
+      <div class="mode-card bidding">
+        <div class="mode-title">🤝 نمط المزايدة والتفاوض (Bidding Mode - inDrive Style)</div>
+        <p style="font-size: 13.5px; color: #7c2d12;">
+          • سعر استرشادي مقترح من النظام مع حرية التعديل للراكب.<br>
+          • بث الطلب لجميع الكباتن المحيطين واستقبال عروض الأسعار المضادة.<br>
+          • عمولة التطبيق: <strong>10%</strong> (تشجيعية ومنافسة).
+        </p>
+      </div>
+    </div>
+
+    <!-- 2. تسعير الفئات في مصر -->
+    <h2>2. مصفوفة الفئات والتسعير (بالجنيه المصري EGP)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>الفئة</th>
+          <th>الوصف</th>
+          <th>فتحة العداد</th>
+          <th>سعر الكيلومتر</th>
+          <th>الحد الأدنى</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>🚗 عادية (اقتصادي)</strong></td>
+          <td>سيارات ملاكي حديثة واعتمادية</td>
+          <td>18.00 ج.م</td>
+          <td>5.00 ج.م / كم</td>
+          <td><span class="badge badge-egp">25.00 ج.م</span></td>
+        </tr>
+        <tr>
+          <td><strong>🚘 كومفورت</strong></td>
+          <td>سيارات مكيفة ومريحة وسنة صنع حديثة</td>
+          <td>28.00 ج.م</td>
+          <td>7.00 ج.م / كم</td>
+          <td><span class="badge badge-egp">40.00 ج.م</span></td>
+        </tr>
+        <tr>
+          <td><strong>🛵 سكوتر وموتوسيكل</strong></td>
+          <td>تنقل فردي فائق السرعة لتفادي الزحام</td>
+          <td>12.00 ج.م</td>
+          <td>3.50 ج.م / كم</td>
+          <td><span class="badge badge-egp">18.00 ج.م</span></td>
+        </tr>
+        <tr>
+          <td><strong>🛺 توكتوك</strong></td>
+          <td>مشاوير داخلية سريعة داخل المناطق</td>
+          <td>10.00 ج.م</td>
+          <td>3.00 ج.م / كم</td>
+          <td><span class="badge badge-egp">15.00 ج.م</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 3. المنظومة التقنية -->
+    <h2>3. البنية التحتية والمعمارية البرمجية (Tech Stack)</h2>
+    <div class="card">
+      <ul>
+        <li><strong>الخلفية البرمجية (Backend):</strong> <span class="badge badge-tech">Node.js (NestJS + TypeScript)</span> - معمارية Modular Enterprise قادرة على معالجة آلاف الطلبات اللحظية.</li>
+        <li><strong>محرك الإحداثيات السريع:</strong> <span class="badge badge-tech">Redis Geo</span> - تخزين إحداثيات الكباتن كل ثانيتين واستعلامات <code>GEOSEARCH</code> في أقل من 2ms.</li>
+        <li><strong>قاعدة البيانات المركزية:</strong> <span class="badge badge-tech">PostgreSQL + PostGIS</span> عبر Prisma ORM لإحكام البيانات والمحافظ والعمليات المكانية.</li>
+        <li><strong>الاتصال اللحظي (Real-time):</strong> <span class="badge badge-tech">WebSockets (Socket.io)</span> لبث عروض المزايدة والتتبع الحي.</li>
+        <li><strong>لوحة تحكم الإدارة (Admin Panel):</strong> <span class="badge badge-tech">Next.js 14 + Tailwind CSS</span> مع رادار تفاعلي ودعم كامل للغتين العربية والإنجليزية.</li>
+        <li><strong>تطبيقات الموبايل:</strong> <span class="badge badge-tech">Flutter (Dart)</span> لتطبيقي الراكب والكابتن على أندرويد و iOS من كود واحد.</li>
+      </ul>
+    </div>
+
+    <!-- 4. الأمان والدورة المالية -->
+    <h2>4. الأمان والمنظومة المالية والمحافظ (Safety & Wallets)</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3>🔒 منظومة الأمان (Safety Protocol):</h3>
+        <ul>
+          <li>رمز أمان <strong>OTP (4 أرقام)</strong> يزوده الراكب للكابتن لبدء الرحلة رسمياً.</li>
+          <li>زر استغاثة وطوارئ <strong>SOS</strong> مدمج في التطبيق.</li>
+          <li>مشاركة تفاصيل المشوار الحية على الخريطة مع العائلة والأصدقاء.</li>
+          <li>فحص وتدقيق وثائق الكابتن (الفيش الجنائي، رخصة القيادة والسيارة).</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>💳 الدورة المالية والعمولات:</h3>
+        <ul>
+          <li><strong>الدفع نقداً (Cash):</strong> يتم خصم عمولة المنصة تلقائياً من محفظة الكابتن داخل التطبيق.</li>
+          <li><strong>الحد الائتماني للديون:</strong> مسموح للكابتن بالعمل حتى رصيد سالب <strong>-150.00 ج.م</strong> قبل الإيقاف المؤقت لإعادة الشحن.</li>
+          <li><strong>الدفع الإلكتروني:</strong> تحويل صافي الأرباح فوراً لمحفظة الكابتن مع إمكانية السحب البنكي والمحافظ الإلكترونية.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 5. الخطة التنفيذية -->
+    <h2>5. مراحل التطوير والجدول الزمني (Implementation Roadmap)</h2>
+    <div class="card">
+      <ul>
+        <li><strong>المرحلة 0 (تم الإنجاز):</strong> تأسيس بيئة العمل المشتركة، قواعد البيانات، والخوادم المركزية.</li>
+        <li><strong>المرحلة 1 (تم الإنجاز):</strong> منظومة المصادقة بـ OTP، ملفات المستخدمين، واعتماد وثائق الكباتن.</li>
+        <li><strong>المرحلة 2 (تم الإنجاز):</strong> محرك الإحداثيات وتتبع حركة السائقين عبر Redis Geo و WebSockets.</li>
+        <li><strong>المرحلة 3 (تم الإنجاز):</strong> محرك الرحلات الهجين (الحجز الفوري + المزايدة وتوليد OTP).</li>
+        <li><strong>المرحلة 4 (تم الإنجاز):</strong> المنظومة المالية، المحافظ، واقتطاع العمولات بالجنيه المصري.</li>
+        <li><strong>المرحلة 5 (تم الإنجاز):</strong> لوحة تحكم العمليات والرادار المباشر باللغتين العربية والإنجليزية.</li>
+        <li><strong>المرحلة 6:</strong> اكتمال واجهات تطبيقات الموبايل (Flutter Rider & Driver UI) والإطلاق التجريبي (Soft Launch).</li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>منصة عالطاير © 2026 - جميع الحقوق محفوظة | 3altayer.app</p>
+      <p style="font-size: 12px; margin-top: 4px; color: var(--muted);">تم إنشاء هذا التقرير تلقائياً لتوثيق المواصفات الفنية الشاملة للمشروع.</p>
+    </div>
+  </div>
+
+</body>
+</html>

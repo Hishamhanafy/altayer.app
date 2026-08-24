@@ -1,0 +1,22 @@
+{
+  "name": "عالطاير - راكب",
+  "short_name": "عالطاير راكب",
+  "description": "تطبيق حجز الرحلات الهجين (فوري ومزايدة) في مصر",
+  "start_url": "/rider",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#ea580c",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

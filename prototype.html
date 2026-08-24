@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بروتوتايب تفاعلي - عالطاير (الراكب والكابتن)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ea580c;
+      --primary-dark: #c2410c;
+      --primary-light: #fff7ed;
+      --dark: #0f172a;
+      --slate: #334155;
+      --bg: #0b0f19;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --emerald: #10b981;
+      --blue: #3b82f6;
+      --amber: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Top Control Bar */
+    .top-bar {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding: 15px 25px;
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), #f97316);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+    }
+
+    .brand-text h1 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .brand-text p {
+      font-size: 12px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      color: var(--emerald);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .reset-btn {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: #475569;
+    }
+
+    /* Devices Grid */
+    .devices-container {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    /* Mobile Device Switcher for small screens */
+    .mobile-tab-switch {
+      display: none;
+      width: 100%;
+      max-width: 370px;
+      margin-bottom: 15px;
+      background: #1e293b;
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .mobile-tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mobile-tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px 8px;
+      }
+      .top-bar {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 12px;
+      }
+      .mobile-tab-switch {
+        display: flex;
+      }
+      .phone-frame {
+        width: 100%;
+        max-width: 360px;
+        height: 680px;
+        border-width: 6px;
+        border-radius: 35px;
+      }
+      .phone-wrapper {
+        width: 100%;
+        align-items: center;
+      }
+      .phone-wrapper.hidden-on-mobile {
+        display: none !important;
+      }
+      .phone-label {
+        display: none;
+      }
+    }
+
+    /* Phone Shell */
+    .phone-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .phone-label {
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .phone-frame {
+      width: 370px;
+      height: 720px;
+      background: #020617;
+      border: 10px solid #1e293b;
+      border-radius: 45px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Notch & Status bar */
+    .phone-notch {
+      width: 130px;
+      height: 22px;
+      background: #1e293b;
+      border-bottom-left-radius: 14px;
+      border-bottom-right-radius: 14px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+    }
+
+    .status-bar {
+      height: 38px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px 0 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      z-index: 40;
+    }
+
+    /* App Screens */
+    .screen {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-bottom: 20px;
+    }
+
+    /* Map Mock */
+    .map-mock {
+      height: 260px;
+      background: #0f172a;
+      position: relative;
+      background-image: 
+        radial-gradient(rgba(234, 88, 12, 0.15) 1px, transparent 1px),
+        linear-gradient(to right, rgba(51, 65, 85, 0.3) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(51, 65, 85, 0.3) 1px, transparent 1px);
+      background-size: 20px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .map-car {
+      width: 38px;
+      height: 38px;
+      background: #ea580c;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 20px rgba(234, 88, 12, 0.6);
+      position: absolute;
+      transition: all 1s ease-in-out;
+    }
+
+    .map-route-line {
+      position: absolute;
+      width: 140px;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, #ea580c, #ea580c 6px, transparent 6px, transparent 12px);
+      transform: rotate(-25deg);
+    }
+
+    .pin-pickup {
+      position: absolute;
+      right: 60px;
+      top: 60px;
+      background: #10b981;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+    }
+
+    .pin-dropoff {
+      position: absolute;
+      left: 60px;
+      bottom: 60px;
+      background: #ef4444;
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Content Area */
+    .app-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    /* Cards & Components */
+    .app-card {
+      background: #1e293b;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .input-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .mode-btn {
+      background: #0f172a;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      border-color: var(--primary);
+      background: rgba(234, 88, 12, 0.15);
+    }
+
+    .mode-btn .title {
+      font-size: 14px;
+      font-weight: 800;
+      display: block;
+    }
+
+    .mode-btn .sub {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+      display: block;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #f97316);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+      transition: transform 0.1s, background 0.2s;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-success {
+      background: var(--emerald);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* Bid Counter Selector */
+    .fare-counter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 8px 16px;
+    }
+
+    .counter-btn {
+      width: 36px;
+      height: 36px;
+      background: #334155;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .counter-val {
+      font-size: 20px;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    /* Bid Card */
+    .bid-card {
+      background: #0f172a;
+      border: 1.5px solid var(--primary);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Driver Specifics */
+    .driver-online-switch {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #0f172a;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .switch-pill {
+      background: var(--emerald);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .counter-offers-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .offer-chip {
+      flex: 1;
+      background: #334155;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 0;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .offer-chip:hover {
+      background: var(--primary);
+    }
+
+    .otp-display {
+      background: rgba(234, 88, 12, 0.15);
+      border: 2px dashed var(--primary);
+      border-radius: 14px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .otp-code {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      color: #ea580c;
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        <h1>عالطاير (3altayer.app) - النموذج التفاعلي الحي</h1>
+        <p>محاكاة حية لتجربة الراكب والكابتن في نفس اللحظة 🇪🇬</p>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div class="sync-status">● مزامنة تفاعلية حية (Live Sync)</div>
+      <button class="reset-btn" onclick="resetAll()">🔄 إعادة ضبط المشوار</button>
+    </div>
+  </div>
+
+  <!-- Mobile Tab Switcher (Visible only on phones) -->
+  <div class="mobile-tab-switch">
+    <button class="mobile-tab-btn active" id="tab-rider-btn" onclick="switchMobileView('rider')">📱 تطبيق الراكب</button>
+    <button class="mobile-tab-btn" id="tab-driver-btn" onclick="switchMobileView('driver')">🚗 تطبيق الكابتن</button>
+  </div>
+
+  <!-- Main Devices Grid -->
+  <div class="devices-container">
+
+    <!-- 1. CUSTOMER / RIDER APP -->
+    <div class="phone-wrapper" id="rider-wrapper">
+      <div class="phone-label" style="color: #60a5fa;">
+        <span>📱 تطبيق الزبون / الراكب (Rider)</span>
+      </div>
+
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>5G 🔋 100%</span>
+        </div>
+
+        <div class="screen" id="rider-screen">
+          <!-- Step 1: Initial Booking Screen -->
+          <div id="rider-step-1">
+            <div class="map-mock">
+              <div class="map-car" id="rider-car-icon" style="right: 140px; top: 110px;">🚗</div>
+              <div class="pin-pickup">📍 ميدان التحرير</div>
+              <div class="pin-dropoff">🏁 سيتي ستارز</div>
+            </div>
+
+            <div class="app-content">
+              <!-- Route inputs -->
+              <div class="input-box">
+                <span style="color: #10b981;">🟢</span>
+                <input type="text" value="ميدان التحرير، وسط البلد" style="background:none; border:none; color:#fff; width:100%; font-size:12.5px;" readonly>
+              </div>
+              <div class="input-box">
+                <span style="color: #ef4444;">🔴</span>
+                <input type="text" value="سيتي ستارز، مدينة نصر (12.5 كم)" style="background:none; border:none; color:#fff; width:100%; font-size:12.5px;" readonly>
+              </div>
+
+              <!-- Mode Selection (Instant vs Bidding) -->
+              <p style="font-size: 13px; font-weight: 700; color: #94a3b8; margin-top: 4px;">اختر طريقة الحجز:</p>
+              <div class="mode-selector">
+                <div class="mode-btn active" id="rider-mode-bidding" onclick="selectRiderMode('BIDDING')">
+                  <span class="title" style="color: #ea580c;">🤝 مزايدة وتفاوض</span>
+                  <span class="sub">اقترح سعرك واستقبل عروض</span>
+                </div>
+                <div class="mode-btn" id="rider-mode-instant" onclick="selectRiderMode('INSTANT')">
+                  <span class="title" style="color: #3b82f6;">⚡ حجز فوري</span>
+                  <span class="sub">سعر ثابت وكابتن مباشر</span>
+                </div>
+              </div>
+
+              <!-- Bidding Price Adjuster -->
+              <div id="bidding-price-box" class="app-card" style="margin-top: 4px;">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                  <span style="color: #94a3b8;">السعر المقترح للمشوار:</span>
+                  <span style="color: #ea580c; font-weight: 700;">استرشادي: 75 ج.م</span>
+                </div>
+                <div class="fare-counter">
+                  <button class="counter-btn" onclick="adjustRiderFare(-5)">-</button>
+                  <span class="counter-val"><span id="rider-fare-display">75</span> <small style="font-size: 13px; font-weight: 600; color: #ea580c;">ج.م</small></span>
+                  <button class="counter-btn" onclick="adjustRiderFare(+5)">+</button>
+                </div>
+              </div>
+
+              <!-- Instant Price Box (Hidden by default) -->
+              <div id="instant-price-box" class="app-card" style="display: none; margin-top: 4px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div>
+                    <p style="font-size: 12px; color: #94a3b8;">أجرة الرحلة الفورية (ثابتة):</p>
+                    <p style="font-size: 22px; font-weight: 900; color: #60a5fa;">85.00 ج.م</p>
+                  </div>
+                  <span style="font-size: 11px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 4px 8px; border-radius: 6px;">وصول في 3 دقائق</span>
+                </div>
+              </div>
+
+              <button class="btn-primary" onclick="riderSubmitRequest()">
+                🚀 طلب مشوار عالطاير
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Waiting / Bidding Screen -->
+          <div id="rider-step-2" style="display: none; padding: 16px;" class="app-content">
+            <div style="text-align: center; padding: 10px 0;">
+              <div style="font-size: 32px; animation: bounce 1s infinite;">⏳</div>
+              <h3 style="font-size: 17px; font-weight: 800; margin-top: 6px;" id="rider-wait-title">جاري استقبال عروض الكباتن...</h3>
+              <p style="font-size: 12px; color: #94a3b8;">عرضك الحالي: <strong style="color:#ea580c;" id="rider-confirmed-fare">75</strong> ج.م</p>
+            </div>
+
+            <!-- Live Bids List -->
+            <div id="rider-bids-container" style="display: flex; flex-direction: column; gap: 10px;">
+              <p style="font-size: 12px; color: #64748b; text-align: center;" id="no-bids-hint">بانتظار تقديم الكباتن لعروضهم...</p>
+            </div>
+          </div>
+
+          <!-- Step 3: Active Ride & Live Tracking -->
+          <div id="rider-step-3" style="display: none;">
+            <div class="map-mock">
+              <div class="map-car" id="rider-tracking-car" style="right: 80px; top: 80px;">🚗</div>
+              <div class="pin-pickup">📍 الكابتن في الطريق</div>
+            </div>
+
+            <div class="app-content">
+              <div class="otp-display">
+                <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 2px;">أعطِ هذا الرمز للكابتن لبدء المشوار (OTP):</p>
+                <div class="otp-code">5924</div>
+              </div>
+
+              <div class="app-card" style="display: flex; gap: 12px; align-items: center;">
+                <div style="width: 46px; height: 46px; background: #334155; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">👨🏻‍✈️</div>
+                <div style="flex: 1;">
+                  <h4 style="font-size: 14px; font-weight: 800;" id="assigned-driver-name">كابتن محمود السيد</h4>
+                  <p style="font-size: 11px; color: #94a3b8;">تويوتا كورولا (أ ب ج 1234) • ⭐ 4.9</p>
+                </div>
+                <div style="text-align: left;">
+                  <span style="font-size: 16px; font-weight: 900; color: #ea580c;" id="assigned-fare-val">75 ج.م</span>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button style="flex:1; background: #334155; color: #fff; border:none; border-radius:10px; padding:10px; font-size:12px; font-weight:700;">📞 اتصال</button>
+                <button style="flex:1; background: rgba(239, 68, 68, 0.15); color: #ef4444; border:1px solid #ef4444; border-radius:10px; padding:10px; font-size:12px; font-weight:700;">🆘 طوارئ</button>
+              </div>
+
+              <div id="ride-status-indicator" style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--emerald); color: var(--emerald); border-radius: 12px; padding: 10px; text-align: center; font-size: 13px; font-weight: 700;">
+                🚗 الكابتن في طريقه إليك (وصول خلال 3 دقائق)
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 4: Ride Completed & Rating -->
+          <div id="rider-step-4" style="display: none; padding: 20px;" class="app-content">
+            <div style="text-align: center; padding: 20px 0;">
+              <div style="font-size: 48px;">🎉</div>
+              <h3 style="font-size: 18px; font-weight: 800; margin-top: 8px;">حمد الله على السلامة!</h3>
+              <p style="font-size: 13px; color: #94a3b8;">تم إنهاء مشوارك بنجاح</p>
+              <div style="font-size: 26px; font-weight: 900; color: #ea580c; margin: 12px 0;" id="final-fare-paid">75.00 ج.م</div>
+              <p style="font-size: 12px; color: #64748b;">طريقة الدفع: نقداً (كاش) للكابتن</p>
+            </div>
+
+            <div class="app-card" style="text-align: center;">
+              <p style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">كيف كانت تجربتك مع الكابتن؟</p>
+              <div style="font-size: 24px; color: #f59e0b; letter-spacing: 4px; cursor: pointer;">⭐⭐⭐⭐⭐</div>
+            </div>
+
+            <button class="btn-primary" onclick="resetAll()">مشوار جديد 🚗</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 2. CAPTAIN / DRIVER APP -->
+    <div class="phone-wrapper hidden-on-mobile" id="driver-wrapper">
+      <div class="phone-label" style="color: #fb923c;">
+        <span>🚗 تطبيق الكابتن / السائق (Captain)</span>
+      </div>
+
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>5G 🔋 98%</span>
+        </div>
+
+        <div class="screen" id="driver-screen">
+          <!-- Driver Top Online Bar -->
+          <div style="padding: 12px 16px 0 16px;">
+            <div class="driver-online-switch">
+              <div>
+                <span style="font-size: 14px; font-weight: 800; display: block;">كابتن محمود</span>
+                <span style="font-size: 11px; color: #94a3b8;">المحفظة: <strong>140.00 ج.م</strong></span>
+              </div>
+              <div class="switch-pill">متصل 🟢 Online</div>
+            </div>
+          </div>
+
+          <!-- Driver State 1: Waiting for Requests -->
+          <div id="driver-step-idle" class="app-content">
+            <div class="map-mock" style="height: 320px; border-radius: 16px; margin-top: 8px;">
+              <div class="map-car" style="right: 150px; top: 130px;">🚕</div>
+              <div style="position: absolute; bottom: 15px; background: rgba(15, 23, 42, 0.85); padding: 6px 14px; border-radius: 20px; font-size: 11.5px; border: 1px solid var(--border);">
+                📍 متواجد في وسط البلد • جاري البحث
+              </div>
+            </div>
+
+            <div class="app-card" style="text-align: center; margin-top: 10px;">
+              <p style="font-size: 13px; font-weight: 700; color: #cbd5e1;">الرادار يبحث عن طلبات قريبة منك...</p>
+              <p style="font-size: 11px; color: #64748b; margin-top: 2px;">ستظهر طلبات المزايدة والحجز الفوري هنا فور طلبها</p>
+            </div>
+          </div>
+
+          <!-- Driver State 2: New Request Received -->
+          <div id="driver-step-incoming" style="display: none;" class="app-content">
+            <div class="app-card" style="border: 2px solid var(--primary); background: #0f172a; margin-top: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span id="driver-request-badge" style="background: rgba(234, 88, 12, 0.2); color: #ea580c; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">
+                  🤝 طلب مزايدة مفتوح
+                </span>
+                <span style="font-size: 12px; color: #94a3b8;">يبعد عنك 1.2 كم (3 د)</span>
+              </div>
+
+              <!-- Route details -->
+              <div style="font-size: 13px; line-height: 1.6; margin: 8px 0;">
+                <p>📍 <strong>من:</strong> ميدان التحرير</p>
+                <p>🏁 <strong>إلى:</strong> سيتي ستارز، مدينة نصر</p>
+              </div>
+
+              <div style="background: #1e293b; padding: 10px 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin: 10px 0;">
+                <span style="font-size: 12px; color: #94a3b8;">سعر الزبون المقترح:</span>
+                <span style="font-size: 20px; font-weight: 900; color: #fff;" id="driver-incoming-fare">75 ج.م</span>
+              </div>
+
+              <!-- Bidding Counter Offers (If Bidding Mode) -->
+              <div id="driver-counter-offers-box">
+                <p style="font-size: 11.5px; color: #94a3b8; margin-bottom: 4px;">تقديم عرض سعر مضاد سريع:</p>
+                <div class="counter-offers-row">
+                  <button class="offer-chip" onclick="driverSubmitBid(75)">75 ج.م (قبول)</button>
+                  <button class="offer-chip" onclick="driverSubmitBid(80)">+5 (80 ج)</button>
+                  <button class="offer-chip" onclick="driverSubmitBid(85)">+10 (85 ج)</button>
+                  <button class="offer-chip" onclick="driverSubmitBid(90)">+15 (90 ج)</button>
+                </div>
+              </div>
+
+              <!-- Instant Accept Button (If Instant Mode) -->
+              <div id="driver-instant-accept-box" style="display: none; margin-top: 10px;">
+                <button class="btn-primary" onclick="driverAcceptInstant()">
+                  ⚡ قبول المشوار فوراً (85.00 ج.م)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Driver State 3: En Route & OTP Verification -->
+          <div id="driver-step-active" style="display: none;" class="app-content">
+            <div class="app-card" style="margin-top: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 style="font-size: 14px; font-weight: 800;">الزبون: أحمد سالم</h4>
+                  <p style="font-size: 11px; color: #94a3b8;">نقطة الركوب: ميدان التحرير</p>
+                </div>
+                <span style="font-size: 18px; font-weight: 900; color: #ea580c;" id="driver-agreed-fare">75 ج.م</span>
+              </div>
+            </div>
+
+            <!-- Actions Step 1: Arrived Button -->
+            <div id="driver-arrive-action-box" style="margin-top: 8px;">
+              <button class="btn-primary" style="background: #3b82f6;" onclick="driverClickArrived()">
+                📍 أنا وصلت نقطة الركوب
+              </button>
+            </div>
+
+            <!-- Actions Step 2: Enter OTP Code -->
+            <div id="driver-otp-action-box" style="display: none; margin-top: 8px;" class="app-card">
+              <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 8px;">أدخل رمز الـ OTP المكون من 4 أرقام من هاتف الراكب:</p>
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="driver-otp-input" placeholder="مثال: 5924" maxlength="4" style="background:#0f172a; border:1px solid var(--border); border-radius:10px; padding:10px; color:#fff; font-size:18px; font-weight:900; text-align:center; flex:1; font-family:'Inter',sans-serif;">
+                <button class="btn-success" onclick="driverVerifyOtp()">بدء المشوار 🚀</button>
+              </div>
+            </div>
+
+            <!-- Actions Step 3: Complete Trip -->
+            <div id="driver-complete-action-box" style="display: none; margin-top: 8px;">
+              <div style="background: rgba(16, 185, 129, 0.15); border: 1px solid var(--emerald); color: var(--emerald); padding: 10px; border-radius: 12px; text-align: center; font-size: 13px; font-weight: 700; margin-bottom: 8px;">
+                🟢 المشوار جاري الآن متوجهاً إلى سيتي ستارز
+              </div>
+              <button class="btn-primary" style="background: var(--emerald);" onclick="driverCompleteTrip()">
+                🏁 إنهاء المشوار وتحصيل الأجرة
+              </button>
+            </div>
+          </div>
+
+          <!-- Driver State 4: Trip Settled & Wallet Update -->
+          <div id="driver-step-settled" style="display: none; padding: 20px;" class="app-content">
+            <div style="text-align: center; padding: 15px 0;">
+              <div style="font-size: 40px;">💰</div>
+              <h3 style="font-size: 17px; font-weight: 800; margin-top: 6px;">تم تحصيل الأجرة بنجاح!</h3>
+              <p style="font-size: 12px; color: #94a3b8;">الأجرة المستلمة كاش: <strong style="color:#fff;" id="driver-collected-cash">75.00 ج.م</strong></p>
+            </div>
+
+            <div class="app-card" style="font-size: 12.5px; line-height: 1.8;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #94a3b8;">إجمالي المشوار:</span>
+                <span style="font-weight: 700;" id="summary-gross-fare">75.00 ج.م</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: #ef4444;">
+                <span>عمولة التطبيق (10%):</span>
+                <span style="font-weight: 700;" id="summary-comm-fare">-7.50 ج.م</span>
+              </div>
+              <div style="border-top: 1px solid var(--border); margin: 6px 0; padding-top: 6px; display: flex; justify-content: space-between; color: var(--emerald);">
+                <span>صافي ربح الكابتن:</span>
+                <span style="font-weight: 900; font-size: 14px;" id="summary-net-fare">67.50 ج.م</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 11.5px; color: #64748b; margin-top: 4px;">
+                <span>رصيد المحفظة الجديد:</span>
+                <span id="summary-new-wallet">132.50 ج.م</span>
+              </div>
+            </div>
+
+            <button class="btn-primary" onclick="resetAll()" style="margin-top: 12px;">جاهز لطلب جديد 🟢</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Mobile View Toggle
+    function switchMobileView(view) {
+      const riderWrapper = document.getElementById('rider-wrapper');
+      const driverWrapper = document.getElementById('driver-wrapper');
+      const tabRider = document.getElementById('tab-rider-btn');
+      const tabDriver = document.getElementById('tab-driver-btn');
+
+      if (view === 'rider') {
+        riderWrapper.classList.remove('hidden-on-mobile');
+        driverWrapper.classList.add('hidden-on-mobile');
+        tabRider.classList.add('active');
+        tabDriver.classList.remove('active');
+      } else {
+        riderWrapper.classList.add('hidden-on-mobile');
+        driverWrapper.classList.remove('hidden-on-mobile');
+        tabRider.classList.remove('active');
+        tabDriver.classList.add('active');
+      }
+    }
+
+    // State management
+    let currentMode = 'BIDDING'; // 'BIDDING' or 'INSTANT'
+    let riderFare = 75;
+    let finalAgreedFare = 75;
+
+    function selectRiderMode(mode) {
+      currentMode = mode;
+      document.getElementById('rider-mode-bidding').classList.toggle('active', mode === 'BIDDING');
+      document.getElementById('rider-mode-instant').classList.toggle('active', mode === 'INSTANT');
+      
+      document.getElementById('bidding-price-box').style.display = mode === 'BIDDING' ? 'block' : 'none';
+      document.getElementById('instant-price-box').style.display = mode === 'INSTANT' ? 'block' : 'none';
+    }
+
+    function adjustRiderFare(delta) {
+      riderFare = Math.max(30, riderFare + delta);
+      document.getElementById('rider-fare-display').innerText = riderFare;
+    }
+
+    // Step 1: Rider Submits Request
+    function riderSubmitRequest() {
+      document.getElementById('rider-step-1').style.display = 'none';
+      document.getElementById('rider-step-2').style.display = 'block';
+
+      if (currentMode === 'BIDDING') {
+        document.getElementById('rider-confirmed-fare').innerText = riderFare;
+        document.getElementById('rider-wait-title').innerText = 'جاري استقبال عروض الكباتن...';
+        
+        // Show in Driver app
+        document.getElementById('driver-step-idle').style.display = 'none';
+        document.getElementById('driver-step-incoming').style.display = 'block';
+        document.getElementById('driver-incoming-fare').innerText = riderFare + ' ج.م';
+        document.getElementById('driver-request-badge').innerText = '🤝 طلب مزايدة مفتوح';
+        document.getElementById('driver-counter-offers-box').style.display = 'block';
+        document.getElementById('driver-instant-accept-box').style.display = 'none';
+      } else {
+        // Instant Mode
+        document.getElementById('rider-confirmed-fare').innerText = '85';
+        document.getElementById('rider-wait-title').innerText = 'جاري ربط أقرب كابتن فوري...';
+
+        document.getElementById('driver-step-idle').style.display = 'none';
+        document.getElementById('driver-step-incoming').style.display = 'block';
+        document.getElementById('driver-incoming-fare').innerText = '85.00 ج.م';
+        document.getElementById('driver-request-badge').innerText = '⚡ طلب فوري مباشر (15 ثانية)';
+        document.getElementById('driver-counter-offers-box').style.display = 'none';
+        document.getElementById('driver-instant-accept-box').style.display = 'block';
+      }
+    }
+
+    // Step 2: Driver Submits Bid / Counter-offer
+    function driverSubmitBid(offer) {
+      const container = document.getElementById('rider-bids-container');
+      document.getElementById('no-bids-hint').style.display = 'none';
+
+      container.innerHTML = `
+        <div class="bid-card">
+          <div>
+            <div style="font-size: 14px; font-weight: 800; color: #fff;">كابتن محمود السيد ⭐ 4.9</div>
+            <div style="font-size: 11px; color: #94a3b8;">تويوتا كورولا • يبعد 3 دقائق</div>
+          </div>
+          <div style="text-align: left;">
+            <div style="font-size: 17px; font-weight: 900; color: #ea580c; margin-bottom: 4px;">${offer} ج.م</div>
+            <button class="btn-success" onclick="riderAcceptBid(${offer})">قبول الكابتن ✅</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function driverAcceptInstant() {
+      riderAcceptBid(85);
+    }
+
+    // Step 3: Rider Accepts Winning Bid
+    function riderAcceptBid(fare) {
+      finalAgreedFare = fare;
+      
+      // Update Rider Screen
+      document.getElementById('rider-step-2').style.display = 'none';
+      document.getElementById('rider-step-3').style.display = 'block';
+      document.getElementById('assigned-fare-val').innerText = fare + ' ج.م';
+
+      // Update Driver Screen
+      document.getElementById('driver-step-incoming').style.display = 'none';
+      document.getElementById('driver-step-active').style.display = 'block';
+      document.getElementById('driver-agreed-fare').innerText = fare + ' ج.م';
+    }
+
+    // Step 4: Driver clicks "Arrived"
+    function driverClickArrived() {
+      document.getElementById('driver-arrive-action-box').style.display = 'none';
+      document.getElementById('driver-otp-action-box').style.display = 'block';
+      document.getElementById('ride-status-indicator').innerText = '📍 الكابتن وصل لنقطة الركوب بانتظارك';
+      document.getElementById('ride-status-indicator').style.borderColor = '#3b82f6';
+      document.getElementById('ride-status-indicator').style.color = '#60a5fa';
+    }
+
+    // Step 5: Driver Enters OTP & Starts Trip
+    function driverVerifyOtp() {
+      const input = document.getElementById('driver-otp-input').value;
+      if (input !== '5924') {
+        alert('رمز OTP غير صحيح! الرمز الصحيح هو 5924 الظاهر في شاشة الراكب');
+        return;
+      }
+
+      document.getElementById('driver-otp-action-box').style.display = 'none';
+      document.getElementById('driver-complete-action-box').style.display = 'block';
+
+      document.getElementById('ride-status-indicator').innerText = '🚗 الرحلة جارية الآن متوجهة إلى سيتي ستارز';
+      document.getElementById('ride-status-indicator').style.borderColor = '#10b981';
+      document.getElementById('ride-status-indicator').style.color = '#10b981';
+    }
+
+    // Step 6: Driver Completes Trip & Settlement
+    function driverCompleteTrip() {
+      const commRate = currentMode === 'INSTANT' ? 0.15 : 0.10;
+      const commAmount = (finalAgreedFare * commRate).toFixed(2);
+      const netFare = (finalAgreedFare - commAmount).toFixed(2);
+      const newWallet = (140.00 - parseFloat(commAmount)).toFixed(2);
+
+      // Settle Driver Screen
+      document.getElementById('driver-step-active').style.display = 'none';
+      document.getElementById('driver-step-settled').style.display = 'block';
+      document.getElementById('driver-collected-cash').innerText = finalAgreedFare.toFixed(2) + ' ج.م';
+      document.getElementById('summary-gross-fare').innerText = finalAgreedFare.toFixed(2) + ' ج.م';
+      document.getElementById('summary-comm-fare').innerText = `-${commAmount} ج.م (${commRate * 100}%)`;
+      document.getElementById('summary-net-fare').innerText = netFare + ' ج.م';
+      document.getElementById('summary-new-wallet').innerText = newWallet + ' ج.م';
+
+      // Settle Rider Screen
+      document.getElementById('rider-step-3').style.display = 'none';
+      document.getElementById('rider-step-4').style.display = 'block';
+      document.getElementById('final-fare-paid').innerText = finalAgreedFare.toFixed(2) + ' ج.م';
+    }
+
+    // Reset everything
+    function resetAll() {
+      riderFare = 75;
+      finalAgreedFare = 75;
+      selectRiderMode('BIDDING');
+
+      document.getElementById('rider-step-1').style.display = 'block';
+      document.getElementById('rider-step-2').style.display = 'none';
+      document.getElementById('rider-step-3').style.display = 'none';
+      document.getElementById('rider-step-4').style.display = 'none';
+      document.getElementById('rider-bids-container').innerHTML = '<p style="font-size: 12px; color: #64748b; text-align: center;" id="no-bids-hint">بانتظار تقديم الكباتن لعروضهم...</p>';
+
+      document.getElementById('driver-step-idle').style.display = 'block';
+      document.getElementById('driver-step-incoming').style.display = 'none';
+      document.getElementById('driver-step-active').style.display = 'none';
+      document.getElementById('driver-step-settled').style.display = 'none';
+      document.getElementById('driver-arrive-action-box').style.display = 'block';
+      document.getElementById('driver-otp-action-box').style.display = 'none';
+      document.getElementById('driver-complete-action-box').style.display = 'none';
+      document.getElementById('driver-otp-input').value = '';
+    }
+  </script>
+</body>
+</html>
