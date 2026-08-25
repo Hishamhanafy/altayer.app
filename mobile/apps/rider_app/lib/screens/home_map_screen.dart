@@ -25,47 +25,6 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Text('⚡', style: TextStyle(fontSize: 16)),
-            ),
-            const SizedBox(width: 8),
-            const Text('عالطاير'),
-          ],
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const RiderWalletPromoScreen()),
-              );
-            },
-            icon: const Icon(Icons.account_balance_wallet_outlined, color: AppColors.primaryLight),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceLight,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.border),
-            ),
-            child: const Row(
-              children: [
-                Text('⭐ 140 نقطة', style: TextStyle(fontSize: 11, color: AppColors.accentAmber, fontWeight: FontWeight.bold)),
-              ],
-            ),
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           // Simulated Dark Vector Map
