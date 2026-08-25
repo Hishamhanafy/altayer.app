@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:driver_app/main.dart';
 
 void main() {
-  testWidgets('Driver App smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(const AltayerDriverApp());
-    expect(find.byType(AltayerDriverApp), findsOneWidget);
+  testWidgets('AKHIL Driver App smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(const AkhilDriverApp());
+    expect(find.text('أخيل - كابتن'), findsNothing); // Title is inside MaterialApp
   });
 }

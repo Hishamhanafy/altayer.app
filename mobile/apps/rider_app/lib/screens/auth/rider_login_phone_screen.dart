@@ -44,35 +44,39 @@ class _RiderLoginPhoneScreenState extends State<RiderLoginPhoneScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 30),
-              // Brand Header
+              // AKHIL Brand Header
               Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.4),
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
                           blurRadius: 15,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: const Text('⚡', style: TextStyle(fontSize: 28)),
+                    child: const Text('🐎', style: TextStyle(fontSize: 28)),
                   ),
                   const SizedBox(width: 14),
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'عالطاير',
+                        'أخيل | AKHIL',
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Colors.white),
                       ),
                       Text(
-                        'مشوارك بسعرك وفي وقتك 🇪🇬',
-                        style: TextStyle(fontSize: 12, color: AppColors.primaryLight, fontWeight: FontWeight.bold),
+                        'أبعد من طريق 🇪🇬',
+                        style: TextStyle(fontSize: 12, color: Color(0xFFFBBF24), fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -82,13 +86,13 @@ class _RiderLoginPhoneScreenState extends State<RiderLoginPhoneScreen> {
               const SizedBox(height: 40),
 
               Text(
-                _isNewRider ? 'إنشاء حساب راكب جديد 🚀' : 'مرحباً بك في عالطاير 👋',
+                _isNewRider ? 'انضم إلى مجتمع أخيل 🚀' : 'مرحباً بك في أخيل 👋',
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
               ),
               const SizedBox(height: 6),
               Text(
                 _isNewRider
-                    ? 'سجّل حسابك الآن واحصل على كوبون خصم 50% على أول مشوارين + 50 نقطة ولاء مجانية!'
+                    ? 'سجّل حسابك الآن واستمتع برصيد ترحيبي 200 جنيه (AKHIL WELCOME) + 100 نقطة ولاء مجانية!'
                     : 'أدخل رقم هاتفك لاستقبال رمز الدخول السريع ومتابعة رحلاتك ونقاطك.',
                 style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, height: 1.5),
               ),
@@ -179,7 +183,7 @@ class _RiderLoginPhoneScreenState extends State<RiderLoginPhoneScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'راكب جديد 🎁',
+                              'عميل جديد 🎁',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -219,7 +223,7 @@ class _RiderLoginPhoneScreenState extends State<RiderLoginPhoneScreen> {
                     Icon(Icons.lock_outline, color: AppColors.accentGreen, size: 16),
                     SizedBox(width: 6),
                     Text(
-                      'تسجيل دخول آمن ومشفر 100%',
+                      'تسجيل دخول آمن ومشفر بأعلى معايير الخصوصية',
                       style: TextStyle(fontSize: 11, color: AppColors.textMuted),
                     ),
                   ],

@@ -2,23 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'theme/driver_theme.dart';
 import 'screens/driver_radar_screen.dart';
-import 'screens/driver_wallet_hub_screen.dart';
 import 'screens/driver_quests_screen.dart';
-import 'screens/driver_disputes_screen.dart';
+import 'screens/driver_wallet_hub_screen.dart';
+import 'screens/kyc/driver_kyc_dashboard_screen.dart';
 import 'screens/profile/driver_profile_screen.dart';
 import 'screens/auth/driver_login_phone_screen.dart';
 
 void main() {
-  runApp(const AltayerDriverApp());
+  runApp(const AkhilDriverApp());
 }
 
-class AltayerDriverApp extends StatelessWidget {
-  const AltayerDriverApp({super.key});
+class AkhilDriverApp extends StatelessWidget {
+  const AkhilDriverApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'عالطاير - كابتن',
+      title: 'أخيل - كابتن',
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar', 'EG'),
       supportedLocales: const [
@@ -45,21 +45,22 @@ class DriverMainHubScreen extends StatefulWidget {
 
 class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
   int _currentIndex = 0;
+  bool _isOnline = true;
 
   final List<Widget> _screens = const [
     DriverRadarScreen(),
-    DriverWalletHubScreen(),
     DriverQuestsScreen(),
-    DriverDisputesScreen(),
+    DriverWalletHubScreen(),
+    DriverKycDashboardScreen(),
     DriverProfileScreen(),
   ];
 
   final List<String> _titles = const [
-    'رادار المشاوير (القاهرة الكبرى)',
-    'المحفظة وسداد العمولات',
-    'تارجت ومكافآت الكابتن اليومي',
-    'مركز دعم وحماية الكباتن',
-    'الملف الشخصي للكابتن',
+    'أخيل | رادار طلبات الكابتن 📡',
+    'حوافز الكابتن (أخيل طريق للأفضل) 🏆',
+    'المحفظة وسحب الأرباح 💰',
+    'مركز اعتماد الوثائق KYC 🛡️',
+    'الملف الشخصي والتقييم 👤',
   ];
 
   @override
@@ -69,11 +70,11 @@ class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
       appBar: AppBar(
         title: Text(
           _titles[_currentIndex],
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.login, size: 20, color: DriverColors.primary),
+            icon: const Icon(Icons.login, size: 20, color: Color(0xFFFBBF24)),
             tooltip: 'شاشة تسجيل الدخول والتسجيل الجديد',
             onPressed: () {
               Navigator.push(
@@ -82,20 +83,40 @@ class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
               );
             },
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: DriverColors.primary.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: DriverColors.primary.withValues(alpha: 0.4)),
-            ),
-            child: const Row(
-              children: [
-                Icon(Icons.star, color: DriverColors.accentAmber, size: 14),
-                SizedBox(width: 4),
-                Text('4.94 ⭐', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: DriverColors.primary)),
-              ],
+          // Online/Offline Toggle
+          GestureDetector(
+            onTap: () => setState(() => _isOnline = !_isOnline),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: _isOnline ? DriverColors.primary.withValues(alpha: 0.2) : DriverColors.surfaceLight,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: _isOnline ? DriverColors.primary : DriverColors.textMuted,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _isOnline ? DriverColors.primary : DriverColors.textMuted,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    _isOnline ? 'متاح أونلاين 🟢' : 'غير متاح ⚪',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: _isOnline ? DriverColors.primary : DriverColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -114,11 +135,11 @@ class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
         unselectedFontSize: 9,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.radar), label: 'الرادار والطلب'),
+          BottomNavigationBarItem(icon: Icon(Icons.radar), label: 'الرادار'),
+          BottomNavigationBarItem(icon: Icon(Icons.emoji_events_outlined), label: 'حوافز أخيل'),
           BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), label: 'المحفظة'),
-          BottomNavigationBarItem(icon: Icon(Icons.emoji_events_outlined), label: 'التارجت والبونص'),
-          BottomNavigationBarItem(icon: Icon(Icons.support_agent), label: 'الدعم والشكاوى'),
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'حسابي والتوثيق'),
+          BottomNavigationBarItem(icon: Icon(Icons.verified_user_outlined), label: 'التوثيق KYC'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'حسابي'),
         ],
       ),
     );

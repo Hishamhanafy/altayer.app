@@ -9,20 +9,20 @@ extension LoyaltyTierExtension on LoyaltyTier {
   String get title {
     switch (this) {
       case LoyaltyTier.bronze:
-        return 'راكب برونزي 🥉';
+        return 'عميل أخيل برونزي 🥉';
       case LoyaltyTier.silver:
-        return 'راكب فضي 🥈';
+        return 'عميل أخيل فضي 🥈';
       case LoyaltyTier.gold:
-        return 'راكب ذهبي 🥇';
+        return 'عميل أخيل ذهبي 🥇';
       case LoyaltyTier.platinum:
-        return 'راكب بلاتيني VIP 💎';
+        return 'عميل أخيل بلاتيني VIP 💎';
     }
   }
 
   String get perk {
     switch (this) {
       case LoyaltyTier.bronze:
-        return 'خصم 5% على أول مشوارين كل أسبوع';
+        return 'خصم 5% ونقاط مشاوير أساسية';
       case LoyaltyTier.silver:
         return 'خصم 10% ونقاط مضاعفة 1.2x';
       case LoyaltyTier.gold:
@@ -44,6 +44,24 @@ extension LoyaltyTierExtension on LoyaltyTier {
         return 6000;
     }
   }
+}
+
+class AkhilIncentiveProgram {
+  final String code;
+  final String title;
+  final String slogan;
+  final String description;
+  final String icon;
+  final bool isCredit;
+
+  const AkhilIncentiveProgram({
+    required this.code,
+    required this.title,
+    required this.slogan,
+    required this.description,
+    required this.icon,
+    this.isCredit = false,
+  });
 }
 
 class RewardVoucherItem {
@@ -84,7 +102,7 @@ class PointsHistoryItem {
 
 class PaymentMethodItem {
   final String id;
-  final String type; // CASH, CARD, VODAFONE_CASH, INSTAPAY
+  final String type; // CASH, WALLET, CARD, VODAFONE_CASH, INSTAPAY, AKHIL_CREDIT
   final String title;
   final String subtitle;
   final String icon;

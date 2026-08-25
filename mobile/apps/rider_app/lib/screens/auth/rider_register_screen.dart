@@ -37,7 +37,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('🎉 مرحباً بك في عالطاير! تم إضافة 100 نقطة ولاء مجانية إلى رصيدك 🎁'),
+        content: Text('🎉 مرحباً بك في أخيل! تم تفعيل رصيد AKHIL WELCOME (200 ج) + 100 نقطة ولاء مجانية 🎁'),
         duration: Duration(seconds: 4),
       ),
     );
@@ -48,7 +48,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('بيانات حساب الراكب 👤'),
+        title: const Text('بيانات حساب عميل أخيل 👤'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_forward),
           onPressed: () => Navigator.pop(context),
@@ -65,11 +65,12 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFEA580C), Color(0xFFC2410C)],
+                    colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                   ),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFF59E0B)),
                 ),
                 child: const Row(
                   children: [
@@ -79,9 +80,9 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('هدية انضمامك لعائلتنا!', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white)),
+                          Text('AKHIL WELCOME — رصيدك الترحيبي!', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFFFBBF24))),
                           SizedBox(height: 2),
-                          Text('كوبون خصم 50% على مشاويرك الأولى + 100 نقطة ولاء تضاف لمحفظتك فوراً.', style: TextStyle(fontSize: 11, color: Colors.white70)),
+                          Text('رصيد ترحيبي 200 جنيه + 100 نقطة ولاء تضاف لمحفظتك فوراً عند إتمام التسجيل.', style: TextStyle(fontSize: 11, color: Colors.white70)),
                         ],
                       ),
                     ),
@@ -100,7 +101,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
               _buildInput('البريد الإلكتروني (لاستلام فواتير الرحلات):', _emailController, 'omar@example.com', Icons.email, isEmail: true),
               const SizedBox(height: 14),
 
-              _buildInput('اسم جهة اتصال الطوارئ (اختياري):', _emergencyNameController, 'محمد الشناوي (والد)', Icons.contact_phone),
+              _buildInput('اسم جهة اتصال الطوارئ (اختياري للأمان):', _emergencyNameController, 'محمد الشناوي (والد)', Icons.contact_phone),
               const SizedBox(height: 14),
 
               _buildInput('رقم هاتف الطوارئ:', _emergencyPhoneController, '01011122233', Icons.phone, isNumber: true),
@@ -110,9 +111,9 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
               const Text('وسيلة الدفع الافتراضية المفضلة:', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
               const SizedBox(height: 10),
 
-              _buildPaymentOption('CASH', '💵 الدفع نقداً كاش للكابتن', 'المشوار يحاسب عليه الكابتن مباشرة'),
+              _buildPaymentOption('CASH', '💵 الدفع نقداً كاش للكابتن', 'المشوار يحاسب عليه الكابتن مباشرة نقداً'),
               const SizedBox(height: 8),
-              _buildPaymentOption('WALLET', '👛 محفظة عالطاير الرقمية', 'خصم تلقائي من رصيد المحفظة'),
+              _buildPaymentOption('WALLET', '👛 محفظة أخيل الرقمية', 'خصم تلقائي من رصيد المحفظة'),
 
               const SizedBox(height: 30),
 
@@ -122,7 +123,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                 height: 50,
                 child: ElevatedButton(
                   onPressed: _completeRegistration,
-                  child: const Text('إتمام التسجيل وبدء المشاوير 🚀', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
+                  child: const Text('إتمام التسجيل وبدء رحلات أخيل 🚀', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900)),
                 ),
               ),
             ],

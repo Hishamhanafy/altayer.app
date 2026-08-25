@@ -44,35 +44,39 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 30),
-              // Brand Logo & Title
+              // Brand Header
               Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: DriverColors.primary,
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: DriverColors.primary.withValues(alpha: 0.4),
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
                           blurRadius: 15,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: const Text('🚗', style: TextStyle(fontSize: 28)),
+                    child: const Text('🐎', style: TextStyle(fontSize: 28)),
                   ),
                   const SizedBox(width: 14),
                   const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'عالطاير كابتن',
+                        'أخيل | AKHIL',
                         style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white),
                       ),
                       Text(
-                        'منصة القيادة والأرباح الحرة 🇪🇬',
-                        style: TextStyle(fontSize: 12, color: DriverColors.primary, fontWeight: FontWeight.bold),
+                        'منظومة الكابتن والبرثونة • أبعد من طريق 🇪🇬',
+                        style: TextStyle(fontSize: 11, color: Color(0xFFFBBF24), fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
@@ -81,22 +85,21 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
 
               const SizedBox(height: 40),
 
-              // Title Headline
               Text(
-                _isNewCaptain ? 'انضم لأسطول كباتن عالطاير 🚀' : 'تسجيل دخول الكابتن 👋',
+                _isNewCaptain ? 'انضم ككابتن / برثونة في أخيل 🚀' : 'تسجيل دخول الكابتن 👋',
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white),
               ),
               const SizedBox(height: 6),
               Text(
                 _isNewCaptain
-                    ? 'سجّل بياناتك وسيارتك وابدأ في استقبال المشاوير وتحقيق دخل يومي ممتاز بأقل نسبة عمولة في مصر.'
-                    : 'أدخل رقم هاتفك المسجل لاستقبال كود الدخول ومتابعة رحلاتك وأرباحك.',
+                    ? 'سجّل بياناتك وارفع رخصك الآن للاستفادة من عمولة مرنة منخفضة (10%) وضمان الدخل الشهري!'
+                    : 'أدخل رقم هاتفك المسجل لاستقبال رمز التحقق والدخول إلى رادار الرحلات والأرباح.',
                 style: const TextStyle(fontSize: 12, color: DriverColors.textSecondary, height: 1.5),
               ),
 
               const SizedBox(height: 30),
 
-              // Phone Input Field with Egypt Flag
+              // Phone Field
               const Text(
                 'رقم الهاتف المحمول (مصر):',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: DriverColors.textSecondary),
@@ -112,15 +115,11 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: DriverColors.surfaceLight,
-                        borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+                        borderRadius: BorderRadius.horizontal(right: Radius.circular(16)),
                       ),
-                      child: const Row(
-                        children: [
-                          Text('🇪🇬 +20', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
-                        ],
-                      ),
+                      child: const Text('🇪🇬 +20', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
                     Expanded(
                       child: TextField(
@@ -141,7 +140,7 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
 
               const SizedBox(height: 20),
 
-              // New vs Existing Captain Switch Toggle
+              // Mode Toggle
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
@@ -179,7 +178,7 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
-                            color: _isNewCaptain ? DriverColors.accentOrange : Colors.transparent,
+                            color: _isNewCaptain ? DriverColors.primary : Colors.transparent,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Center(
@@ -201,17 +200,14 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
 
               const SizedBox(height: 30),
 
-              // Submit Action Button
+              // Submit Button
               SizedBox(
                 width: double.infinity,
                 height: 52,
                 child: ElevatedButton(
                   onPressed: _sendOtp,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isNewCaptain ? DriverColors.accentOrange : DriverColors.primary,
-                  ),
                   child: Text(
-                    _isNewCaptain ? 'المتابعة لتسجيل البيانات والسيارة ➡️' : 'إرسال رمز الدخول السريع (SMS OTP) 📲',
+                    _isNewCaptain ? 'المتابعة لإنشاء الحساب الجديد ➡️' : 'إرسال رمز الدخول السريع (SMS OTP) 📲',
                     style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
                   ),
                 ),
@@ -219,19 +215,29 @@ class _DriverLoginPhoneScreenState extends State<DriverLoginPhoneScreen> {
 
               const SizedBox(height: 24),
 
-              // Security & Privacy Note
-              Center(
+              // Feature Highlights
+              Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: DriverColors.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: DriverColors.border),
+                ),
                 child: Column(
                   children: const [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.shield_outlined, color: DriverColors.primary, size: 16),
-                        SizedBox(width: 6),
-                        Text(
-                          'بياناتك مؤمنة ومشفرة بالكامل طبقاً للقانون المصري',
-                          style: TextStyle(fontSize: 10, color: DriverColors.textMuted),
-                        ),
+                        Icon(Icons.check_circle_outline, color: DriverColors.primary, size: 16),
+                        SizedBox(width: 8),
+                        Text('عمولة عادلة تبدأ من 10% فقط وسداد فوري بإنستاباي', style: TextStyle(fontSize: 11, color: DriverColors.textSecondary)),
+                      ],
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Icon(Icons.check_circle_outline, color: DriverColors.primary, size: 16),
+                        SizedBox(width: 8),
+                        Text('فئة البرثونة المخصصة للسائقات لخدمة السيدات', style: TextStyle(fontSize: 11, color: DriverColors.textSecondary)),
                       ],
                     ),
                   ],

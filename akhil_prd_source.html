@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>أخيل | AKHIL — وثيقة تصميم المنتج والنموذج الأولي للواجهات</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+
+    @page {
+      size: A4;
+      margin: 16mm 14mm 16mm 14mm;
+    }
+
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      direction: rtl;
+      text-align: right;
+      color: #0f172a;
+      background-color: #ffffff;
+      line-height: 1.55;
+      font-size: 11.5px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .cover-card {
+      background: linear-gradient(135deg, #090d16 0%, #1e1b4b 50%, #0f172a 100%);
+      color: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border-right: 6px solid #f59e0b;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .brand-title {
+      font-size: 26px;
+      font-weight: 900;
+      color: #fbbf24;
+      margin: 0 0 4px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-slogan {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin: 0 0 12px 0;
+    }
+
+    .doc-subtitle {
+      font-size: 12px;
+      color: #94a3b8;
+      margin: 0 0 14px 0;
+      line-height: 1.4;
+    }
+
+    .meta-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+
+    h2 {
+      font-size: 14px;
+      font-weight: 900;
+      color: #1e1b4b;
+      background: #f8fafc;
+      border-right: 4px solid #f59e0b;
+      padding: 6px 12px;
+      margin: 18px 0 10px 0;
+      border-radius: 0 8px 8px 0;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 800;
+      color: #334155;
+      margin: 12px 0 6px 0;
+    }
+
+    p, li {
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    ul {
+      margin: 0 0 10px 0;
+      padding-right: 18px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 10px 0;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .service-badge {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 11px;
+      color: #0f172a;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .card.highlight {
+      border-right: 3px solid #f59e0b;
+      background: #fffdfa;
+    }
+
+    .card.primary {
+      border-right: 3px solid #6366f1;
+      background: #faf5ff;
+    }
+
+    .card h4 {
+      margin: 0 0 4px 0;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px 0;
+      font-size: 10.5px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 6px 10px;
+      text-align: right;
+      border: 1px solid #e2e8f0;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .callout {
+      background: #f0fdf4;
+      border-right: 4px solid #10b981;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 11px;
+    }
+
+    .callout-title {
+      font-weight: 800;
+      color: #065f46;
+      margin-bottom: 2px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+      text-align: center;
+      font-size: 9.5px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover Box -->
+  <div class="cover-card">
+    <div class="brand-title">أخيل | AKHIL</div>
+    <div class="brand-slogan">أبعد من طريق</div>
+    <div class="doc-subtitle">
+      <strong>وثيقة تصميم المنتج والنموذج الأولي للواجهات (Product Requirements & UX/UI Prototype Specification)</strong><br>
+      نسخة أولية مرجعية لتسليمها إلى شركة Product Design / UI-UX قبل مرحلة البرمجة والتنفيذ.
+    </div>
+    <div class="meta-tags">
+      <span class="tag">النطاق: تطبيق العميل + تطبيق الكابتن/البرثونة + منطق الواجهات</span>
+      <span class="tag">اللغة: عربي / English (RTL & LTR Native)</span>
+      <span class="tag">الملكية: حقوق التصميم والمكونات ملك لأخيل بالكامل</span>
+      <span class="tag">التاريخ: أغسطس 2026</span>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <h2>1. الغرض من الوثيقة ونطاقها (Document Purpose & Scope)</h2>
+  <p>
+    تصف هذه الوثيقة ما يجب أن يراه المستخدم وما يجب أن يحدث من منظور المنتج داخل منظومة <strong>«أخيل»</strong>، دون فرض بنية تقنية أو لغة برمجة بعينها، لتمكين شركة تصميم منتجات رقمية من تحويل المنطق إلى User Flows وWireframes وواجهات عالية الدقة وPrototype تفاعلي كامل قابل للاختبار.
+  </p>
+  <ul>
+    <li>ليست مواصفات Backend نهائية ولا تحدد مزودي السحابة أو الـAPIs.</li>
+    <li>ملفات التصميم الأصلية وDesign System والـPrototype وحقوق الاستخدام والتعديل ملك حصري لأخيل.</li>
+    <li>دعم حقيقي للغتين العربية والإنجليزية (RTL / LTR) من البداية.</li>
+    <li>تصميم كافة حالات النجاح، الفشل، الانتظار، عدم الاتصال، والإلغاء (Edge Cases).</li>
+  </ul>
+
+  <!-- Section 2 & 3 -->
+  <h2>2. فلسفة المنتج وأنواع المستخدمين</h2>
+  <div class="grid-2">
+    <div class="card highlight">
+      <h4>🎯 فلسفة المنتج (Product Philosophy)</h4>
+      <ul>
+        <li>منصة نقل ذكي تجعل الرحلة مفهومة وعادلة وبسيطة للعميل والكابتن.</li>
+        <li>فصل واضح بين السعر الأساسي للرحلة والحوافز التشغيلية.</li>
+        <li>لا تسعير ذروة تقليدي في النموذج الأساسي؛ السعر يظهر بوضوح قبل الطلب.</li>
+        <li>تحديد مناطق التشغيل المفضلة للكابتن منذ التسجيل واستخدامها في التوزيع.</li>
+        <li>الذكاء الاصطناعي طبقة مساعدة ودعم وتحليل، وليس صاحب صلاحية مالية مستقلة.</li>
+      </ul>
+    </div>
+    <div class="card primary">
+      <h4>👥 أنواع المستخدمين (User Personas)</h4>
+      <ul>
+        <li><strong>العميل (Rider):</strong> طالب الخدمة والمستفيد من برامج الولاء.</li>
+        <li><strong>الكابتن (Captain):</strong> السائق المعتمد في منظومة أخيل.</li>
+        <li><strong>البرثونة (Parthona):</strong> سائقة ضمن قواعد خدمة النساء المعتمدة حصراً.</li>
+        <li><strong>موظف الدعم/المراجعة:</strong> يظهر أثره في حالات المراجعة والتصعيد.</li>
+        <li><strong>مساعد أخيل الذكي:</strong> دعم نصي وصوتي محدود الصلاحيات.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 4: Rider App -->
+  <h2>3. مواصفات تطبيق العميل (Rider Application)</h2>
+  
+  <h3>3.1 خدمات أخيل العشر (AKHIL 10 Services)</h3>
+  <div class="grid-4" style="margin-bottom: 12px;">
+    <div class="service-badge">🚗 Economy</div>
+    <div class="service-badge">🚘 Plus</div>
+    <div class="service-badge">💼 Business</div>
+    <div class="service-badge" style="border-color: #ec4899; color: #be185d;">🌸 Parthona (برثونة)</div>
+    <div class="service-badge">⏱️ Time</div>
+    <div class="service-badge">➕ Extra</div>
+    <div class="service-badge">📦 Carry</div>
+    <div class="service-badge">📫 Box</div>
+    <div class="service-badge">🛣️ Trip</div>
+    <div class="service-badge" style="grid-column: span 3;">🎪 Partner of Events</div>
+  </div>
+  <p style="font-size: 10.5px; color: #64748b;">* على شركة التصميم بناء واجهة قابلة للتوسع لإضافة خدمات مستقبلية دون إعادة هيكلة الشاشة الرئيسية.</p>
+
+  <h3>3.2 دورة حياة الرحلة للعميل (Rider Journey & Life Cycle)</h3>
+  <ul>
+    <li><strong>التسجيل والدخول:</strong> شاشة ترحيب، اختيار لغة، رقم الهاتف + OTP، طلب أذونات الموقع والإشعارات مع شرح أسبابها.</li>
+    <li><strong>الرئيسية والخريطة:</strong> خريطة حية بموقع العميل، زر «استدعِ أخيل الآن» ومسار منفصل «رحلة مجدولة»، بحث الوجهات والأماكن المحفوظة.</li>
+    <li><strong>التسعير والانتظار:</strong> مسافة وزمن تقديري، فئة الخدمة، السعر النهائي، سياسة الانتظار (أول دقيقتين مجاناً ثم 3 ج/دقيقة)، والتقريب السعري لأعلى 5 جنيهات.</li>
+    <li><strong>البحث والإسناد:</strong> رادار البحث للأقرب، وعند القبول عرض صورة الكابتن، الاسم، التقييم، بيانات السيارة، واللوحة.</li>
+    <li><strong>أثناء الرحلة:</strong> مؤقت الانتظار، شات/اتصال آمن، كود التحقق الآمن (PIN/OTP)، مشاركة الرحلة، زر أمان SOS ومساعد أخيل الذكي.</li>
+    <li><strong>الإنهاء والدفع:</strong> ملخص مفصل، وسائل الدفع (كاش، محفظة، دفع إلكتروني)، خدمة <strong>AKHIL CREDIT</strong> (ادفع بعدين للمؤهلين)، وإيصال رقمي.</li>
+    <li><strong>التقييم والشكاوى:</strong> 1-5 نجوم، وسوم إشادة، ومسار طوارئ وأمان منفصل تماماً عن الشكاوى التشغيلية العادية.</li>
+  </ul>
+
+  <h3>3.3 مركز حوافز العميل (AKHIL Rider Incentives Hub)</h3>
+  <div class="grid-4">
+    <div class="card"><strong>AKHIL FIRST</strong><br><span style="font-size: 10px; color:#64748b;">تجربة تستحق</span></div>
+    <div class="card"><strong>AKHIL WELCOME</strong><br><span style="font-size: 10px; color:#64748b;">رصيد ترحيبي 200 ج</span></div>
+    <div class="card"><strong>AKHIL SHARE</strong><br><span style="font-size: 10px; color:#64748b;">دعوة صديق وربح مشترك</span></div>
+    <div class="card"><strong>AKHIL CASH UP</strong><br><span style="font-size: 10px; color:#64748b;">رحلة مجانية شهرياً</span></div>
+    <div class="card"><strong>AKHIL YOUR PRICE</strong><br><span style="font-size: 10px; color:#64748b;">روتينك بسعرك</span></div>
+    <div class="card"><strong>AKHIL SPECIAL</strong><br><span style="font-size: 10px; color:#64748b;">هدية يومك الخاص</span></div>
+    <div class="card"><strong>AKHIL CREDIT</strong><br><span style="font-size: 10px; color:#64748b;">رحلتك وادفع بعدين</span></div>
+    <div class="card"><strong>AKHIL WIN</strong><br><span style="font-size: 10px; color:#64748b;">أرباحك مستمرة</span></div>
+  </div>
+
+  <!-- Section 5: Driver App -->
+  <h2>4. مواصفات تطبيق الكابتن/البرثونة (Driver Application)</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <h4>📋 التسجيل ومركز الاعتماد KYC</h4>
+      <ul>
+        <li>معالج تسجيل متعدد المراحل مع حفظ التقدم لاستكماله لاحقاً.</li>
+        <li>اختيار مناطق التشغيل المفضلة وترتيب أولوياتها منذ البداية.</li>
+        <li>اختيار فئة التشغيل (ضمان مالي أو عمولة مرنة) مع شرح قبل الاختيار.</li>
+        <li>مركز وثائق يوضح حالة كل مستند، سبب الرفض، وتنبيهات انتهاء الرخص.</li>
+        <li>حظر إيهام السائق بأنه Online قبل اكتمال الاعتماد.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🚘 فئات التشغيل ونموذج الأرباح</h4>
+      <ul>
+        <li><strong>AKHIL GUARANTEE (ضمان مالي):</strong> يوضح الضمان الشهري، ساعات الإتاحة، والرحلات المحققة.</li>
+        <li><strong>AKHIL FLEX (عمولة مرنة):</strong> شريحة العمولة الحالية والرحلات المتبقية للترقية للشريحة الأفضل.</li>
+        <li>فصل بصري تام بين «الدخل» و«الضمان» و«البونص».</li>
+        <li><strong>حد تشغيل 1,000 ج.م:</strong> تنبيه عند 200 ج وإيقاف وفق الحد المعتمد عند 100 ج.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>4.1 مركز حوافز الكابتن — أخيل طريق للأفضل (AKHIL Driver Incentives)</h3>
+  <div class="grid-3">
+    <div class="card"><strong>AKHIL READY</strong><br><span style="font-size: 10px; color:#64748b;">رصيدك مقدّم</span></div>
+    <div class="card"><strong>AKHIL FLEX RATE</strong><br><span style="font-size: 10px; color:#64748b;">عمولة مرنة / حافز الشهر الأول</span></div>
+    <div class="card"><strong>AKHIL FREE MOBILE</strong><br><span style="font-size: 10px; color:#64748b;">موبايل هدية</span></div>
+    <div class="card"><strong>AKHIL WEEKLY FLOW</strong><br><span style="font-size: 10px; color:#64748b;">أخيل أرباح أسبوعية</span></div>
+    <div class="card" style="border-color: #f59e0b;"><strong>FREE CAR</strong><br><span style="font-size: 10px; color:#f59e0b; font-weight: bold;">جائزة الفئة الملكية 👑</span></div>
+    <div class="card"><strong>AKHIL LINK</strong><br><span style="font-size: 10px; color:#64748b;">مكافأة دعوتك</span></div>
+    <div class="card"><strong>AKHIL SERVICES</strong><br><span style="font-size: 10px; color:#64748b;">مكافآت خدمات أخيل</span></div>
+    <div class="card"><strong>AKHIL FAMILY</strong><br><span style="font-size: 10px; color:#64748b;">هدية عائلتك</span></div>
+    <div class="card"><strong>برامج الدعم والحماية</strong><br><span style="font-size: 10px; color:#64748b;">حماية وصيانة مستمرة</span></div>
+  </div>
+
+  <h3>4.2 مستويات الكباتن ونقاط التقييم (100 نقطة)</h3>
+  <p>المستويات: <strong>1) كابتن/برثونة</strong> ⬅️ <strong>2) فريق أخيل</strong> ⬅️ <strong>3) قادة أخيل</strong> ⬅️ <strong>4) نخبة أخيل</strong> ⬅️ <strong>5) القائد الملكي (ROYAL AKHIL)</strong>.</p>
+
+  <!-- Section 6, 7, 8: Rules & Edge Cases -->
+  <h2>5. القواعد التشغيلية وحالات الاستثناء (Operational Rules & Edge Cases)</h2>
+  
+  <div class="grid-2">
+    <div class="card highlight">
+      <h4>🌸 قواعد خدمة البرثونة (Parthona Rules)</h4>
+      <ul>
+        <li>خدمة نسائية مخصصة بسائقات معتمدات دون جعلها تطبيقاً منفصلاً.</li>
+        <li>حظر إسناد طلبات البرثونة لسائق رجل وفق السياسة المعتمدة.</li>
+        <li>عرض قواعد الإلغاء والمخالفة الخاصة بالخدمة قبل التأكيد.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>📅 الرحلات المجدولة (Scheduled Trips)</h4>
+      <ul>
+        <li>اختيار التاريخ والوقت والوجهة مع ملخص وسياسة الإلغاء والتعديل.</li>
+        <li>حالات الرحلة: مجدولة ⬅️ جاري البحث ⬅️ تم التعيين ⬅️ في الطريق ⬅️ بدأت ⬅️ انتهت.</li>
+        <li>تنبيهات استباقية للطرفين وإدارة حالات عدم توفر سيارة قبل الموعد.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>حالات الاستثناء التي يجب تصميمها بالكامل (Edge Cases Matrix):</h3>
+  <div class="grid-3" style="font-size: 10.5px;">
+    <div class="card">📡 ضعف GPS أو فقد الإنترنت</div>
+    <div class="card">🚫 لا يوجد سائق متاح / تأخر القبول</div>
+    <div class="card">❌ إلغاء السائق بعد القبول</div>
+    <div class="card">🚶‍♂️ العميل لم يحضر بعد فترة الانتظار</div>
+    <div class="card">💳 تعذر الدفع الإلكتروني / رصيد غير كافٍ</div>
+    <div class="card">⚠️ انتهاء مستند السائق أثناء النشاط</div>
+    <div class="card">🔒 الحساب موقوف أو تحت المراجعة</div>
+    <div class="card">📍 خطأ في الموقع أو تعديل الوجهة</div>
+    <div class="card">🚨 طوارئ / بلاغ أمان SOS وتصعيد بشري</div>
+  </div>
+
+  <!-- Section 10 & 11: Deliverables & Prototype Flows -->
+  <h2>6. مخرجات شركة التصميم والمسارات التفاعلية للـ Prototype</h2>
+  
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">المسار (User Flow)</th>
+        <th style="width: 75%;">التسلسل التفاعلي الإلزامي في الـ Prototype</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>العميل الجديد</strong></td>
+        <td>فتح التطبيق ⬅️ تسجيل ⬅️ موقع ⬅️ وجهة ⬅️ اختيار خدمة ⬅️ سعر ⬅️ طلب ⬅️ قبول ⬅️ وصول ⬅️ بدء ⬅️ رحلة ⬅️ دفع ⬅️ تقييم.</td>
+      </tr>
+      <tr>
+        <td><strong>العميل الحالي</strong></td>
+        <td>فتح ⬅️ وجهة محفوظة ⬅️ اختيار خدمة ⬅️ دفع بالمحفظة/بطاقة ⬅️ رحلة ⬅️ إيصال رقمي.</td>
+      </tr>
+      <tr>
+        <td><strong>الرحلة المجدولة</strong></td>
+        <td>اختيار موعد ⬅️ تأكيد ⬅️ تنبيهات ⬅️ تعيين كابتن ⬅️ تنفيذ.</td>
+      </tr>
+      <tr>
+        <td><strong>الكابتن الجديد</strong></td>
+        <td>OTP ⬅️ بيانات ⬅️ سيارة ⬅️ وثائق KYC ⬅️ مناطق مفضلة ⬅️ فئة تشغيل (ضمان/مرنة) ⬅️ مراجعة ⬅️ اعتماد.</td>
+      </tr>
+      <tr>
+        <td><strong>الكابتن النشط</strong></td>
+        <td>Online ⬅️ طلب ⬅️ قبول ⬅️ ملاحة ⬅️ وصول ⬅️ انتظار ⬅️ بدء ⬅️ إنهاء ⬅️ كشف الأرباح.</td>
+      </tr>
+      <tr>
+        <td><strong>مركز الحوافز</strong></td>
+        <td>مركز الحوافز ⬅️ اختيار برنامج ⬅️ رؤية التقدم ⬅️ تحقيق الشرط ⬅️ ظهور الاستحقاق والتسوية.</td>
+      </tr>
+      <tr>
+        <td><strong>الدعم والذكاء الاصطناعي</strong></td>
+        <td>مشكلة ⬅️ مساعد AI L1 ⬅️ حل أو تصعيد لموظف دعم مع نقل كامل لسياق المحادثة.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <div class="callout-title">🏆 معيار قبول التصميم (Acceptance Criterion):</div>
+    لا يُعتبر التصميم مكتملاً بمجرد وجود شاشات جميلة. يُقبل العمل عندما يستطيع شخص لم يشارك في بناء أخيل فتح الـPrototype وفهم رحلة العميل والكابتن، وإكمال المسارات الرئيسية دون شرح شفهي، وعندما يستطيع فريق تطوير مستقل قراءة الملفات وفهم الحالات المطلوبة دون إعادة اكتشاف المنتج من الصفر.
+  </div>
+
+  <div class="footer">
+    <strong>أخيل | AKHIL — أبعد من طريق</strong> • وثيقة مواصفات تصميم المنتج والنموذج الأولي المرجعية • حقوق الطبع والملكية الفكرية محفوظة 2026 ©
+  </div>
+
+</body>
+</html>

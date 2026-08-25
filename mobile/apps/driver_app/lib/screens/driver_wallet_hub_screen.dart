@@ -209,7 +209,7 @@ class _DriverWalletHubScreenState extends State<DriverWalletHubScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: DriverColors.background,
-      body: SingleChildScrollView(
+      body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Commission Highlight Banner

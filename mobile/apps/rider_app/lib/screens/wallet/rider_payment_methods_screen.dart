@@ -19,6 +19,7 @@ class _RiderPaymentMethodsScreenState extends State<RiderPaymentMethodsScreen> {
     PaymentMethodItem(id: 'PM-1', type: 'CASH', title: 'الدفع نقداً كاش', subtitle: 'سداد الأجرة مباشرة للكابتن', icon: '💵', isDefault: true),
     PaymentMethodItem(id: 'PM-2', type: 'CARD', title: 'بطاقة ميزة / فيزا البنكية', subtitle: 'البنك الأهلي المصري (•••• 4892)', icon: '💳'),
     PaymentMethodItem(id: 'PM-3', type: 'VODAFONE_CASH', title: 'محفظة فودافون كاش', subtitle: 'رقم المحفظة: 01098765432', icon: '📱'),
+    PaymentMethodItem(id: 'PM-4', type: 'AKHIL_CREDIT', title: 'AKHIL CREDIT (ادفع بعدين)', subtitle: 'حد ائتماني مفعل حتى 500 ج.م للعملاء المؤهلين 🌟', icon: '💎'),
   ];
 
   void _showAddCardModal() {

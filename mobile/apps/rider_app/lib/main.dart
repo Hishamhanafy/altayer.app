@@ -8,16 +8,16 @@ import 'screens/profile/rider_profile_screen.dart';
 import 'screens/auth/rider_login_phone_screen.dart';
 
 void main() {
-  runApp(const AltayerRiderApp());
+  runApp(const AkhilRiderApp());
 }
 
-class AltayerRiderApp extends StatelessWidget {
-  const AltayerRiderApp({super.key});
+class AkhilRiderApp extends StatelessWidget {
+  const AkhilRiderApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'عالطاير - راكب',
+      title: 'أخيل - عميل',
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar', 'EG'),
       supportedLocales: const [
@@ -53,10 +53,10 @@ class _RiderMainHubScreenState extends State<RiderMainHubScreen> {
   ];
 
   final List<String> _titles = const [
-    'طلب مشوار عالطاير ⚡',
-    'سوق المكافآت ونقاط الولاء 🌟',
+    'أخيل | أبعد من طريق 🐎⚡',
+    'حوافز ومكافآت أخيل 🌟',
     'المحفظة وطرق الدفع 💳',
-    'الملف الشخصي للراكب 👤',
+    'الملف الشخصي للعميل 👤',
   ];
 
   @override
@@ -66,11 +66,11 @@ class _RiderMainHubScreenState extends State<RiderMainHubScreen> {
       appBar: AppBar(
         title: Text(
           _titles[_currentIndex],
-          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900),
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w900),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.login, size: 20, color: AppColors.primaryLight),
+            icon: const Icon(Icons.login, size: 20, color: Color(0xFFFBBF24)),
             tooltip: 'شاشة تسجيل الدخول والتسجيل الجديد',
             onPressed: () {
               Navigator.push(
@@ -85,13 +85,13 @@ class _RiderMainHubScreenState extends State<RiderMainHubScreen> {
             decoration: BoxDecoration(
               color: AppColors.surfaceLight,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.accentAmber.withValues(alpha: 0.5)),
+              border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.5)),
             ),
             child: const Row(
               children: [
-                Icon(Icons.star, color: AppColors.accentAmber, size: 14),
+                Icon(Icons.star, color: Color(0xFFFBBF24), size: 14),
                 SizedBox(width: 4),
-                Text('340 نقطة ⭐', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.accentAmber)),
+                Text('340 نقطة ⭐', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFFBBF24))),
               ],
             ),
           ),
@@ -105,14 +105,14 @@ class _RiderMainHubScreenState extends State<RiderMainHubScreen> {
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
         backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primary,
+        selectedItemColor: const Color(0xFFF59E0B),
         unselectedItemColor: AppColors.textMuted,
         selectedFontSize: 10,
         unselectedFontSize: 9,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: 'الرئيسية والمشاوير'),
-          BottomNavigationBarItem(icon: Icon(Icons.stars_outlined), label: 'المكافآت والنقاط'),
+          BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: 'الرئيسية والرحلات'),
+          BottomNavigationBarItem(icon: Icon(Icons.stars_outlined), label: 'حوافز أخيل'),
           BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), label: 'المحفظة والدفع'),
           BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'حسابي'),
         ],

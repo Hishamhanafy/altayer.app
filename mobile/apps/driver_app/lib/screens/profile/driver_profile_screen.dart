@@ -3,7 +3,6 @@ import '../../theme/driver_theme.dart';
 import 'driver_vehicle_details_screen.dart';
 import 'driver_documents_list_screen.dart';
 import 'driver_payout_settings_screen.dart';
-import '../kyc/driver_kyc_dashboard_screen.dart';
 import '../auth/driver_login_phone_screen.dart';
 
 class DriverProfileScreen extends StatelessWidget {
@@ -17,9 +16,9 @@ class DriverProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) {
-        bool acceptIntercity = true;
         bool acceptEconomy = true;
-        bool acceptComfort = true;
+        bool acceptPlus = true;
+        bool acceptParthona = false;
 
         return StatefulBuilder(
           builder: (context, setModalState) {
@@ -29,41 +28,36 @@ class DriverProfileScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('⚙️ تفضيلات استقبال الرحلات', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const Text('⚙️ تفضيلات استقبال رحلات أخيل', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white)),
                   const SizedBox(height: 4),
-                  const Text('حدد أنواع المشاوير التي تود أن تظهر لك على الرادار.', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
+                  const Text('حدد فئات المشاوير التي تود أن تظهر لك على الرادار.', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
                   const SizedBox(height: 16),
                   SwitchListTile(
-                    title: const Text('مشاوير عالطاير توفير', style: TextStyle(fontSize: 12, color: Colors.white)),
+                    title: const Text('مشاوير أخيل Economy (إيكونومي)', style: TextStyle(fontSize: 12, color: Colors.white)),
                     subtitle: const Text('مشاوير يومية سريعة بداخل المدينة', style: TextStyle(fontSize: 10, color: DriverColors.textMuted)),
                     value: acceptEconomy,
-                    activeColor: DriverColors.primary,
+                    activeThumbColor: DriverColors.primary,
                     onChanged: (val) => setModalState(() => acceptEconomy = val),
                   ),
                   SwitchListTile(
-                    title: const Text('مشاوير عالطاير راحة (Comfort)', style: TextStyle(fontSize: 12, color: Colors.white)),
-                    subtitle: const Text('أجرة أعلى لسيارات السيدان المكيفة', style: TextStyle(fontSize: 10, color: DriverColors.textMuted)),
-                    value: acceptComfort,
-                    activeColor: DriverColors.primary,
-                    onChanged: (val) => setModalState(() => acceptComfort = val),
+                    title: const Text('مشاوير أخيل Plus و Business', style: TextStyle(fontSize: 12, color: Colors.white)),
+                    subtitle: const Text('أجرة أعلى لسيارات السيدان المكيفة والفارهة', style: TextStyle(fontSize: 10, color: DriverColors.textMuted)),
+                    value: acceptPlus,
+                    activeThumbColor: DriverColors.primary,
+                    onChanged: (val) => setModalState(() => acceptPlus = val),
                   ),
                   SwitchListTile(
-                    title: const Text('مشاوير السفر بين المحافظات (Intercity)', style: TextStyle(fontSize: 12, color: Colors.white)),
-                    subtitle: const Text('رحلات الساحل والإسكندرية والسخنة', style: TextStyle(fontSize: 10, color: DriverColors.textMuted)),
-                    value: acceptIntercity,
-                    activeColor: DriverColors.primary,
-                    onChanged: (val) => setModalState(() => acceptIntercity = val),
+                    title: const Text('خدمة البرثونة (Parthona - نسائي فقط)', style: TextStyle(fontSize: 12, color: Colors.white)),
+                    subtitle: const Text('مخصصة للسائقات المعتمدات لتوصيل السيدات', style: TextStyle(fontSize: 10, color: DriverColors.textMuted)),
+                    value: acceptParthona,
+                    activeThumbColor: const Color(0xFFEC4899),
+                    onChanged: (val) => setModalState(() => acceptParthona = val),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 14),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('تم تحديث تفضيلات العمل بنجاح 🟢')),
-                        );
-                      },
+                      onPressed: () => Navigator.pop(ctx),
                       child: const Text('حفظ التفضيلات'),
                     ),
                   ),
@@ -83,18 +77,17 @@ class DriverProfileScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Captain Card Header
+          // Profile Card with Akhil Leaders Tier
           Container(
             padding: const EdgeInsets.all(18),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                colors: [Color(0xFF0F172A), Color(0xFF1E1B4B)],
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
               ),
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: DriverColors.primary.withValues(alpha: 0.4)),
-              boxShadow: const [BoxShadow(color: Colors.black38, blurRadius: 15)],
+              border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.5)),
             ),
             child: Column(
               children: [
@@ -110,13 +103,13 @@ class DriverProfileScreen extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: DriverColors.surfaceLight,
                             shape: BoxShape.circle,
-                            border: Border.all(color: DriverColors.primary, width: 2),
+                            border: Border.all(color: const Color(0xFFF59E0B), width: 2),
                           ),
                           child: const Center(child: Text('👨🏻‍✈️', style: TextStyle(fontSize: 32))),
                         ),
                         Container(
                           padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(color: DriverColors.accentAmber, shape: BoxShape.circle),
+                          decoration: const BoxDecoration(color: Color(0xFFF59E0B), shape: BoxShape.circle),
                           child: const Icon(Icons.star, size: 12, color: Colors.white),
                         ),
                       ],
@@ -129,26 +122,26 @@ class DriverProfileScreen extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              const Text('محمود السيد', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Colors.white)),
+                              const Text('محمود السيد', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
                               const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: DriverColors.primary.withValues(alpha: 0.2),
+                                  color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
-                                child: const Text('كابتن ذهبي 🥇', style: TextStyle(fontSize: 9, color: DriverColors.primary, fontWeight: FontWeight.bold)),
+                                child: const Text('قادة أخيل 🥈', style: TextStyle(fontSize: 9, color: Color(0xFFFBBF24), fontWeight: FontWeight.bold)),
                               ),
                             ],
                           ),
                           const SizedBox(height: 2),
-                          const Text('01012345678 • كود: #CPT-491', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
+                          const Text('01012345678 • كود: #AKHIL-491', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
                           const SizedBox(height: 4),
                           Row(
                             children: const [
                               Icon(Icons.star, color: DriverColors.accentAmber, size: 14),
                               SizedBox(width: 3),
-                              Text('4.94 ⭐ (1,240 رحلة)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
+                              Text('4.94 ⭐ (88/100 نقطة)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
                             ],
                           ),
                         ],
@@ -180,62 +173,46 @@ class DriverProfileScreen extends StatelessWidget {
           // Menu Tiles
           _buildMenuTile(
             context,
-            icon: Icons.directions_car,
-            color: DriverColors.primary,
-            title: 'بيانات وفحص المركبة',
-            subtitle: 'تويوتا كورولا 2022 • لوحة: أ ب ج 1234',
+            icon: Icons.drive_eta,
+            title: 'بيانات السيارة المسجلة',
+            subtitle: 'تويوتا كورولا 2022 • أ ب ج 1234',
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DriverVehicleDetailsScreen())),
           ),
-
           _buildMenuTile(
             context,
-            icon: Icons.verified_user,
-            color: DriverColors.accentGreen,
-            title: 'محفظة الوثائق والرخص الرسمية',
-            subtitle: 'عرض تواريخ انتهاء الرخص وبطاقة الرقم القومي',
+            icon: Icons.folder_shared,
+            title: 'مركز وثائق ورخص الكابتن',
+            subtitle: 'البطاقة، رخصة القيادة، الفيش، والتحليل',
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DriverDocumentsListScreen())),
           ),
-
           _buildMenuTile(
             context,
-            icon: Icons.camera_alt,
-            color: DriverColors.accentAmber,
-            title: 'مركز التوثيق الذاتي (KYC)',
-            subtitle: 'إعادة تصوير أو تحديث أي وثيقة بكاميرا الهاتف',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DriverKycDashboardScreen())),
-          ),
-
-          _buildMenuTile(
-            context,
-            icon: Icons.account_balance_wallet,
-            color: DriverColors.accentBlue,
-            title: 'إعدادات استلام الأرباح (إنستاباي / البنك)',
-            subtitle: 'mahmoud.elsayed@instapay',
+            icon: Icons.account_balance,
+            title: 'إعدادات استلام الأرباح (InstaPay)',
+            subtitle: 'حساب بنكي، إنستاباي، فودافون كاش',
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DriverPayoutSettingsScreen())),
           ),
-
           _buildMenuTile(
             context,
             icon: Icons.tune,
-            color: DriverColors.accentOrange,
-            title: 'تفضيلات العمل ونطاق المشاوير',
-            subtitle: 'تفعيل رحلات السفر وفئات السيارات',
+            title: 'تفضيلات ومناطق استقبال الرحلات',
+            subtitle: 'تخصيص الفئات والمناطق المفضلة',
             onTap: () => _showWorkPreferencesModal(context),
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 18),
 
           // Logout Button
           Container(
+            width: double.infinity,
             decoration: BoxDecoration(
               color: DriverColors.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: DriverColors.accentRed.withValues(alpha: 0.3)),
             ),
             child: ListTile(
-              leading: const Icon(Icons.logout, color: DriverColors.accentRed),
+              leading: const Icon(Icons.logout, color: DriverColors.accentRed, size: 20),
               title: const Text('تسجيل الخروج من الحساب', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: DriverColors.accentRed)),
-              trailing: const Icon(Icons.chevron_left, color: DriverColors.accentRed, size: 18),
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -250,12 +227,12 @@ class DriverProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildKpiItem(String title, String value, Color color) {
+  Widget _buildKpiItem(String label, String value, Color color) {
     return Column(
       children: [
         Text(value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: color)),
         const SizedBox(height: 2),
-        Text(title, style: const TextStyle(fontSize: 10, color: DriverColors.textMuted)),
+        Text(label, style: const TextStyle(fontSize: 10, color: DriverColors.textMuted)),
       ],
     );
   }
@@ -263,7 +240,6 @@ class DriverProfileScreen extends StatelessWidget {
   Widget _buildMenuTile(
     BuildContext context, {
     required IconData icon,
-    required Color color,
     required String title,
     required String subtitle,
     required VoidCallback onTap,
@@ -272,7 +248,7 @@ class DriverProfileScreen extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: DriverColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: DriverColors.border.withValues(alpha: 0.5)),
       ),
       child: ListTile(
@@ -280,10 +256,10 @@ class DriverProfileScreen extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.15),
+            color: DriverColors.surfaceLight,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: color, size: 20),
+          child: Icon(icon, color: DriverColors.primary, size: 20),
         ),
         title: Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
         subtitle: Text(subtitle, style: const TextStyle(fontSize: 10, color: DriverColors.textMuted)),

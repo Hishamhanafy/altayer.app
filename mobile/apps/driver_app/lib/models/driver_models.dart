@@ -1,26 +1,61 @@
-class DriverProfile {
-  final String id;
-  final String name;
-  final String phone;
-  final String avatar;
-  final String carModel;
-  final String carPlate;
-  final double rating;
-  final int totalTrips;
-  final double walletBalance;
-  final bool isVerified;
+enum AkhilDriverMode {
+  guarantee, // AKHIL GUARANTEE (أخيل ضمان مالي)
+  flex,      // AKHIL FLEX (أخيل عمولة مرنة)
+}
 
-  const DriverProfile({
-    required this.id,
-    required this.name,
-    required this.phone,
-    required this.avatar,
-    required this.carModel,
-    required this.carPlate,
-    required this.rating,
-    required this.totalTrips,
-    required this.walletBalance,
-    required this.isVerified,
+enum AkhilCaptainTier {
+  captainOrParthona, // كابتن / برثونة
+  akhilTeam,         // فريق أخيل
+  akhilLeaders,      // قادة أخيل
+  akhilElite,        // نخبة أخيل
+  royalAkhil,        // القائد الملكي ROYAL AKHIL
+}
+
+extension AkhilCaptainTierExtension on AkhilCaptainTier {
+  String get title {
+    switch (this) {
+      case AkhilCaptainTier.captainOrParthona:
+        return 'كابتن / برثونة';
+      case AkhilCaptainTier.akhilTeam:
+        return 'فريق أخيل 🥉';
+      case AkhilCaptainTier.akhilLeaders:
+        return 'قادة أخيل 🥈';
+      case AkhilCaptainTier.akhilElite:
+        return 'نخبة أخيل 🥇';
+      case AkhilCaptainTier.royalAkhil:
+        return 'القائد الملكي (ROYAL AKHIL) 👑';
+    }
+  }
+
+  int get requiredScore {
+    switch (this) {
+      case AkhilCaptainTier.captainOrParthona:
+        return 50;
+      case AkhilCaptainTier.akhilTeam:
+        return 70;
+      case AkhilCaptainTier.akhilLeaders:
+        return 85;
+      case AkhilCaptainTier.akhilElite:
+        return 95;
+      case AkhilCaptainTier.royalAkhil:
+        return 99;
+    }
+  }
+}
+
+class AkhilDriverIncentive {
+  final String code;
+  final String title;
+  final String description;
+  final String reward;
+  final String icon;
+
+  const AkhilDriverIncentive({
+    required this.code,
+    required this.title,
+    required this.description,
+    required this.reward,
+    required this.icon,
   });
 }
 
@@ -32,25 +67,29 @@ class RideOrder {
   final String pickupAddress;
   final String dropoffAddress;
   final double tripDistanceKm;
-  final int estimatedMinutes;
   final int riderOfferedFare;
   final double distanceToPickupKm;
   final int etaToPickupMinutes;
+  final int estimatedMinutes;
   final String category;
+  final String serviceCategory;
+  final bool isParthonaOnly;
 
   const RideOrder({
     required this.id,
     required this.riderName,
-    required this.riderAvatar,
+    this.riderAvatar = '👨🏻',
     required this.riderRating,
     required this.pickupAddress,
     required this.dropoffAddress,
     required this.tripDistanceKm,
-    required this.estimatedMinutes,
     required this.riderOfferedFare,
     required this.distanceToPickupKm,
     required this.etaToPickupMinutes,
-    required this.category,
+    this.estimatedMinutes = 18,
+    this.category = 'Economy',
+    this.serviceCategory = 'Economy',
+    this.isParthonaOnly = false,
   });
 }
 
@@ -69,25 +108,5 @@ class LedgerItem {
     required this.amount,
     required this.commission,
     required this.isTrip,
-  });
-}
-
-class QuestCampaign {
-  final String id;
-  final String title;
-  final String description;
-  final int currentTrips;
-  final int targetTrips;
-  final double bonusAmount;
-  final String validUntil;
-
-  const QuestCampaign({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.currentTrips,
-    required this.targetTrips,
-    required this.bonusAmount,
-    required this.validUntil,
   });
 }

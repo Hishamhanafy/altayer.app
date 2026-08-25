@@ -18,119 +18,226 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
   String _destination = 'سيتي ستارز مول، مدينة نصر';
   final int _baseFare = 75;
 
+  int _calculateRoundedFare() {
+    final double raw = _baseFare * _selectedCategory.multiplier();
+    // Round to next multiple of 5 EGP
+    return ((raw / 5).ceil() * 5).toInt();
+  }
+
+  void _showScheduledTripModal() {
+    DateTime selectedDate = DateTime.now().add(const Duration(hours: 3));
+    TimeOfDay selectedTime = TimeOfDay.fromDateTime(selectedDate);
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Text('📅', style: TextStyle(fontSize: 24)),
+                  SizedBox(width: 8),
+                  Text('حجز رحلة مجدولة مسبقاً — أخيل', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              const Text('حدد موعد رحلتك وسنقوم بتعيين أقرب كابتن معتمد مسبقاً مع إرسال تنبيهات استباقية.', style: TextStyle(fontSize: 11, color: AppColors.textMuted)),
+              const SizedBox(height: 16),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceLight,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('الموعد المختار:', style: TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+                    Text('${selectedDate.day}/${selectedDate.month} — ${selectedTime.format(context)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFFBBF24))),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('تم جدولة الرحلة بنجاح! سننبهك قبل الموعد بـ 30 دقيقة 📅🟢')),
+                    );
+                  },
+                  icon: const Icon(Icons.check_circle),
+                  label: const Text('تأكيد حجز الرحلة المجدولة'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final int estimatedFare = (_baseFare * _selectedCategory.multiplier()).round();
+    final int estimatedFare = _calculateRoundedFare();
 
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
           // Simulated Dark Vector Map
-          Column(
-            children: [
-              Expanded(
-                flex: 4,
-                child: Container(
-                  color: const Color(0xFF0B132B),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.15),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(Icons.directions_car, color: AppColors.primary, size: 36),
-                            ),
-                            const SizedBox(height: 6),
-                            const Text(
-                              'خريطة القاهرة الكبرى الحية (GPS)',
-                              style: TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      // Roaming Car Markers
-                      const Positioned(
-                        top: 40,
-                        right: 80,
-                        child: Text('🚖', style: TextStyle(fontSize: 22)),
-                      ),
-                      const Positioned(
-                        top: 100,
-                        left: 60,
-                        child: Text('🚗', style: TextStyle(fontSize: 20)),
-                      ),
-                      const Positioned(
-                        bottom: 60,
-                        right: 120,
-                        child: Text('🚘', style: TextStyle(fontSize: 24)),
-                      ),
-                      // Current Pickup Tag
-                      Positioned(
-                        top: 16,
-                        right: 16,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: AppColors.accentGreen,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
-                          ),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.my_location, size: 12, color: Colors.white),
-                              SizedBox(width: 4),
-                              Text('ميدان التحرير، وسط البلد', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+          Positioned.fill(
+            child: Container(
+              color: const Color(0xFF0F172A),
+              child: Stack(
+                children: [
+                  // Vector Grid Lines
+                  CustomPaint(
+                    size: Size.infinite,
+                    painter: MapGridPainter(),
                   ),
-                ),
+                  // Roaming Car Markers
+                  const Positioned(top: 180, left: 90, child: Text('🚗', style: TextStyle(fontSize: 22))),
+                  const Positioned(top: 240, right: 110, child: Text('🚘', style: TextStyle(fontSize: 22))),
+                  const Positioned(top: 130, right: 70, child: Text('🌸', style: TextStyle(fontSize: 22))),
+                  const Positioned(top: 310, left: 160, child: Text('🚗', style: TextStyle(fontSize: 22))),
+                  // User Location Pin
+                  Positioned(
+                    top: 220,
+                    left: MediaQuery.of(context).size.width / 2 - 20,
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1E1B4B),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: const Color(0xFFF59E0B), width: 1.5),
+                          ),
+                          child: const Text('موقعك الحالي', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                        ),
+                        const Icon(Icons.location_on, color: Color(0xFFF59E0B), size: 36),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const Expanded(flex: 5, child: SizedBox()),
-            ],
+            ),
           ),
 
-          // Bottom Interactive Ride Control Sheet
+          // Top Mode Switcher & Slogan
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: AppColors.surface.withValues(alpha: 0.95),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => setState(() => _mode = 'BIDDING'),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: _mode == 'BIDDING' ? AppColors.primary : Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'المزايدة بسعرك ⚡',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: _mode == 'BIDDING' ? Colors.white : AppColors.textMuted,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => setState(() => _mode = 'INSTANT'),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                color: _mode == 'INSTANT' ? AppColors.accentGreen : Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'حجز فوري مباشر 🚀',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.bold,
+                                    color: _mode == 'INSTANT' ? Colors.white : AppColors.textMuted,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  onPressed: _showScheduledTripModal,
+                  icon: const Icon(Icons.calendar_month, color: Color(0xFFFBBF24)),
+                  tooltip: 'رحلة مجدولة',
+                  style: IconButton.styleFrom(backgroundColor: AppColors.surface),
+                ),
+              ],
+            ),
+          ),
+
+          // Bottom Ride Ordering Sheet
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
               decoration: const BoxDecoration(
                 color: AppColors.surface,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 boxShadow: [
-                  BoxShadow(color: Colors.black45, blurRadius: 20, offset: Offset(0, -5)),
+                  BoxShadow(color: Colors.black54, blurRadius: 20, offset: Offset(0, -4)),
                 ],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Destination Search Bar trigger
-                  InkWell(
+                  // Destination Search Bar
+                  GestureDetector(
                     onTap: () async {
                       final result = await Navigator.push<String>(
                         context,
                         MaterialPageRoute(builder: (_) => const SearchDestinationScreen()),
                       );
-                      if (result != null && result.isNotEmpty) {
-                        setState(() => _destination = result);
-                      }
+                      if (result != null) setState(() => _destination = result);
                     },
-                    borderRadius: BorderRadius.circular(14),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLight,
                         borderRadius: BorderRadius.circular(14),
@@ -138,23 +245,17 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.search, color: AppColors.primary, size: 20),
+                          const Icon(Icons.search, color: Color(0xFFFBBF24), size: 20),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('الوجهة المحددة:', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
-                                Text(
-                                  _destination,
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
+                            child: Text(
+                              _destination,
+                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const Icon(Icons.edit, color: AppColors.textMuted, size: 16),
+                          const Icon(Icons.edit, color: AppColors.textMuted, size: 14),
                         ],
                       ),
                     ),
@@ -162,100 +263,83 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
 
                   const SizedBox(height: 12),
 
-                  // Mode Selector (Instant vs Bidding)
+                  // AKHIL 10 Services Carousel
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => _mode = 'BIDDING'),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                              color: _mode == 'BIDDING' ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surfaceLight,
-                              border: Border.all(
-                                color: _mode == 'BIDDING' ? AppColors.primary : Colors.transparent,
-                                width: 1.5,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Column(
-                              children: [
-                                Text('🤝 مزايدة وتفاوض', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.primary)),
-                                Text('حدد سعرك واقبل الأنسب', style: TextStyle(fontSize: 9, color: AppColors.textMuted)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => setState(() => _mode = 'INSTANT'),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                              color: _mode == 'INSTANT' ? AppColors.accentBlue.withValues(alpha: 0.15) : AppColors.surfaceLight,
-                              border: Border.all(
-                                color: _mode == 'INSTANT' ? AppColors.accentBlue : Colors.transparent,
-                                width: 1.5,
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Column(
-                              children: [
-                                Text('⚡ حجز فوري', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.accentBlue)),
-                                Text('سعر ثابت وأسرع كابتن', style: TextStyle(fontSize: 9, color: AppColors.textMuted)),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                      const Text('خدمات أخيل (اختر الفئة المناسبة):', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textSecondary)),
+                      Text('سعر مقرب لأعلى 5 ج', style: TextStyle(fontSize: 9, color: AppColors.textMuted)),
                     ],
                   ),
+                  const SizedBox(height: 8),
 
-                  const SizedBox(height: 12),
-
-                  // Vehicle Category Carousel
                   SizedBox(
-                    height: 90,
-                    child: ListView(
+                    height: 85,
+                    child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      children: VehicleCategory.values.map((cat) {
+                      itemCount: VehicleCategory.values.length,
+                      itemBuilder: (ctx, index) {
+                        final cat = VehicleCategory.values[index];
                         final isSelected = (_selectedCategory == cat);
-                        final fare = (_baseFare * cat.multiplier()).round();
 
                         return GestureDetector(
                           onTap: () => setState(() => _selectedCategory = cat),
                           child: Container(
-                            width: 100,
+                            width: 110,
                             margin: const EdgeInsets.only(left: 8),
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : AppColors.surfaceLight,
+                              color: isSelected ? const Color(0xFF1E1B4B) : AppColors.surfaceLight,
+                              borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: isSelected ? AppColors.primary : AppColors.border,
+                                color: isSelected ? const Color(0xFFF59E0B) : AppColors.border,
                                 width: isSelected ? 1.5 : 1,
                               ),
-                              borderRadius: BorderRadius.circular(14),
                             ),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(cat.icon, style: const TextStyle(fontSize: 20)),
                                 const SizedBox(height: 2),
-                                Text(cat.title, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textPrimary), maxLines: 1),
-                                Text('$fare ج.م', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: AppColors.primaryLight)),
+                                Text(
+                                  cat.title,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                    color: isSelected ? const Color(0xFFFBBF24) : Colors.white,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ],
                             ),
                           ),
                         );
-                      }).toList(),
+                      },
                     ),
                   ),
 
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 10),
 
-                  // Action Button (Launch Bidding or Instant)
+                  // Waiting Policy Note
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceLight,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Row(
+                      children: [
+                        Icon(Icons.timer_outlined, size: 14, color: AppColors.accentGreen),
+                        SizedBox(width: 6),
+                        Text('سياسة الانتظار: أول دقيقتين مجاناً ثم 3 ج/دقيقة', style: TextStyle(fontSize: 10, color: AppColors.textMuted)),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // Order CTA Button
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -273,34 +357,37 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
                             ),
                           );
                         } else {
-                          // Instant Ride matching
+                          // Instant mode
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => InTripTrackingScreen(
-                                bid: DriverBid(
-                                  id: 'INSTANT-88',
-                                  driverName: 'كابتن محمود السيد (فوري)',
-                                  avatar: '👨🏻‍✈️',
-                                  carModel: 'تويوتا كورولا 2023',
-                                  carColor: 'فضي',
-                                  plateNumber: 'أ ب ج 1234',
-                                  rating: 4.95,
-                                  totalTrips: 1540,
-                                  fare: estimatedFare,
-                                  etaMinutes: _selectedCategory.etaMinutes,
-                                  distanceKm: 1.4,
-                                ),
                                 destination: _destination,
+                                bid: DriverBid(
+                                  id: 'D-1',
+                                  driverName: 'محمود السيد (كابتن أخيل)',
+                                  avatar: '👨🏻‍✈️',
+                                  rating: 4.94,
+                                  totalTrips: 1240,
+                                  carModel: 'تويوتا كورولا 2022',
+                                  carColor: 'أبيض لؤلؤي',
+                                  plateNumber: 'أ ب ج 1234',
+                                  fare: estimatedFare,
+                                  distanceKm: 1.2,
+                                  etaMinutes: 4,
+                                ),
                               ),
                             ),
                           );
                         }
                       },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _mode == 'BIDDING' ? AppColors.primary : AppColors.accentGreen,
+                      ),
                       child: Text(
                         _mode == 'BIDDING'
-                            ? '🚀 بدء رادار المزايدة ($estimatedFare ج.م)'
-                            : '⚡ طلب فوري الآن ($estimatedFare ج.م • وصل في ${_selectedCategory.etaMinutes} د)',
+                            ? 'استدعِ أخيل الآن بسعر ($estimatedFare ج.م) ⚡'
+                            : 'حجز فوري مباشر ($estimatedFare ج.م) 🚀',
                         style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900),
                       ),
                     ),
@@ -313,4 +400,23 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
       ),
     );
   }
+}
+
+class MapGridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = const Color(0xFF1E293B).withValues(alpha: 0.6)
+      ..strokeWidth = 1.0;
+
+    for (double i = 0; i < size.width; i += 40) {
+      canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
+    }
+    for (double i = 0; i < size.height; i += 40) {
+      canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

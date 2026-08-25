@@ -1,39 +1,39 @@
 enum VehicleCategory {
   economy,
-  comfort,
-  vip,
-  scooter,
-  toktok,
+  plus,
+  business,
+  parthona,
+  time,
+  extra,
+  carry,
+  box,
+  trip,
+  partnerOfEvents,
 }
 
 extension VehicleCategoryExtension on VehicleCategory {
   String get title {
     switch (this) {
       case VehicleCategory.economy:
-        return 'عالطاير توفير';
-      case VehicleCategory.comfort:
-        return 'عالطاير راحة';
-      case VehicleCategory.vip:
-        return 'عالطاير VIP';
-      case VehicleCategory.scooter:
-        return 'سكوتر طلقة';
-      case VehicleCategory.toktok:
-        return 'توك توك شعبي';
-    }
-  }
-
-  String get subtitle {
-    switch (this) {
-      case VehicleCategory.economy:
-        return 'سيدان اقتصادية موفرة';
-      case VehicleCategory.comfort:
-        return 'سيارة حديثة ومكيفة';
-      case VehicleCategory.vip:
-        return 'سيارة فارهة فاخرة';
-      case VehicleCategory.scooter:
-        return 'لتفادي الزحام بسرعة';
-      case VehicleCategory.toktok:
-        return 'للمشاوير والحواري الضيقة';
+        return 'Economy (إيكونومي)';
+      case VehicleCategory.plus:
+        return 'Plus (بلس حديث)';
+      case VehicleCategory.business:
+        return 'Business (بزنس فاخر)';
+      case VehicleCategory.parthona:
+        return 'Parthona (برثونة - نسائي)';
+      case VehicleCategory.time:
+        return 'Time (مشاوير بالساعة)';
+      case VehicleCategory.extra:
+        return 'Extra (مساحة أكبر)';
+      case VehicleCategory.carry:
+        return 'Carry (نقل بضائع)';
+      case VehicleCategory.box:
+        return 'Box (توصيل طرود)';
+      case VehicleCategory.trip:
+        return 'Trip (سفر ومحافظات)';
+      case VehicleCategory.partnerOfEvents:
+        return 'Partner of Events (فعاليات)';
     }
   }
 
@@ -41,29 +41,49 @@ extension VehicleCategoryExtension on VehicleCategory {
     switch (this) {
       case VehicleCategory.economy:
         return '🚗';
-      case VehicleCategory.comfort:
+      case VehicleCategory.plus:
         return '🚘';
-      case VehicleCategory.vip:
-        return '🏎️';
-      case VehicleCategory.scooter:
-        return '🛵';
-      case VehicleCategory.toktok:
-        return '🛺';
+      case VehicleCategory.business:
+        return '💼';
+      case VehicleCategory.parthona:
+        return '🌸';
+      case VehicleCategory.time:
+        return '⏱️';
+      case VehicleCategory.extra:
+        return '➕';
+      case VehicleCategory.carry:
+        return '📦';
+      case VehicleCategory.box:
+        return '📫';
+      case VehicleCategory.trip:
+        return '🛣️';
+      case VehicleCategory.partnerOfEvents:
+        return '🎪';
     }
   }
 
-  int get etaMinutes {
+  String get description {
     switch (this) {
       case VehicleCategory.economy:
-        return 3;
-      case VehicleCategory.comfort:
-        return 5;
-      case VehicleCategory.vip:
-        return 8;
-      case VehicleCategory.scooter:
-        return 2;
-      case VehicleCategory.toktok:
-        return 3;
+        return 'مشوار يومي اقتصادي بأفضل سعر عادل';
+      case VehicleCategory.plus:
+        return 'سيارات حديثة ومريحة مكيفة';
+      case VehicleCategory.business:
+        return 'سيارات سيدان فارهة لرجال الأعمال';
+      case VehicleCategory.parthona:
+        return 'خدمة مخصصة للسيدات بسائقات معتمدات فقط';
+      case VehicleCategory.time:
+        return 'تأجير سيارة بالساعة مع كابتن خاص';
+      case VehicleCategory.extra:
+        return 'سيارات 7 ركاب ومساحة حقائب واسعة';
+      case VehicleCategory.carry:
+        return 'نقل الأغراض والأثاث الخفيف والمقتنيات';
+      case VehicleCategory.box:
+        return 'توصيل مستندات وشحنات سريعة فوري';
+      case VehicleCategory.trip:
+        return 'سفر مريح بين المحافظات والساحل';
+      case VehicleCategory.partnerOfEvents:
+        return 'تنظيم وتوصيل فعاليات وحفلات ومؤتمرات';
     }
   }
 
@@ -71,14 +91,24 @@ extension VehicleCategoryExtension on VehicleCategory {
     switch (this) {
       case VehicleCategory.economy:
         return 1.0;
-      case VehicleCategory.comfort:
+      case VehicleCategory.plus:
         return 1.25;
-      case VehicleCategory.vip:
-        return 1.80;
-      case VehicleCategory.scooter:
-        return 0.65;
-      case VehicleCategory.toktok:
-        return 0.50;
+      case VehicleCategory.business:
+        return 1.6;
+      case VehicleCategory.parthona:
+        return 1.15;
+      case VehicleCategory.time:
+        return 2.0;
+      case VehicleCategory.extra:
+        return 1.4;
+      case VehicleCategory.carry:
+        return 1.3;
+      case VehicleCategory.box:
+        return 0.85;
+      case VehicleCategory.trip:
+        return 2.5;
+      case VehicleCategory.partnerOfEvents:
+        return 3.0;
     }
   }
 }
@@ -87,27 +117,29 @@ class DriverBid {
   final String id;
   final String driverName;
   final String avatar;
+  final double rating;
+  final int totalTrips;
   final String carModel;
   final String carColor;
   final String plateNumber;
-  final double rating;
-  final int totalTrips;
   final int fare;
-  final int etaMinutes;
   final double distanceKm;
+  final int etaMinutes;
+  final bool isParthona;
 
   const DriverBid({
     required this.id,
     required this.driverName,
     required this.avatar,
+    required this.rating,
+    required this.totalTrips,
     required this.carModel,
     required this.carColor,
     required this.plateNumber,
-    required this.rating,
-    required this.totalTrips,
     required this.fare,
-    required this.etaMinutes,
     required this.distanceKm,
+    required this.etaMinutes,
+    this.isParthona = false,
   });
 }
 
@@ -122,7 +154,7 @@ class SavedPlace {
     required this.title,
     required this.address,
     required this.icon,
-    required this.lat,
-    required this.lng,
+    this.lat = 30.0444,
+    this.lng = 31.2357,
   });
 }
