@@ -7,6 +7,7 @@ class DriverColors {
   static const Color surfaceLight = Color(0xFF1E293B);
   static const Color primary = Color(0xFF10B981); // Emerald Green
   static const Color primaryDark = Color(0xFF059669);
+  static const Color accentGreen = Color(0xFF10B981);
   static const Color accentOrange = Color(0xFFEA580C);
   static const Color accentAmber = Color(0xFFF59E0B);
   static const Color accentRed = Color(0xFFEF4444);

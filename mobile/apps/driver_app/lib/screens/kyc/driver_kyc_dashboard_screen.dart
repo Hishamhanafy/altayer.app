@@ -47,6 +47,7 @@ class _DriverKycDashboardScreenState extends State<DriverKycDashboardScreen> {
     );
 
     if (result != null) {
+      if (!mounted) return;
       setState(() {
         item.status = KycStatus.pendingReview;
         item.imagePath = result['imagePath'];
