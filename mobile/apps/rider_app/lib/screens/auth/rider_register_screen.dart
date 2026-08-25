@@ -37,7 +37,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('🎉 مرحباً بك في عالطاير! تم إضافة 50 نقطة ولاء مجانية إلى رصيدك 🎁'),
+        content: Text('🎉 مرحباً بك في عالطاير! تم إضافة 500 نقطة ولاء مجانية إلى رصيدك 🎁'),
         duration: Duration(seconds: 4),
       ),
     );
@@ -81,7 +81,7 @@ class _RiderRegisterScreenState extends State<RiderRegisterScreen> {
                         children: [
                           Text('هدية انضمامك لعائلتنا!', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: Colors.white)),
                           SizedBox(height: 2),
-                          Text('كوبون خصم 50% على مشاويرك الأولى + 50 نقطة ولاء تضاف لمحفظتك فوراً.', style: TextStyle(fontSize: 11, color: Colors.white70)),
+                          Text('كوبون خصم 50% على مشاويرك الأولى + 500 نقطة ولاء تضاف لمحفظتك فوراً.', style: TextStyle(fontSize: 11, color: Colors.white70)),
                         ],
                       ),
                     ),

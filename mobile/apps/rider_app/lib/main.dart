@@ -91,7 +91,7 @@ class _RiderMainHubScreenState extends State<RiderMainHubScreen> {
               children: [
                 Icon(Icons.star, color: AppColors.accentAmber, size: 14),
                 SizedBox(width: 4),
-                Text('140 نقطة ⭐', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.accentAmber)),
+                Text('1,400 نقطة ⭐', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.accentAmber)),
               ],
             ),
           ),

@@ -37,11 +37,11 @@ extension LoyaltyTierExtension on LoyaltyTier {
       case LoyaltyTier.bronze:
         return 0;
       case LoyaltyTier.silver:
-        return 100;
+        return 1000;
       case LoyaltyTier.gold:
-        return 300;
+        return 3000;
       case LoyaltyTier.platinum:
-        return 600;
+        return 6000;
     }
   }
 }
