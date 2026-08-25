@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>دليل وآليات تحصيل عمولات المشاوير الكاش وسحب الأرباح: أوبر vs إندرايفر vs عالطاير</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+    @page {
+      size: A4;
+      margin: 15mm 14mm 15mm 14mm;
+    }
+
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      direction: rtl;
+      text-align: right;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.55;
+      font-size: 12.5px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header-box {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 20px 24px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border-left: 6px solid #ea580c;
+    }
+
+    .header-box h1 {
+      margin: 0 0 6px 0;
+      font-size: 22px;
+      font-weight: 900;
+      color: #f97316;
+    }
+
+    .header-box h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: bold;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 900;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 5px;
+      margin-top: 18px;
+      margin-bottom: 10px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 12px 0;
+    }
+
+    .card {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .card.prepaid { border-top: 4px solid #10b981; }
+    .card.postpaid { border-top: 4px solid #3b82f6; }
+    .card.hybrid { border-top: 4px solid #ea580c; background: #fff7ed; }
+
+    .card h4 {
+      margin: 0 0 6px 0;
+      font-size: 13.5px;
+      font-weight: 900;
+    }
+
+    .card p {
+      margin: 0 0 6px 0;
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .card ul {
+      margin: 0;
+      padding-right: 16px;
+      font-size: 11px;
+      color: #334155;
+    }
+
+    .card ul li {
+      margin-bottom: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 16px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 11.5px;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: right;
+      border: 1px solid #cbd5e1;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .highlight-col {
+      background-color: #fff7ed !important;
+      font-weight: 600;
+      border-right: 2px solid #ea580c;
+    }
+
+    .step-box {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin: 10px 0;
+      border-right: 4px solid #3b82f6;
+    }
+
+    .step-box h5 {
+      margin: 0 0 4px 0;
+      font-size: 12.5px;
+      font-weight: 900;
+      color: #1e293b;
+    }
+
+    .step-box p {
+      margin: 0;
+      font-size: 11.5px;
+      color: #475569;
+    }
+
+    .summary-box {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 12px;
+      margin-top: 16px;
+    }
+
+    .summary-box h4 {
+      margin: 0 0 4px 0;
+      font-size: 13.5px;
+      font-weight: 900;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Banner -->
+  <div class="header-box">
+    <h1>💰 آليات تحصيل عمولات الكاش وسحب أرباح الكباتن 🚗</h1>
+    <h2>دراسة مالية وتشغيلية مقارنة: أوبر (Uber) vs إندرايفر (inDrive) vs منصة عالطاير (3altayer)</h2>
+    <div class="badge-bar">
+      <span class="badge">القطاع: النقل الذكي المصري 🇪🇬</span>
+      <span class="badge">نسبة الكاش في السوق: ~75% - 80%</span>
+      <span class="badge">إصدار: أغسطس 2026</span>
+    </div>
+  </div>
+
+  <!-- Section 1: How Company Collects Cash Commissions -->
+  <h3>1. كيف تضمن الشركات تحصيل عمولتها من المشاوير الكاش؟</h3>
+  <div class="card-grid">
+    <!-- inDrive -->
+    <div class="card prepaid">
+      <h4>⚡ نموذج إندرايفر (inDrive)</h4>
+      <p><strong>نظام الشحن المسبق (Prepaid Wallet)</strong></p>
+      <ul>
+        <li>السائق يشحن محفظته مسبقاً بـ 100 جنيه (عبر فوري/كروت).</li>
+        <li>عند عمل مشوار بـ 100 ج: يأخذ الـ 100 ج كاش في جيبه.</li>
+        <li>السيستم يخصم العمولة (10 ج) فوراً من المحفظة المشحونة.</li>
+        <li>إذا أصبح الرصيد 0 ج، يغلق التطبيق استقبال المشاوير حتى يشحن مجدداً.</li>
+      </ul>
+    </div>
+
+    <!-- Uber -->
+    <div class="card postpaid">
+      <h4>🏢 نموذج أوبر (Uber)</h4>
+      <p><strong>المديونية اللاحقة والمقاصة (Postpaid & Offset)</strong></p>
+      <ul>
+        <li>السائق يأخذ الكاش كاملاً في جيبه.</li>
+        <li>تتسجل عمولة أوبر (25%) كمديونية سالبة (-25 ج.م).</li>
+        <li>تسمح بحد مديونية (حتى -250 ج).</li>
+        <li>عند عمل مشوار فيزا: تخصم أوبر عمولاتها القديمة من مدفوعات الفيزا (المقاصة التلقائية) أو يطلب سدادها عبر فوري.</li>
+      </ul>
+    </div>
+
+    <!-- 3altayer -->
+    <div class="card hybrid">
+      <h4>🚀 نموذج عالطاير (3altayer)</h4>
+      <p><strong>حد المديونية المرن وسداد إنستاباي</strong></p>
+      <ul>
+        <li>السائق يستلم الكاش مباشرة دون انقطاع.</li>
+        <li>حد مديونية مسموح (-150 ج.م) لبدء العمل بدون شحن مسبق.</li>
+        <li>سداد فوري بنقرة واحدة عبر <strong>InstaPay وفودافون كاش</strong>.</li>
+        <li>عمولة عادلة ومخفضة 10% فقط تشجع السائق على الالتزام الفوري.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 2: Driver Payout (Withdrawing Card Earnings) -->
+  <h3>2. كيف يسحب السائق أرباحه من مشاوير الفيزا والدفع الإلكتروني؟</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">وجه المقارنة</th>
+        <th style="width: 25%;">أوبر (Uber)</th>
+        <th style="width: 25%;">إندرايفر (inDrive)</th>
+        <th style="width: 25%; background-color: #ea580c;">منصة عالطاير (3altayer)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>دورة التحويل البنكي العادية</strong></td>
+        <td>مرة واحدة أسبوعياً (كل إثنين/ثلاثاء)</td>
+        <td>غير متوفر تحويل بنكي أسبوعي منتظم</td>
+        <td class="highlight-col">تحويل يومي تلقائي أو سحب فوري</td>
+      </tr>
+      <tr>
+        <td><strong>السحب اللحظي الفوري (Instant)</strong></td>
+        <td>محدود مع فرض رسوم إضافية (5 - 10 ج)</td>
+        <td>غير متاح؛ المبلغ يظل رصيداً لخصم العمولات</td>
+        <td class="highlight-col"><strong>متاح لحظياً 24/7 عبر InstaPay ومحافظ كاش</strong></td>
+      </tr>
+      <tr>
+        <td><strong>رسوم السحب والتحويل</strong></td>
+        <td>تخصم رسوم إضافية على السحب الفوري</td>
+        <td>لا يوجد سحب كاش بنكي مباشر</td>
+        <td class="highlight-col"><strong>بدون رسوم سحب إضافية للكابتن</strong></td>
+      </tr>
+      <tr>
+        <td><strong>الحد الأدنى للسحب</strong></td>
+        <td>بحسب السياسة الأسبوعية</td>
+        <td>غير قابل للتطبيق</td>
+        <td class="highlight-col">سحب يبدأ من 20 ج.م في أي وقت</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Section 3: Financial Simulation Table -->
+  <h3>3. محاكاة مالية رقمية: 10 مشاوير كاش بقيمة 1,000 جنيه</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>البيان المالي</th>
+        <th>أوبر (Uber)</th>
+        <th>إندرايفر (inDrive)</th>
+        <th style="background-color: #ea580c;">عالطاير (3altayer)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>إجمالي ما استلمه الكابتن كاش في يده</td>
+        <td>1,000 ج.م</td>
+        <td>1,000 ج.م</td>
+        <td class="highlight-col">1,000 ج.م</td>
+      </tr>
+      <tr>
+        <td>عمولة المنصة الإجمالية المستحقة</td>
+        <td><strong>250 ج.م (25%)</strong></td>
+        <td>100 ج.م (10%)</td>
+        <td class="highlight-col"><strong>100 ج.م فقط (10%)</strong></td>
+      </tr>
+      <tr>
+        <td>صافي دخل الكابتن الفعلي</td>
+        <td><strong>750 ج.م</strong></td>
+        <td>900 ج.م</td>
+        <td class="highlight-col"><strong>900 ج.م + بونص الذروة (+60ج)</strong></td>
+      </tr>
+      <tr>
+        <td>طريقة تحصيل المنصة للعمولة</td>
+        <td>تراكم مديونية (-250 ج) وإيقاف الحساب حتى فوري</td>
+        <td>خصم إجباري مسبق من المحفظة المشحونة بـ 100 ج</td>
+        <td class="highlight-col">خصم من حد المديونية المسموح ثم سداد بإنستاباي</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Summary Box -->
+  <div class="summary-box">
+    <h4>🎯 لماذا يعتبر نموذج "عالطاير" الأفضل والأكثر أماناً؟</h4>
+    <p style="margin: 0; font-size: 11px;">
+      1. <strong>حماية حق المنصة بدون تعقيد:</strong> التطبيق يتحكم في تدفق الطلبات؛ فلن يستطيع أي سائق استقبال رحلات جديدة إذا تجاوز حد المديونية دون السداد.<br>
+      2. <strong>القضاء على أزمة السيولة للكباتن:</strong> السحب اللحظي عبر <strong>InstaPay</strong> يمنح الكابتن أموال مشاوير الفيزا في حسابه البنكي في نفس اللحظة بدون انتظار لأيام!
+    </p>
+  </div>
+
+  <div class="footer-note">
+    وثيقة المواصفات المالية والتحصيل لمنظومة عالطاير للنقل الذكي • حقوق النشر محفوظة 2026 ©
+  </div>
+
+</body>
+</html>

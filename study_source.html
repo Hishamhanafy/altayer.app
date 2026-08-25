@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>دراسة مقارنة: أوبر vs إندرايفر vs عالطاير</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+    @page {
+      size: A4;
+      margin: 18mm 15mm 18mm 15mm;
+    }
+
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      direction: rtl;
+      text-align: right;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.6;
+      font-size: 13px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header-box {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      border-left: 6px solid #ea580c;
+    }
+
+    .header-box h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 900;
+      color: #f97316;
+    }
+
+    .header-box h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .badge-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .badge {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: bold;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 900;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      margin: 0 0 10px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 20px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: right;
+      border: 1px solid #cbd5e1;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .highlight-col {
+      background-color: #fff7ed !important;
+      font-weight: 600;
+      border-right: 2px solid #ea580c;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .card.uber { border-top: 4px solid #000000; }
+    .card.indrive { border-top: 4px solid #22c55e; }
+    .card.altayer { border-top: 4px solid #ea580c; background: #fff7ed; }
+
+    .card h4 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .card ul {
+      margin: 0;
+      padding-right: 18px;
+      font-size: 11.5px;
+      color: #334155;
+    }
+
+    .card ul li {
+      margin-bottom: 4px;
+    }
+
+    .breakdown-box {
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 14px;
+      margin: 16px 0;
+      border: 1px solid #cbd5e1;
+    }
+
+    .bar-container {
+      margin-bottom: 12px;
+    }
+
+    .bar-label {
+      font-size: 11.5px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .progress-bar {
+      height: 18px;
+      border-radius: 6px;
+      display: flex;
+      overflow: hidden;
+      font-size: 10px;
+      font-weight: bold;
+      color: white;
+      text-align: center;
+      line-height: 18px;
+    }
+
+    .driver-part { background-color: #10b981; }
+    .comm-part { background-color: #ef4444; }
+    .bonus-part { background-color: #f59e0b; }
+
+    .summary-box {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
+
+    .summary-box h4 {
+      margin: 0 0 6px 0;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: #94a3b8;
+      margin-top: 30px;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Banner -->
+  <div class="header-box">
+    <h1>🚗 دراسة مقارنة وتحليلية: أوبر vs إندرايفر vs عالطاير ⚡</h1>
+    <h2>تحليل شامل لنماذج الدفع، منظومة النقاط والولاء، التحصيل والعمولات، وأرباح المشاوير في مصر 🇪🇬</h2>
+    <div class="badge-bar">
+      <span class="badge">إصدار: أغسطس 2026</span>
+      <span class="badge">نطاق الدراسة: سوق النقل الذكي المصري</span>
+      <span class="badge">إعداد: فريق هندسة منصة عالطاير</span>
+    </div>
+  </div>
+
+  <!-- Section 1: Core Comparison Cards -->
+  <h3>1. مقارنة الفلسفة التشغيلية والنموذج العام</h3>
+  <div class="card-grid">
+    <div class="card uber">
+      <h4>🏢 أوبر (Uber)</h4>
+      <ul>
+        <li><strong>النموذج:</strong> تسعير خوارزمي إجباري ثابت.</li>
+        <li><strong>العمولة:</strong> 22% - 25% + ضرائب.</li>
+        <li><strong>التحصيل:</strong> مديونية لاحقة (Postpaid).</li>
+        <li><strong>الولاء:</strong> برنامج معقد ومكلف تم تقليصه.</li>
+      </ul>
+    </div>
+
+    <div class="card indrive">
+      <h4>⚡ إندرايفر (inDrive)</h4>
+      <ul>
+        <li><strong>النموذج:</strong> مزايدة وتفاوض حر بين الراكب والكابتن.</li>
+        <li><strong>العمولة:</strong> 10% - 12% فقط.</li>
+        <li><strong>التحصيل:</strong> شحن مسبق للمحفظة (Prepaid).</li>
+        <li><strong>الولاء:</strong> لا يوجد أي نظام نقاط للركاب.</li>
+      </ul>
+    </div>
+
+    <div class="card altayer">
+      <h4>🚀 عالطاير (3altayer)</h4>
+      <ul>
+        <li><strong>النموذج:</strong> هجين (مزايدة حرة + حجز فوري مباشر).</li>
+        <li><strong>العمولة:</strong> 10% عادلة وتنافسية.</li>
+        <li><strong>التحصيل:</strong> حد مديونية مرن (-150 ج) + إنستاباي.</li>
+        <li><strong>الولاء:</strong> نظام نقاط متوازن (1,000 / 2,000 / 3,000).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 2: Payment Table -->
+  <h3>2. مقارنة منظومة وسائل الدفع والشحن (Payment Methods)</h3>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 25%;">وجه المقارنة</th>
+        <th style="width: 25%;">أوبر (Uber)</th>
+        <th style="width: 25%;">إندرايفر (inDrive)</th>
+        <th style="width: 25%; background-color: #ea580c;">منصة عالطاير (3altayer)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>الدفع نقداً (كاش)</strong></td>
+        <td>متاح (~70% من الرحلات)</td>
+        <td>أساسي ومفضل (~90% من الرحلات)</td>
+        <td class="highlight-col">مدعوم بالكامل مع تسجيل مباشر</td>
+      </tr>
+      <tr>
+        <td><strong>البطاقات البنكية</strong></td>
+        <td>فيزا وماستركارد الدولية</td>
+        <td>كروت بنكية محدودة</td>
+        <td class="highlight-col">فيزا، ماستركارد، وكروت ميزة الوطنية 🇪🇬</td>
+      </tr>
+      <tr>
+        <td><strong>المحافظ الإلكترونية</strong></td>
+        <td>غير مدعومة للدفع المباشر</td>
+        <td>غير مدعومة للراكب</td>
+        <td class="highlight-col">فودافون كاش، أورنج، اتصالات، وي باي</td>
+      </tr>
+      <tr>
+        <td><strong>التحويل اللحظي (InstaPay)</strong></td>
+        <td>غير متاح</td>
+        <td>غير متاح</td>
+        <td class="highlight-col">مدمج بالكامل للشحن والسداد الفوري</td>
+      </tr>
+      <tr>
+        <td><strong>شحن رصيد الكابتن</strong></td>
+        <td>فوري عند الوصول لحد المديونية</td>
+        <td>شحن إجباري مسبق قبل العمل</td>
+        <td class="highlight-col">إنستاباي + فودافون كاش + مديونية مسموحة</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Section 3: Points & Rewards -->
+  <h3>3. منظومة النقاط والولاء والمكافآت (Points & Loyalty Programs)</h3>
+  <div class="card-grid">
+    <div class="card uber">
+      <h4>أوبر</h4>
+      <ul>
+        <li><strong>الراكب:</strong> نقاط معقدة على المشتريات تم تقليصها لارتفاع تكاليفها.</li>
+        <li><strong>الكابتن (Uber Pro):</strong> مستويات (ذهبي، بلاتيني) لمعرفة الوجهات وخصومات الصيانة.</li>
+      </ul>
+    </div>
+    <div class="card indrive">
+      <h4>إندرايفر</h4>
+      <ul>
+        <li><strong>الراكب:</strong> صفر نقاط؛ لا توجد أي مكافآت أو برامج ولاء على الإطلاق.</li>
+        <li><strong>الكابتن:</strong> تقييم نجوم فقط دون حوافز مالية مباشرة أو بونص.</li>
+      </ul>
+    </div>
+    <div class="card altayer">
+      <h4>عالطاير</h4>
+      <ul>
+        <li><strong>الراكب:</strong> كسب (+30 لكل مشوار، +10 للتقييم، +100 ترحيب، +200 للصديق)، واستبدال (1,000 نقطة = 25ج، 2,000 = 60ج، 3,000 = مجاني).</li>
+        <li><strong>الكابتن:</strong> بونص ساعات الذروة المسائية (+60 ج.م معفي من العمولة).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Section 4: Commission & Revenue Breakdown -->
+  <h3>4. مقارنة توزيع الإيرادات والعمولة في مشوار قيمته 100 جنيه</h3>
+  <div class="breakdown-box">
+    <div class="bar-container">
+      <div class="bar-label">
+        <span>🏢 أوبر (Uber)</span>
+        <span>صافي الكابتن: 75 ج.م | عمولة أوبر: 25 ج.م (25%)</span>
+      </div>
+      <div class="progress-bar">
+        <div class="driver-part" style="width: 75%;">الكابتن (75 ج)</div>
+        <div class="comm-part" style="width: 25%;">عمولة أوبر (25 ج)</div>
+      </div>
+    </div>
+
+    <div class="bar-container">
+      <div class="bar-label">
+        <span>⚡ إندرايفر (inDrive)</span>
+        <span>صافي الكابتن: 90 ج.م | عمولة إندرايفر: 10 ج.م (10%)</span>
+      </div>
+      <div class="progress-bar">
+        <div class="driver-part" style="width: 90%;">الكابتن (90 ج)</div>
+        <div class="comm-part" style="width: 10%;">عمولة (10 ج)</div>
+      </div>
+    </div>
+
+    <div class="bar-container">
+      <div class="bar-label">
+        <span>🚀 عالطاير (3altayer)</span>
+        <span>صافي الكابتن: 90 ج.م + بونص الذروة | عمولة عالطاير: 10 ج.م فقط (10%)</span>
+      </div>
+      <div class="progress-bar">
+        <div class="driver-part" style="width: 90%;">الكابتن (90 ج)</div>
+        <div class="comm-part" style="width: 10%; background-color: #ea580c;">عمولة (10 ج)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Box -->
+  <div class="summary-box">
+    <h4>🎯 القيمة التنافسية الفائقة لمنصة "عالطاير":</h4>
+    <p style="margin: 0; font-size: 11.5px;">
+      1. <strong>حل أزمة الكباتن:</strong> تخفيض العمولة إلى 10% مع دعم السداد اللحظي عبر إنستاباي وفودافون كاش.<br>
+      2. <strong>حل أزمة الركاب:</strong> جمع ميزة السعر التفاوضي للرحلات العادية مع ميزة الحجز الفوري السريع للحالات المستعجلة، مدعومة بمنظومة نقاط ولاء حقيقية وكود أمان إجباري (OTP) لمنع الخطأ.
+    </p>
+  </div>
+
+  <div class="footer-note">
+    منصة عالطاير للنقل الذكي الهجين • وثيقة التحليل والمقارنة الاستراتيجية • أغسطس 2026 ©
+  </div>
+
+</body>
+</html>

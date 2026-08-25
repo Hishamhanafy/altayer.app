@@ -100,6 +100,23 @@ class _TripSummaryRatingScreenState extends State<TripSummaryRatingScreen> {
                       Text('$finalAmount.00 ج.م', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: AppColors.primary)),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.accentAmber.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.accentAmber.withValues(alpha: 0.4)),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.star, color: AppColors.accentAmber, size: 16),
+                        SizedBox(width: 6),
+                        Text('تم إضافة +30 نقطة ولاء ⭐ لرصيدك عن هذه الرحلة', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.accentAmber)),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
