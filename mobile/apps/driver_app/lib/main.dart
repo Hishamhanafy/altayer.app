@@ -5,6 +5,8 @@ import 'screens/driver_radar_screen.dart';
 import 'screens/driver_wallet_hub_screen.dart';
 import 'screens/driver_quests_screen.dart';
 import 'screens/driver_disputes_screen.dart';
+import 'screens/profile/driver_profile_screen.dart';
+import 'screens/auth/driver_login_phone_screen.dart';
 
 void main() {
   runApp(const AltayerDriverApp());
@@ -49,13 +51,15 @@ class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
     DriverWalletHubScreen(),
     DriverQuestsScreen(),
     DriverDisputesScreen(),
+    DriverProfileScreen(),
   ];
 
   final List<String> _titles = const [
-    'كابتن محمود السيد (تويوتا كورولا)',
+    'رادار المشاوير (القاهرة الكبرى)',
     'المحفظة وسداد العمولات',
     'تارجت ومكافآت الكابتن اليومي',
     'مركز دعم وحماية الكباتن',
+    'الملف الشخصي للكابتن',
   ];
 
   @override
@@ -68,8 +72,18 @@ class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.login, size: 20, color: DriverColors.primary),
+            tooltip: 'شاشة تسجيل الدخول والتسجيل الجديد',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const DriverLoginPhoneScreen()),
+              );
+            },
+          ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: DriverColors.primary.withValues(alpha: 0.15),
@@ -96,14 +110,15 @@ class _DriverMainHubScreenState extends State<DriverMainHubScreen> {
         backgroundColor: DriverColors.surface,
         selectedItemColor: DriverColors.primary,
         unselectedItemColor: DriverColors.textMuted,
-        selectedFontSize: 11,
-        unselectedFontSize: 10,
+        selectedFontSize: 10,
+        unselectedFontSize: 9,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.radar), label: 'الرادار والطلب'),
-          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), label: 'المحفظة والسداد'),
+          BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet_outlined), label: 'المحفظة'),
           BottomNavigationBarItem(icon: Icon(Icons.emoji_events_outlined), label: 'التارجت والبونص'),
           BottomNavigationBarItem(icon: Icon(Icons.support_agent), label: 'الدعم والشكاوى'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'حسابي والتوثيق'),
         ],
       ),
     );
