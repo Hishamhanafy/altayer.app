@@ -112,7 +112,7 @@ class RiderProfileScreen extends StatelessWidget {
                   children: [
                     _buildSummaryStat('رصيد المحفظة', '120.00 ج', AppColors.primary),
                     Container(height: 24, width: 1, color: AppColors.border),
-                    _buildSummaryStat('نقاط الولاء', '1,400 نقطة ⭐', AppColors.accentAmber),
+                    _buildSummaryStat('نقاط الولاء', '340 نقطة ⭐', AppColors.accentAmber),
                     Container(height: 24, width: 1, color: AppColors.border),
                     _buildSummaryStat('كوبونات فعالة', '2 كوبون', AppColors.accentGreen),
                   ],
@@ -140,7 +140,7 @@ class RiderProfileScreen extends StatelessWidget {
             icon: Icons.stars,
             color: AppColors.accentAmber,
             title: 'سوق المكافآت ونقاط الولاء',
-            subtitle: 'استبدال 1,400 نقطة بخصومات على الرحلات',
+            subtitle: 'استبدال النقاط بخصومات نقدية على الرحلات',
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RiderRewardsShopScreen())),
           ),
 

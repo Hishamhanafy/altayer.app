@@ -10,7 +10,7 @@ class RiderRewardsShopScreen extends StatefulWidget {
 }
 
 class _RiderRewardsShopScreenState extends State<RiderRewardsShopScreen> {
-  int _pointsBalance = 1400;
+  int _pointsBalance = 340;
 
   final List<RewardVoucherItem> _rewards = [
     RewardVoucherItem(
@@ -40,10 +40,10 @@ class _RiderRewardsShopScreenState extends State<RiderRewardsShopScreen> {
   ];
 
   final List<PointsHistoryItem> _history = const [
-    PointsHistoryItem(id: 'H-1', title: 'مشوار إلى سيتي ستارز مول', date: 'اليوم، 04:30 م', points: 150, isPositive: true),
-    PointsHistoryItem(id: 'H-2', title: 'تقييم رحلة الكابتن محمود', date: 'أمس، 02:00 م', points: 50, isPositive: true),
-    PointsHistoryItem(id: 'H-3', title: 'بونص ترحيبي عند إنشاء الحساب', date: 'منذ يومين', points: 500, isPositive: true),
-    PointsHistoryItem(id: 'H-4', title: 'دعوة صديق جديد (أحمد علي)', date: 'منذ أسبوع', points: 1000, isPositive: true),
+    PointsHistoryItem(id: 'H-1', title: 'مشوار إلى سيتي ستارز مول', date: 'اليوم، 04:30 م', points: 30, isPositive: true),
+    PointsHistoryItem(id: 'H-2', title: 'تقييم رحلة الكابتن محمود', date: 'أمس، 02:00 م', points: 10, isPositive: true),
+    PointsHistoryItem(id: 'H-3', title: 'بونص ترحيبي عند إنشاء الحساب', date: 'منذ يومين', points: 100, isPositive: true),
+    PointsHistoryItem(id: 'H-4', title: 'دعوة صديق جديد (أحمد علي)', date: 'منذ أسبوع', points: 200, isPositive: true),
   ];
 
   void _redeemReward(RewardVoucherItem reward) {
