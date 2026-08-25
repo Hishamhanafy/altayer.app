@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../models/ride_models.dart';
 import 'search_destination_screen.dart';
-import 'live_bidding_screen.dart';
-import 'rider_wallet_promo_screen.dart';
 import 'in_trip_tracking_screen.dart';
 
 class HomeMapScreen extends StatefulWidget {
