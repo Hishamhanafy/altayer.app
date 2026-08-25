@@ -53,3 +53,9 @@ mobile/**/android/build/
 
 # Docker
 docker-compose.override.yml
+
+# Local APK builds
+APKs/
+*.apk
+*.zip
+
