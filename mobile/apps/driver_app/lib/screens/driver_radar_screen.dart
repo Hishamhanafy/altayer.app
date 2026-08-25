@@ -119,9 +119,9 @@ class _DriverRadarScreenState extends State<DriverRadarScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text('أرباح اليوم (7 رحلات)', style: TextStyle(fontSize: 10, color: DriverColors.textMuted)),
                       Text('485.50 ج.م', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: DriverColors.primary)),
                     ],

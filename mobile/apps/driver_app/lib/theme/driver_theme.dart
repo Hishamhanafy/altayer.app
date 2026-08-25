@@ -43,7 +43,7 @@ class DriverTheme {
           fontWeight: FontWeight.w900,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: DriverColors.surface,
         elevation: 4,
         shape: RoundedRectangleBorder(

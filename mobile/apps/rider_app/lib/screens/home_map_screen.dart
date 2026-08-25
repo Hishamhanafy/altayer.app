@@ -17,7 +17,7 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
   String _mode = 'BIDDING'; // BIDDING or INSTANT
   VehicleCategory _selectedCategory = VehicleCategory.economy;
   String _destination = 'سيتي ستارز مول، مدينة نصر';
-  int _baseFare = 75;
+  final int _baseFare = 75;
 
   @override
   Widget build(BuildContext context) {
