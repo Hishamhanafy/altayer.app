@@ -52,26 +52,64 @@ const AKHIL_SERVICES: ServiceCategory[] = [
   { id: 'events', name: 'شريك الفعاليات', nameEn: 'PARTNER OF EVENTS', icon: '🎪', multiplier: 2.50, desc: 'شراكة وتنظيم أسطول نقل الفعاليات والمؤتمرات الكبرى', color: 'border-rose-500' },
 ];
 
+interface GeoLocation {
+  id: string;
+  name: string;
+  area: string;
+  governorate: 'القاهرة' | 'الجيزة';
+  lat: number;
+  lng: number;
+  icon: string;
+}
+
+const PRESET_LOCATIONS: GeoLocation[] = [
+  { id: 'tahrir', name: 'ميدان التحرير، وسط البلد', area: 'وسط البلد', governorate: 'القاهرة', lat: 30.0444, lng: 31.2357, icon: '🏛️' },
+  { id: 'dokki', name: 'ميدان الدقي، شارع مصدق', area: 'الدقي', governorate: 'الجيزة', lat: 30.0385, lng: 31.2115, icon: '🌳' },
+  { id: 'mohandessin', name: 'ميدان لبنان / جامعة الدول', area: 'المهندسين', governorate: 'الجيزة', lat: 30.0610, lng: 31.2010, icon: '🏢' },
+  { id: 'zayed', name: 'هايبر وان / الكرمة', area: 'الشيخ زايد', governorate: 'الجيزة', lat: 30.0350, lng: 30.9850, icon: '🛍️' },
+  { id: 'october', name: 'ميدان الحصري / مول العرب', area: '6 أكتوبر', governorate: 'الجيزة', lat: 29.9720, lng: 30.9450, icon: '🏙️' },
+  { id: 'haram', name: 'هضبة الأهرام والمتحف الكبير', area: 'الهرم', governorate: 'الجيزة', lat: 29.9850, lng: 31.1350, icon: '🔺' },
+  { id: 'citystars', name: 'مول سيتي ستارز، مكرم عبيد', area: 'مدينة نصر', governorate: 'القاهرة', lat: 30.0733, lng: 31.3467, icon: '🛍️' },
+  { id: 'tagamoa', name: 'التجمع الخامس / كايرو فيستيفال', area: 'القاهرة الجديدة', governorate: 'القاهرة', lat: 30.0280, lng: 31.4050, icon: '💎' },
+  { id: 'maadi', name: 'حي المعادي / شارع 9', area: 'المعادي', governorate: 'القاهرة', lat: 29.9580, lng: 31.2610, icon: '🌳' },
+  { id: 'airport', name: 'مطار القاهرة الدولي (مبنى 3)', area: 'مصر الجديدة', governorate: 'القاهرة', lat: 30.1120, lng: 31.4020, icon: '✈️' },
+  { id: 'zamalek', name: 'حي الزمالك / برج القاهرة', area: 'الزمالك', governorate: 'القاهرة', lat: 30.0620, lng: 31.2210, icon: '🗼' },
+];
+
 export default function RiderWebApp() {
   const [activeTab, setActiveTab] = useState<'book' | 'rewards' | 'wallet'>('book');
-  const [selectedService, setSelectedService] = useState<ServiceCategory>(AKHIL_SERVICES[0]);
   const [bookingMode, setBookingMode] = useState<'BIDDING' | 'INSTANT'>('BIDDING');
-  const [baseFare, setBaseFare] = useState<number>(70);
+  const [selectedService, setSelectedService] = useState<ServiceCategory>(AKHIL_SERVICES[0]);
+  
+  // Location States
+  const [pickup, setPickup] = useState<GeoLocation>(PRESET_LOCATIONS[0]);
+  const [destination, setDestination] = useState<GeoLocation>(PRESET_LOCATIONS[6]);
+  const [showLocationModal, setShowLocationModal] = useState<'pickup' | 'dest' | null>(null);
+  const [locationSearchQuery, setLocationSearchQuery] = useState<string>('');
+  
   const [step, setStep] = useState<'create' | 'bidding' | 'en_route' | 'completed'>('create');
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
   const [selectedPayment, setSelectedPayment] = useState<string>('cash');
 
   // Scheduled Modal State
   const [showScheduledModal, setShowScheduledModal] = useState<boolean>(false);
-  const [scheduledType, setScheduledType] = useState<'ONE' | 'ROUTINE' | 'CONTRACT'>('ONE');
 
   // Welcome Incentive Bonus
   const [welcomeBalance, setWelcomeBalance] = useState<number>(200);
-  const [akhilCreditLimit, setAkhilCreditLimit] = useState<number>(500);
 
-  // Rounding to nearest 5 EGP
+  // Dynamic Distance Calculation (Haversine approx in KM)
+  const calculateDistanceKm = () => {
+    const dLat = (destination.lat - pickup.lat) * 111;
+    const dLng = (destination.lng - pickup.lng) * 96;
+    const dist = Math.sqrt(dLat * dLat + dLng * dLng);
+    return Math.max(2.5, Math.round(dist * 10) / 10);
+  };
+
+  const tripDistanceKm = calculateDistanceKm();
+  const rawBaseFare = Math.round(20 + tripDistanceKm * 4.5);
+
   const calculateRoundedFare = () => {
-    const raw = baseFare * selectedService.multiplier;
+    const raw = rawBaseFare * selectedService.multiplier;
     return Math.ceil(raw / 5) * 5;
   };
 
@@ -191,50 +229,86 @@ export default function RiderWebApp() {
                 </div>
 
                 {/* Pickup & Destination Inputs */}
-                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20" />
-                    <div className="flex-1">
-                      <span className="text-[10px] text-slate-500 block">نقطة الانطلاق (موقعك الحالي)</span>
-                      <span className="text-xs font-bold text-white">ميدان التحرير، وسط البلد</span>
+                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 shadow-lg">
+                  {/* Pickup Selector */}
+                  <div 
+                    onClick={() => setShowLocationModal('pickup')}
+                    className="flex items-center justify-between gap-3 p-2 hover:bg-slate-900 rounded-xl cursor-pointer transition border border-transparent hover:border-emerald-500/40"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20" />
+                      <div>
+                        <span className="text-[10px] text-emerald-400 block font-semibold">نقطة الانطلاق (اضغط للتغيير)</span>
+                        <span className="text-xs font-bold text-white flex items-center gap-1">
+                          <span>{pickup.icon}</span>
+                          <span>{pickup.name}</span>
+                        </span>
+                      </div>
                     </div>
+                    <span className="text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-1 rounded-lg font-bold">
+                      تغيير 🔄
+                    </span>
                   </div>
+
                   <div className="h-px bg-slate-800 mr-5" />
-                  <div className="flex items-center gap-3">
-                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500 ring-4 ring-amber-500/20" />
-                    <div className="flex-1">
-                      <span className="text-[10px] text-slate-500 block">الوجهة</span>
-                      <span className="text-xs font-bold text-amber-300">مول سيتي ستارز، مدينة نصر (12.4 كم)</span>
+
+                  {/* Destination Selector */}
+                  <div 
+                    onClick={() => setShowLocationModal('dest')}
+                    className="flex items-center justify-between gap-3 p-2 hover:bg-slate-900 rounded-xl cursor-pointer transition border border-transparent hover:border-amber-500/40"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-amber-500 ring-4 ring-amber-500/20" />
+                      <div>
+                        <span className="text-[10px] text-amber-400 block font-semibold">الوجهة (اضغط للتغيير)</span>
+                        <span className="text-xs font-bold text-amber-300 flex items-center gap-1">
+                          <span>{destination.icon}</span>
+                          <span>{destination.name}</span>
+                        </span>
+                      </div>
                     </div>
+                    <span className="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-1 rounded-lg font-bold">
+                      تغيير 🔄
+                    </span>
                   </div>
                 </div>
 
-                {/* Live Interactive Map with Google Maps / Satellite / Night Mode */}
+                {/* Live Interactive Map with Dynamic Route & Pickup Marker */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center px-1">
                     <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
-                      <span>🗺️</span> خريطة التتبع الحية ومحيط الكباتن
+                      <span>🗺️</span> الخريطة المباشرة ({tripDistanceKm} كم)
                     </span>
-                    <span className="text-[9px] text-emerald-400 font-semibold animate-pulse">
-                      ● 3 كباتن بالقرب منك
+                    <span className="text-[9px] text-amber-400 font-semibold">
+                      💡 اضغط على أي مكان بالخريطة لتغيير الانطلاق
                     </span>
                   </div>
                   <LiveInteractiveMap
-                    height="200px"
-                    center={[30.0444, 31.2357]}
+                    height="210px"
+                    center={[pickup.lat, pickup.lng]}
                     zoom={13}
+                    onMapClick={(lat, lng) => {
+                      setPickup({
+                        id: 'custom',
+                        name: `موقع محدد على الخريطة (${lat.toFixed(3)}, ${lng.toFixed(3)})`,
+                        area: 'موقع جغرافي',
+                        governorate: lat < 30.01 ? 'الجيزة' : 'القاهرة',
+                        lat,
+                        lng,
+                        icon: '📍'
+                      });
+                    }}
                     markers={[
-                      { id: 'pickup', lat: 30.0444, lng: 31.2357, title: 'موقعك: ميدان التحرير', type: 'pickup' },
-                      { id: 'dest', lat: 30.0733, lng: 31.3467, title: 'الوجهة: سيتي ستارز', type: 'destination' },
-                      { id: 'd1', lat: 30.0480, lng: 31.2400, title: 'محمود السيد (كابتن أخيل 👑)', car: 'تويوتا كورولا', rating: 4.95, type: 'driver' },
-                      { id: 'd2', lat: 30.0410, lng: 31.2300, title: 'أحمد فؤاد (أخيل)', car: 'هيونداي إلنترا', rating: 4.88, type: 'driver' },
-                      { id: 'd3', lat: 30.0460, lng: 31.2320, title: 'نورا السعيد (برثونة معتمدة 🌸)', car: 'كيا سيراتو', rating: 5.00, type: 'parthona' },
+                      { id: 'pickup', lat: pickup.lat, lng: pickup.lng, title: `الانطلاق: ${pickup.name}`, type: 'pickup' },
+                      { id: 'dest', lat: destination.lat, lng: destination.lng, title: `الوجهة: ${destination.name}`, type: 'destination' },
+                      { id: 'd1', lat: pickup.lat + 0.005, lng: pickup.lng + 0.006, title: 'محمود السيد (كابتن أخيل 👑)', car: 'تويوتا كورولا', rating: 4.95, type: 'driver' },
+                      { id: 'd2', lat: pickup.lat - 0.004, lng: pickup.lng - 0.005, title: 'أحمد فؤاد (أخيل)', car: 'هيونداي إلنترا', rating: 4.88, type: 'driver' },
+                      { id: 'd3', lat: pickup.lat + 0.003, lng: pickup.lng - 0.004, title: 'نورا السعيد (برثونة معتمدة 🌸)', car: 'كيا سيراتو', rating: 5.00, type: 'parthona' },
                     ]}
                     routePolyline={[
-                      [30.0444, 31.2357],
-                      [30.0520, 31.2650],
-                      [30.0610, 31.3100],
-                      [30.0733, 31.3467],
+                      [pickup.lat, pickup.lng],
+                      [(pickup.lat + destination.lat) / 2 + 0.005, (pickup.lng + destination.lng) / 2],
+                      [destination.lat, destination.lng],
                     ]}
                   />
                 </div>
@@ -523,6 +597,119 @@ export default function RiderWebApp() {
                   {selectedPayment === p.id && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
                 </button>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* LOCATION SELECTION MODAL (PICKUP / DESTINATION) */}
+        {showLocationModal && (
+          <div className="absolute inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex flex-col justify-end p-0">
+            <div className="bg-slate-900 border-t-2 border-amber-500 rounded-t-3xl p-5 space-y-4 max-h-[85%] flex flex-col shadow-2xl animate-in slide-in-from-bottom duration-300">
+              
+              {/* Modal Header */}
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">
+                    {showLocationModal === 'pickup' ? '📍' : '🏁'}
+                  </span>
+                  <div>
+                    <h3 className="font-black text-sm text-white">
+                      {showLocationModal === 'pickup' ? 'تحديد نقطة الانطلاق (موقعك)' : 'تحديد وجهة المشوار'}
+                    </h3>
+                    <p className="text-[10px] text-slate-400">اختر من الأماكن الشهيرة في القاهرة والجيزة أو اكتب عنوانك</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setShowLocationModal(null);
+                    setLocationSearchQuery('');
+                  }}
+                  className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Search Box */}
+              <div className="relative">
+                <input
+                  type="text"
+                  value={locationSearchQuery}
+                  onChange={(e) => setLocationSearchQuery(e.target.value)}
+                  placeholder="ابحث عن مكان، ميدان، مول، أو شارع..."
+                  className="w-full bg-slate-950 border border-slate-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 pr-9"
+                />
+                <span className="absolute right-3 top-2.5 text-slate-400 text-sm">🔍</span>
+              </div>
+
+              {/* Preset Hotspots List */}
+              <div className="flex-1 overflow-y-auto space-y-2 pr-1 max-h-60 scrollbar-thin">
+                {PRESET_LOCATIONS
+                  .filter(loc => 
+                    loc.name.includes(locationSearchQuery) || 
+                    loc.area.includes(locationSearchQuery) || 
+                    loc.governorate.includes(locationSearchQuery)
+                  )
+                  .map((loc) => (
+                    <button
+                      key={loc.id}
+                      onClick={() => {
+                        if (showLocationModal === 'pickup') {
+                          setPickup(loc);
+                        } else {
+                          setDestination(loc);
+                        }
+                        setShowLocationModal(null);
+                        setLocationSearchQuery('');
+                      }}
+                      className="w-full p-2.5 bg-slate-950/80 hover:bg-indigo-950/60 border border-slate-800 hover:border-amber-500/50 rounded-2xl flex items-center justify-between text-right transition"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{loc.icon}</span>
+                        <div>
+                          <span className="text-xs font-bold text-white block">{loc.name}</span>
+                          <span className="text-[10px] text-slate-400">{loc.area}</span>
+                        </div>
+                      </div>
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full font-bold ${
+                        loc.governorate === 'الجيزة' 
+                          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                          : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      }`}>
+                        {loc.governorate}
+                      </span>
+                    </button>
+                  ))}
+              </div>
+
+              {/* Custom Address Input (Optional) */}
+              {locationSearchQuery.trim().length > 2 && (
+                <button
+                  onClick={() => {
+                    const customGeo: GeoLocation = {
+                      id: `custom-${Date.now()}`,
+                      name: locationSearchQuery,
+                      area: 'عنوان مخصص',
+                      governorate: 'القاهرة',
+                      lat: 30.0500 + (Math.random() - 0.5) * 0.05,
+                      lng: 31.2500 + (Math.random() - 0.5) * 0.05,
+                      icon: '📍',
+                    };
+                    if (showLocationModal === 'pickup') {
+                      setPickup(customGeo);
+                    } else {
+                      setDestination(customGeo);
+                    }
+                    setShowLocationModal(null);
+                    setLocationSearchQuery('');
+                  }}
+                  className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs transition shadow flex items-center justify-center gap-2"
+                >
+                  <span>📍</span>
+                  تأكيد واختيار: "{locationSearchQuery}"
+                </button>
+              )}
+
             </div>
           </div>
         )}
