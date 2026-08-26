@@ -42,10 +42,16 @@ import { translations, Locale } from '../locales/translations';
 
 export default function AdminDashboardPage() {
   const [lang, setLang] = useState<Locale>('ar');
-  const [activeTab, setActiveTab] = useState<'overview' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [simulatedDriversCount, setSimulatedDriversCount] = useState(142);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  // Financials Statements State (Q2 2026, Q1 2026, Full Year 2025)
+  const [financialsPeriod, setFinancialsPeriod] = useState<'2026_Q2' | '2026_Q1' | '2025_ANNUAL'>('2026_Q2');
+
+  // Medical & Drug Screening Filter State
+  const [medicalFilter, setMedicalFilter] = useState<'all' | 'valid' | 'expired' | 'pending'>('all');
 
   // Reports Filter State (Daily, Weekly, Monthly, Yearly)
   const [reportPeriod, setReportPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly');
@@ -176,12 +182,154 @@ export default function AdminDashboardPage() {
   ]);
 
   // Promo Codes & Marketing Campaigns
-  const [promoCodesList, setPromoCodesList] = useState([
-    { code: 'ALTAYER50', type: 'نسبة مئوية (50%)', maxDiscount: '25.00 ج.م', uses: 842, budgetSpent: '16,840 ج.م', target: 'الركاب الجدد (أول مشوار)', isActive: true },
-    { code: 'WEEKEND20', type: 'نسبة مئوية (20%)', maxDiscount: '20.00 ج.م', uses: 419, budgetSpent: '6,285 ج.م', target: 'مشاوير الخميس والجمعة', isActive: true },
-    { code: 'STUDENT15', type: 'نسبة مئوية (15%)', maxDiscount: '15.00 ج.م', uses: 290, budgetSpent: '3,480 ج.م', target: 'منطقة الجامعات والطلاب', isActive: true },
-    { code: 'FREE30', type: 'مبلغ ثابت (30 ج.م)', maxDiscount: '30.00 ج.م', uses: 512, budgetSpent: '15,360 ج.م', target: 'مكافآت برنامج دعوة الأصدقاء', isActive: true },
+  // Closing Financials Datasets (P&L, Balance Sheet, Cash Flow, Unit Economics)
+  const closingFinancialsData = {
+    '2026_Q2': {
+      periodName: 'الربع الثاني 2026 (أبريل - يونيو 2026)',
+      gmv: 8450000, // Gross Merchandise Value (EGP)
+      commissionRevenue: 845000, // 10% Platform Commission
+      guaranteeRevenue: 145000, // Monthly Guarantee Plans
+      eventsRevenue: 95000, // Partner of Events
+      totalRevenue: 1085000, // Total Gross Revenue
+      techOpex: 165000, // Cloud, Maps APIs, Payment Gateways
+      riderIncentives: 110000, // 200 EGP Welcome + Promotions
+      driverRewards: 185000, // Weekly Flow + Free Car Amortization Fund
+      adminSalaries: 210000, // Support & Operations Staff
+      ebitda: 415000, // Earnings Before Tax & Depreciation
+      netProfit: 325000, // Net Profit (30% Profit Margin)
+      // Balance Sheet
+      cashInBank: 2450000,
+      instaPayWallets: 680000,
+      receivablesDebt: 185000,
+      driverPayables: 390000,
+      riderDeposits: 220000,
+      equityReserve: 2705000,
+    },
+    '2026_Q1': {
+      periodName: 'الربع الأول 2026 (يناير - مارس 2026)',
+      gmv: 6200000,
+      commissionRevenue: 620000,
+      guaranteeRevenue: 110000,
+      eventsRevenue: 60000,
+      totalRevenue: 790000,
+      techOpex: 140000,
+      riderIncentives: 95000,
+      driverRewards: 135000,
+      adminSalaries: 180000,
+      ebitda: 240000,
+      netProfit: 190000,
+      cashInBank: 1950000,
+      instaPayWallets: 510000,
+      receivablesDebt: 140000,
+      driverPayables: 310000,
+      riderDeposits: 180000,
+      equityReserve: 2110000,
+    },
+    '2025_ANNUAL': {
+      periodName: 'القوائم الختامية للعام المالي 2025 (كامل)',
+      gmv: 18400000,
+      commissionRevenue: 1840000,
+      guaranteeRevenue: 280000,
+      eventsRevenue: 180000,
+      totalRevenue: 2300000,
+      techOpex: 420000,
+      riderIncentives: 260000,
+      driverRewards: 380000,
+      adminSalaries: 520000,
+      ebitda: 720000,
+      netProfit: 580000,
+      cashInBank: 1650000,
+      instaPayWallets: 420000,
+      receivablesDebt: 110000,
+      driverPayables: 240000,
+      riderDeposits: 150000,
+      equityReserve: 1790000,
+    },
+  };
+
+  // Driver Drug Tests & Medical Screening Compliance Records
+  const [medicalTestsList, setMedicalTestsList] = useState([
+    {
+      id: 'MED-101',
+      driverName: 'محمود السيد (كابتن أخيل)',
+      phone: '+201012345678',
+      car: 'تويوتا كورولا 2023 (أ ب ج 1234)',
+      labName: 'معامل البرج (Al-Borg Lab)',
+      testType: 'تحليل سموم ومخدرات شامل (7 مواد)',
+      testDate: '15/07/2026',
+      expiryDate: '15/01/2027',
+      result: 'NEGATIVE', // Negative / Pass
+      criminalRecord: 'VALID', // سليم وخال من السوابق
+      status: 'ACTIVE',
+      certificateUrl: 'https://akhil.app/certs/med-101.pdf',
+    },
+    {
+      id: 'MED-102',
+      driverName: 'أحمد فؤاد (فريق أخيل)',
+      phone: '+201234567890',
+      car: 'هيونداي إلنترا 2024 (ط ك ل 9101)',
+      labName: 'معامل المختبر (Al-Mokhtabar)',
+      testType: 'فحص مخدرات وكشف سريري معتمد',
+      testDate: '01/08/2026',
+      expiryDate: '01/02/2027',
+      result: 'NEGATIVE',
+      criminalRecord: 'VALID',
+      status: 'ACTIVE',
+      certificateUrl: 'https://akhil.app/certs/med-102.pdf',
+    },
+    {
+      id: 'MED-103',
+      driverName: 'نورا السعيد (برثونة معتمدة 🌸)',
+      phone: '+201198765432',
+      car: 'كيا سيراتو 2023 (ن ر ا 5544)',
+      labName: 'المعامل المركزية لوزارة الصحة',
+      testType: 'فحص مخدرات وسلامة عامة (برثونة)',
+      testDate: '20/06/2026',
+      expiryDate: '20/12/2026',
+      result: 'NEGATIVE',
+      criminalRecord: 'VALID',
+      status: 'ACTIVE',
+      certificateUrl: 'https://akhil.app/certs/med-103.pdf',
+    },
+    {
+      id: 'MED-104',
+      driverName: 'حسام عبد العال',
+      phone: '+201099887766',
+      car: 'نيسان صني 2021 (س ع ص 4411)',
+      labName: 'معامل البرج (Al-Borg Lab)',
+      testType: 'تحليل سموم ومخدرات دوري',
+      testDate: '10/02/2026',
+      expiryDate: '10/08/2026', // Expired
+      result: 'EXPIRED',
+      criminalRecord: 'VALID',
+      status: 'SUSPENDED', // Auto-suspended due to test expiration
+      certificateUrl: 'https://akhil.app/certs/med-104.pdf',
+    },
+    {
+      id: 'MED-105',
+      driverName: 'مصطفى كمال الدين',
+      phone: '+201555443322',
+      car: 'رينو ميجان 2024 (ق ف م 9988)',
+      labName: 'معامل المختبر (Al-Mokhtabar)',
+      testType: 'تحليل مخدرات أول انضمام',
+      testDate: '25/08/2026',
+      expiryDate: '25/02/2027',
+      result: 'PENDING_LAB',
+      criminalRecord: 'VALID',
+      status: 'PENDING_REVIEW',
+      certificateUrl: 'https://akhil.app/certs/med-105.pdf',
+    },
   ]);
+
+  const handleApproveMedical = (id: string) => {
+    setMedicalTestsList(prev => prev.map(m => m.id === id ? { ...m, status: 'ACTIVE', result: 'NEGATIVE' } : m));
+    alert('تم اعتماد التحليل الطبي وتفعيل حساب الكابتن بنجاح 🟢');
+  };
+
+  const handleSuspendMedical = (id: string) => {
+    setMedicalTestsList(prev => prev.map(m => m.id === id ? { ...m, status: 'SUSPENDED' } : m));
+    alert('تم تعليق حساب الكابتن مؤقتاً لحين تجديد التحليل الطبي ⚠️');
+  };
 
   const handleApproveDriver = (id: string) => {
     setPendingDriversList(prev => prev.filter(d => d.id !== id));
@@ -254,9 +402,32 @@ export default function AdminDashboardPage() {
             </button>
 
             <button
+              onClick={() => setActiveTab('financials')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'financials' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <DollarSign className="w-4 h-4 text-emerald-400" />
+              الحسابات الختامية والأرباح 📑
+            </button>
+
+            <button
+              onClick={() => setActiveTab('medical_tests')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'medical_tests' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <ShieldCheck className="w-4 h-4 text-pink-400" />
+              تحاليل المخدرات والفحص الطبي 🧪
+              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-emerald-500/20 text-emerald-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                معتمد
+              </span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('reports')}
               className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'reports' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                activeTab === 'reports' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
             >
               <BarChart3 className="w-4 h-4 text-amber-400" />
@@ -266,7 +437,7 @@ export default function AdminDashboardPage() {
             <button
               onClick={() => setActiveTab('drivers')}
               className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'drivers' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                activeTab === 'drivers' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
               }`}
             >
               <Car className="w-4 h-4" />
@@ -434,7 +605,356 @@ export default function AdminDashboardPage() {
 
         {/* Content Container */}
         <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
-          
+
+          {/* TAB: CLOSING FINANCIALS (الحسابات الختامية والقوائم المالية) */}
+          {activeTab === 'financials' && (
+            <div className="space-y-6">
+              {/* Header & Period Filters */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-6 rounded-2xl">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <DollarSign className="w-6 h-6 text-emerald-400" />
+                    <h2 className="font-extrabold text-xl text-white">الحسابات الختامية والقوائم المالية الرسمية</h2>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    قائمة الدخل (P&L)، الميزانية العمومية، التدفقات النقدية، ومخصصات الحوافز لـ: <strong className="text-amber-400 font-bold">{closingFinancialsData[financialsPeriod].periodName}</strong>
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1 text-xs font-bold">
+                    {(['2026_Q2', '2026_Q1', '2025_ANNUAL'] as const).map((period) => (
+                      <button
+                        key={period}
+                        onClick={() => setFinancialsPeriod(period)}
+                        className={`px-3 py-1.5 rounded-lg transition ${
+                          financialsPeriod === period ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {period === '2026_Q2' ? 'الربع الثاني 2026' : period === '2026_Q1' ? 'الربع الأول 2026' : 'العام المالي 2025'}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow"
+                  >
+                    <Printer className="w-4 h-4" />
+                    طباعة وتصدير القوائم الختامية 📄
+                  </button>
+                </div>
+              </div>
+
+              {/* KPI Financial Overview Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                  <span className="text-xs text-slate-400 font-medium block">إجمالي قيمة المشاوير (GMV)</span>
+                  <span className="text-2xl font-black text-white font-mono">{closingFinancialsData[financialsPeriod].gmv.toLocaleString()} ج.م</span>
+                  <span className="text-[11px] text-emerald-400 font-bold block">↑ +24.8% نمو ربع سنوي</span>
+                </div>
+
+                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                  <span className="text-xs text-slate-400 font-medium block">إجمالي الإيرادات التشغيلية للشركة</span>
+                  <span className="text-2xl font-black text-amber-400 font-mono">{closingFinancialsData[financialsPeriod].totalRevenue.toLocaleString()} ج.م</span>
+                  <span className="text-[11px] text-slate-400 block">عمولات 10% + اشتراكات وفعاليات</span>
+                </div>
+
+                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                  <span className="text-xs text-slate-400 font-medium block">الأرباح التشغيلية (EBITDA)</span>
+                  <span className="text-2xl font-black text-indigo-300 font-mono">{closingFinancialsData[financialsPeriod].ebitda.toLocaleString()} ج.م</span>
+                  <span className="text-[11px] text-indigo-400 block font-bold">هامش أرباح تشغيلية 38.2%</span>
+                </div>
+
+                <div className="p-5 bg-slate-900/80 border border-emerald-500/40 rounded-2xl space-y-2 bg-gradient-to-br from-emerald-950/40 to-slate-900">
+                  <span className="text-xs text-emerald-300 font-bold block">صافي الربح الصافي بعد الضرائب</span>
+                  <span className="text-2xl font-black text-emerald-400 font-mono">{closingFinancialsData[financialsPeriod].netProfit.toLocaleString()} ج.م</span>
+                  <span className="text-[11px] text-emerald-300 block font-bold">صافي هامش ربح 30% للمنظومة 🟢</span>
+                </div>
+              </div>
+
+              {/* Two Detailed Tables: P&L Statement & Balance Sheet */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                {/* 1. Income Statement (قائمة الدخل والأرباح والخسائر) */}
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                      <PieChart className="w-5 h-5 text-amber-400" />
+                      قائمة الدخل والأرباح والخسائر (P&L Statement)
+                    </h3>
+                    <span className="text-xs font-mono font-bold text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-lg">
+                      معتمدة محاسبياً
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs">
+                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-emerald-400">بند الإيرادات (Gross Revenue):</div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• إيرادات عمولات الرحلات (10% Take Rate)</span>
+                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].commissionRevenue.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• إيرادات اشتراكات الضمان المالي (AKHIL GUARANTEE)</span>
+                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].guaranteeRevenue.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• إيرادات عقود شراكات الفعاليات (PARTNER OF EVENTS)</span>
+                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].eventsRevenue.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-2 px-3 bg-indigo-950/60 border border-indigo-500/30 rounded-xl font-bold text-white">
+                      <span>إجمالي الإيرادات التشغيلية</span>
+                      <span className="font-mono text-amber-300">{closingFinancialsData[financialsPeriod].totalRevenue.toLocaleString()} ج.م</span>
+                    </div>
+
+                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-rose-400 pt-2">بند المصروفات ومخصصات الجوائز (Operating Expenses):</div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• البنية التحتية السحابية وخرائط Google وبوابات الدفع</span>
+                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].techOpex.toLocaleString()} ج.م)</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• مخصصات حوافز الركاب والترحيب (200 ج + العروض)</span>
+                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].riderIncentives.toLocaleString()} ج.م)</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• مخصصات حوافز الكباتن وإهلاك جائزة السيارة السنوية (FREE CAR 👑)</span>
+                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].driverRewards.toLocaleString()} ج.م)</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• المصروفات الإدارية ورواتب الدعم الفني والعمليات</span>
+                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].adminSalaries.toLocaleString()} ج.م)</strong>
+                    </div>
+
+                    <div className="flex justify-between py-3 px-3.5 bg-emerald-950/80 border border-emerald-500/50 rounded-xl font-black text-sm text-white mt-3">
+                      <span>صافي الأرباح الختامية (Net Profit)</span>
+                      <span className="font-mono text-emerald-400">{closingFinancialsData[financialsPeriod].netProfit.toLocaleString()} ج.م</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Balance Sheet & Financial Position (الميزانية العمومية) */}
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                      <Wallet className="w-5 h-5 text-emerald-400" />
+                      الميزانية العمومية والمركز المالي (Balance Sheet)
+                    </h3>
+                    <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                      سيولة ممتازة 🟢
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs">
+                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-sky-400">الأصول المتداولة والسيولة (Current Assets):</div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• النقدية وأرصدة البنوك المحلية</span>
+                      <strong className="font-mono text-white">{closingFinancialsData[financialsPeriod].cashInBank.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• أرصدة محافظ InstaPay وفودافون كاش وميزة</span>
+                      <strong className="font-mono text-white">{closingFinancialsData[financialsPeriod].instaPayWallets.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• مديونيات الكاش المستحقة على الكباتن (ضمن حد 1000 ج)</span>
+                      <strong className="font-mono text-amber-400 font-bold">{closingFinancialsData[financialsPeriod].receivablesDebt.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-2 px-3 bg-slate-800/80 rounded-xl font-bold text-sky-300">
+                      <span>إجمالي الأصول والسيولة</span>
+                      <span className="font-mono">{(closingFinancialsData[financialsPeriod].cashInBank + closingFinancialsData[financialsPeriod].instaPayWallets + closingFinancialsData[financialsPeriod].receivablesDebt).toLocaleString()} ج.م</span>
+                    </div>
+
+                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-amber-400 pt-2">الالتزامات وحقوق الملكية (Liabilities & Equity):</div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• مستحقات الكباتن القابلة للسحب الفوري (InstaPay Payables)</span>
+                      <strong className="font-mono text-amber-300 font-bold">{closingFinancialsData[financialsPeriod].driverPayables.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• أمانات وأرصدة محافظ الركاب (Rider Wallet Balances)</span>
+                      <strong className="font-mono text-amber-300 font-bold">{closingFinancialsData[financialsPeriod].riderDeposits.toLocaleString()} ج.م</strong>
+                    </div>
+                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                      <span>• حقوق الملكية وصافي رأس المال الاحتياطي المجمع</span>
+                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].equityReserve.toLocaleString()} ج.م</strong>
+                    </div>
+
+                    <div className="flex justify-between py-3 px-3.5 bg-indigo-950/80 border border-indigo-500/50 rounded-xl font-black text-sm text-white mt-3">
+                      <span>إجمالي الخصوم وحقوق الملكية</span>
+                      <span className="font-mono text-amber-400">{(closingFinancialsData[financialsPeriod].driverPayables + closingFinancialsData[financialsPeriod].riderDeposits + closingFinancialsData[financialsPeriod].equityReserve).toLocaleString()} ج.م</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* TAB: MEDICAL TESTS & DRUG SCREENING (تحاليل المخدرات والفحص الطبي المعتمد) */}
+          {activeTab === 'medical_tests' && (
+            <div className="space-y-6">
+              {/* Header & Controls */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-6 rounded-2xl">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <ShieldCheck className="w-6 h-6 text-pink-400" />
+                    <h2 className="font-extrabold text-xl text-white">سجل تحاليل المخدرات والفحص الطبي الدوري للكباتن 🧪</h2>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    متابعة التحاليل المعتمدة (معامل البرج، المختبر، والمعامل المركزية) وصلاحيتها (تجديد كل 6 أشهر) لضمان أمان الرحلات 100%
+                  </p>
+                </div>
+
+                {/* Filter Tabs */}
+                <div className="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1 text-xs font-bold">
+                  {(['all', 'valid', 'expired', 'pending'] as const).map((filter) => (
+                    <button
+                      key={filter}
+                      onClick={() => setMedicalFilter(filter)}
+                      className={`px-3 py-1.5 rounded-lg transition ${
+                        medicalFilter === filter ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      {filter === 'all' ? 'جميع الكباتن' : filter === 'valid' ? 'تحاليل سارية 🟢' : filter === 'expired' ? 'تحاليل منتهية ⚠️' : 'قيد الفحص ⏳'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Compliance Statistics Banner */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-400">إجمالي الكباتن المسجلين</span>
+                    <span className="text-xl font-black text-white font-mono block">142 كابتن</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-lg">👨🏻‍✈️</div>
+                </div>
+
+                <div className="p-4 bg-slate-900/80 border border-emerald-500/30 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-400">تحاليل سارية ومعتمدة</span>
+                    <span className="text-xl font-black text-emerald-400 font-mono block">138 كابتن (97.2%)</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-lg">✅</div>
+                </div>
+
+                <div className="p-4 bg-slate-900/80 border border-rose-500/30 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-400">تحاليل منتهية (معلق تلقائياً)</span>
+                    <span className="text-xl font-black text-rose-400 font-mono block">1 كابتن</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center text-lg">⚠️</div>
+                </div>
+
+                <div className="p-4 bg-slate-900/80 border border-amber-500/30 rounded-2xl flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-slate-400">عينات قيد الفحص بالمعمل</span>
+                    <span className="text-xl font-black text-amber-400 font-mono block">3 كباتن</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-300 flex items-center justify-center text-lg">⏳</div>
+                </div>
+              </div>
+
+              {/* Medical Screening Table */}
+              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-extrabold text-base text-white">جدول الامتثال الطبي وسجل تحاليل المخدرات:</h3>
+                  <span className="text-xs text-slate-400">المعامل المعتمدة: البرج • المختبر • المعامل المركزية</span>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-right text-xs">
+                    <thead>
+                      <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                        <th className="pb-3 px-3">الكابتن والمركبة</th>
+                        <th className="pb-3 px-3">المعمل المعتمد</th>
+                        <th className="pb-3 px-3">نوع الفحص</th>
+                        <th className="pb-3 px-3">تاريخ الفحص</th>
+                        <th className="pb-3 px-3">تاريخ الانتهاء</th>
+                        <th className="pb-3 px-3">نتيجة التحليل</th>
+                        <th className="pb-3 px-3">الفيش الجنائي</th>
+                        <th className="pb-3 px-3">حالة الحساب</th>
+                        <th className="pb-3 px-3">الإجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                      {medicalTestsList
+                        .filter(item => {
+                          if (medicalFilter === 'valid') return item.result === 'NEGATIVE' && item.status === 'ACTIVE';
+                          if (medicalFilter === 'expired') return item.result === 'EXPIRED' || item.status === 'SUSPENDED';
+                          if (medicalFilter === 'pending') return item.result === 'PENDING_LAB' || item.status === 'PENDING_REVIEW';
+                          return true;
+                        })
+                        .map((item) => (
+                          <tr key={item.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-3">
+                              <div className="font-bold text-white text-xs">{item.driverName}</div>
+                              <div className="text-[10px] text-slate-400">{item.car} • {item.phone}</div>
+                            </td>
+                            <td className="py-3.5 px-3 font-semibold text-amber-300">{item.labName}</td>
+                            <td className="py-3.5 px-3 text-slate-300">{item.testType}</td>
+                            <td className="py-3.5 px-3 font-mono">{item.testDate}</td>
+                            <td className="py-3.5 px-3 font-mono font-bold">
+                              <span className={item.result === 'EXPIRED' ? 'text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded' : 'text-emerald-400'}>
+                                {item.expiryDate}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-3 font-bold">
+                              {item.result === 'NEGATIVE' ? (
+                                <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-lg">
+                                  سلبي (سليم 🟢)
+                                </span>
+                              ) : item.result === 'EXPIRED' ? (
+                                <span className="bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded-lg">
+                                  منتهي الصلاحية ⚠️
+                                </span>
+                              ) : (
+                                <span className="bg-amber-500/20 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-lg">
+                                  قيد الفحص ⏳
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-3">
+                              <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-medium">
+                                خال من السوابق ✅
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-3 font-bold">
+                              {item.status === 'ACTIVE' ? (
+                                <span className="text-emerald-400 text-xs font-bold">مفعل 🟢</span>
+                              ) : item.status === 'SUSPENDED' ? (
+                                <span className="text-rose-400 text-xs font-bold">معلق مؤقتاً 🚫</span>
+                              ) : (
+                                <span className="text-amber-400 text-xs font-bold">بانتظار النتيجة ⏳</span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-3">
+                              <div className="flex gap-1.5">
+                                {item.status !== 'ACTIVE' ? (
+                                  <button
+                                    onClick={() => handleApproveMedical(item.id)}
+                                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-[10px] transition"
+                                  >
+                                    اعتماد وتفعيل
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => handleSuspendMedical(item.id)}
+                                    className="px-2.5 py-1 bg-rose-600/80 hover:bg-rose-600 text-white rounded-lg font-bold text-[10px] transition"
+                                  >
+                                    تعليق الفحص
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* TAB: COMPREHENSIVE REPORTS & ANALYTICS (Daily / Monthly / Yearly) */}
           {activeTab === 'reports' && (
             <div className="space-y-6">
