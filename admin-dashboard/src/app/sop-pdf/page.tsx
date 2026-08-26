@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { Printer, ArrowRight, ShieldCheck, FileText, Download } from 'lucide-react';
@@ -28,6 +28,14 @@ export default function SopPdfPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <a
+            href="/AKHIL_Enterprise_SOP_Document_Cycle.pdf"
+            download="AKHIL_Enterprise_SOP_Document_Cycle.pdf"
+            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow"
+          >
+            <Download className="w-4 h-4" />
+            تحميل ملف PDF مباشرة 📥
+          </a>
           <button
             onClick={handlePrint}
             className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 text-xs font-black rounded-xl transition shadow-lg shadow-amber-500/20"

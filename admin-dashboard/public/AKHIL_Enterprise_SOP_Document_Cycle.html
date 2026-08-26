@@ -1,0 +1,484 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>الدورة الإدارية والمستندية المتكاملة - شركة أخيل لتكنولوجيا النقل الذكي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.6;
+      font-size: 11.5px;
+    }
+    .page-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px 25px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #1e1b4b;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #1e1b4b, #b45309);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: #fff;
+    }
+    .brand-title h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      color: #1e1b4b;
+    }
+    .brand-title p {
+      margin: 2px 0 0 0;
+      font-size: 10.5px;
+      color: #b45309;
+      font-weight: 700;
+    }
+    .doc-meta {
+      text-align: left;
+      font-size: 10px;
+      color: #64748b;
+    }
+    .doc-meta strong {
+      color: #0f172a;
+      display: block;
+      font-size: 11px;
+    }
+    .badge-confidential {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .doc-title-box {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-title-box h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #fef08a;
+    }
+    .doc-title-box p {
+      margin: 3px 0 0 0;
+      font-size: 10.5px;
+      color: #cbd5e1;
+    }
+    .section {
+      margin-bottom: 18px;
+      page-break-inside: avoid;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+    }
+    .section-header h3 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 800;
+      color: #1e1b4b;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .card h4 {
+      margin: 0 0 4px 0;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 10.5px;
+      color: #334155;
+      padding-right: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      margin-top: 6px;
+    }
+    table th {
+      background-color: #1e1b4b;
+      color: #ffffff;
+      padding: 6px 8px;
+      text-align: right;
+      font-weight: 700;
+      border: 1px solid #1e1b4b;
+    }
+    table td {
+      padding: 6px 8px;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+    }
+    table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .highlight-box {
+      background-color: #fffbeb;
+      border: 1px solid #fde68a;
+      border-right: 4px solid #b45309;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      color: #78350f;
+      margin: 8px 0;
+    }
+    .signatures-section {
+      margin-top: 25px;
+      border-top: 2px dashed #cbd5e1;
+      padding-top: 15px;
+      page-break-inside: avoid;
+    }
+    .signatures-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+    .sig-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 6px;
+    }
+    .sig-title {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
+    .sig-name {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #0f172a;
+      border-top: 1px solid #94a3b8;
+      padding-top: 4px;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 8.5px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="header">
+      <div class="brand">
+        <div class="logo-badge">🐎</div>
+        <div class="brand-title">
+          <h1>شركة أخيل لتكنولوجيا النقل والخدمات اللوجستية ش.م.م</h1>
+          <p>AKHIL Smart Transportation & Logistics Enterprise</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <span class="badge-confidential">سري وموثق رسمياً 🔒</span>
+        <strong>كود الوثيقة: AKH-SOP-2026-V1</strong>
+        <span>تاريخ الإصدار: 26 أغسطس 2026</span>
+      </div>
+    </div>
+
+    <div class="doc-title-box">
+      <div>
+        <h2>الدورة الإدارية والمستندية والتشغيلية المعتمدة (SOPs Master Manual)</h2>
+        <p>السياسات القياسية المعتمدة للتوثيق، الرحلات، المشتريات، الموارد البشرية، الصلاحيات، والمالية</p>
+      </div>
+      <div style="text-align: left; font-size: 10.5px;">
+        <span style="background: rgba(255,255,255,0.15); padding: 4px 8px; border-radius: 6px; font-weight: 700;">
+          إصدار مجلس الإدارة 👑
+        </span>
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <div class="section">
+      <div class="section-header">
+        <h3>1. دورة توثيق واعتماد الكباتن والفحص الطبي الدوري (Driver Onboarding & KYC) 🧪</h3>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h4>المسار الإجرائي للتوثيق:</h4>
+          <ul>
+            <li>تسجيل الكابتن ورفع صور (الرقم القومي، رخصة القيادة، ورخصة السيارة) عبر تطبيق الكابتن.</li>
+            <li>تقديم الفيش الجنائي المميكن ساري موجه لشركة أخيل.</li>
+            <li>إجراء فحص تحاليل المخدرات بالمعامل المعتمدة (البرج / المختبر / المعامل المركزية) وصلاحيته 6 أشهر.</li>
+            <li>مراجعة وتدقيق مسؤول الـ KYC واعتماد الحساب واستلام استيكر علامة أخيل وبرثونة المضيء.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>النماذج والمستندات الملزمة:</h4>
+          <ul>
+            <li><strong>نموذج (DOC-KYC-01):</strong> استمارة فحص ومطابقة بيانات الكابتن والمركبة.</li>
+            <li><strong>نموذج (DOC-KYC-02):</strong> شهادة الفحص الطبي وتحليل السموم المعتمدة.</li>
+            <li><strong>نموذج (DOC-SAF-03):</strong> إقرار وتعهد الالتزام بسلامة الركاب والتسعير العادل.</li>
+            <li><strong>سياسة الإلغاء:</strong> حظر فوري ونهائي لأي نتيجة تحليل إيجابية.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="section">
+      <div class="section-header">
+        <h3>2. دورة الرحلات، التسعير العادل، والتحصيل المالي (Operations & Revenue Cycle) 🚗</h3>
+      </div>
+      <div class="card">
+        <div class="grid-2">
+          <div>
+            <h4>أ. آلية الرحلات النقدية (Cash Rides):</h4>
+            <p>يقوم الراكب بسداد الأجرة كاملة نقداً للكابتن عند نقطة الوصول. يقوم النظام آلياً باستقطاع <strong>عمولة الشركة الثابتة (10%)</strong> من المحفظة الرقمية للكابتن فوراً وترحيلها لحساب الإيرادات.</p>
+          </div>
+          <div>
+            <h4>ب. آلية الرحلات الإلكترونية (Card / Wallet):</h4>
+            <p>يتم تحصيل المبلغ عبر بوابة الدفع <strong>(Paymob / ميزة)</strong>، ويقوم النظام بإيداع <strong>90% صافي أرباح</strong> في محفظة الكابتن القابلة للسحب الفوري عبر InstaPay، مع احتفاظ الشركة بـ 10%.</p>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <strong>فاتورة المشوار الإلكترونية (Digital Ride Receipt):</strong> تصدر آلياً برقم تسلسلي موحد (#ALT-XXXX) وتتضمن تفاصيل المسار والوقت والمسافة وتُرسل للعميل.
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="section">
+      <div class="section-header">
+        <h3>3. دورة المشتريات، الموردين، والمخازن (Procurement & Inventory SOP) 🛒</h3>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>المرحلة</th>
+            <th>المستند الصادر</th>
+            <th>الجهة المنفذة</th>
+            <th>سلطة الاعتماد والموافقة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1. طلب الاحتياج</td>
+            <td>طلب شراء داخلي (PR)</td>
+            <td>القسم الطالب (IT / تسويق / عمليات)</td>
+            <td>مدير القسم المختص</td>
+          </tr>
+          <tr>
+            <td>2. فحص العروض</td>
+            <td>جدول مقارنة عروض الأسعار</td>
+            <td>قسم المشتريات والتعاقدات</td>
+            <td>المدير المالي</td>
+          </tr>
+          <tr>
+            <td>3. أمر التوريد</td>
+            <td>أمر شراء معتمد (Purchase Order - PO)</td>
+            <td>المشتريات للمورد المعتمد</td>
+            <td>المدير المالي + Super Admin</td>
+          </tr>
+          <tr>
+            <td>4. الاستلام المخزني</td>
+            <td>إذن فحص واستلام مخزني (GRN)</td>
+            <td>أمين مستودع التجمع الخامس</td>
+            <td>مدير المخازن والجودة</td>
+          </tr>
+          <tr>
+            <td>5. الصرف والتركيب</td>
+            <td>إذن صرف مخزن (SIV)</td>
+            <td>المستودع لنقاط التوثيق الميدانية</td>
+            <td>مشرف العمليات الميدانية</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 4 -->
+    <div class="section">
+      <div class="section-header">
+        <h3>4. دورة الموارد البشرية ومسير الرواتب والأجور (HR & Payroll SOP) 👥</h3>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h4>الجدول الزمني الشهري لإقفال الرواتب:</h4>
+          <ul>
+            <li><strong>يوم 20 من الشهر:</strong> حصر كشوف الحضور والانصراف والمناوبات 24/7.</li>
+            <li><strong>يوم 22:</strong> احتساب ساعات العمل الإضافية، البدلات، ومكافآت الأداء.</li>
+            <li><strong>يوم 24:</strong> خصم التأمينات الاجتماعية (11% موظف) وضريبة كسب العمل.</li>
+            <li><strong>يوم 26:</strong> اعتماد مسير الرواتب النهائي من المدير المالي والتنفيذي.</li>
+            <li><strong>يوم 28:</strong> تحويل صافي الرواتب لحظياً عبر شبكة <strong>InstaPay / CIB</strong>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4>الامتثال للتأمينات والضرائب:</h4>
+          <ul>
+            <li><strong>حصة الشركة في التأمينات:</strong> 18.75% تسدد شهرياً لمكتب التأمينات.</li>
+            <li><strong>حصة الموظف المستقطعة:</strong> 11% تسدد ضمن الشيك الشهري الموحد.</li>
+            <li><strong>ملف الموظف القانوني:</strong> عقد عمل رسمي محدد المدة، أصل المؤهل، الموقف التجنيدي، فيش جنائي، وكعب العمل.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="section">
+      <div class="section-header">
+        <h3>5. دورة خدمة العملاء، النزاعات، والتعويضات (Customer Care & SOS SLA) 🎧</h3>
+      </div>
+      <div class="card">
+        <p><strong>معايير الاستجابة الفورية (SLA Standards):</strong></p>
+        <ul>
+          <li><strong>بلاغات الطوارئ والسلامة (SOS 🚨):</strong> استجابة صوتية فورية وتتبع حي خلال أقل من <strong>42 ثانية</strong>، مع صلاحية إيقاف المركبة والتنسيق مع النجدة.</li>
+          <li><strong>المفقودات داخل السيارات (Lost & Found):</strong> فتح بلاغ وتجميد الرحلة والتواصل مع الكابتن لتسليم المفقودات خلال 24 ساعة.</li>
+          <li><strong>صلاحيات التعويض المالي بالمحفظة:</strong> موظف الدعم: حتى 50 ج | مشرف الدعم: حتى 100 ج | المدير المالي: أكثر من 100 ج.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="section">
+      <div class="section-header">
+        <h3>6. مصفوفة الصلاحيات واعتمادات التوقيع الرسمية (Delegation of Authority Matrix) 🛡️</h3>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>نوع المعاملة أو الصلاحية</th>
+            <th>أخصائي / مسؤول القسم</th>
+            <th>المدير المالي</th>
+            <th>مدير العمليات</th>
+            <th>مدير النظام العام (Super Admin 👑)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>اعتماد وتفعيل كابتن جديد</td>
+            <td>🟢 صلاحية كاملة (KYC)</td>
+            <td>⚪ إشعار مالي</td>
+            <td>🟢 صلاحية كاملة</td>
+            <td>🟢 اعتماد نهائي</td>
+          </tr>
+          <tr>
+            <td>تعويض محفظة راكب (حتى 50 ج)</td>
+            <td>🟢 صلاحية كاملة (دعم)</td>
+            <td>⚪ مراجعة لاحقة</td>
+            <td>🟢 متاح</td>
+            <td>🟢 متاح</td>
+          </tr>
+          <tr>
+            <td>أمر شراء حتى 25,000 ج.م</td>
+            <td>🟢 طلب أولي</td>
+            <td>🟢 مراجعة واعتماد</td>
+            <td>⚪ للعلم</td>
+            <td>🟢 متاح</td>
+          </tr>
+          <tr>
+            <td>أمر شراء أكثر من 100,000 ج.م</td>
+            <td>⚪ طلب فقط</td>
+            <td>🟢 دراسة موازنة</td>
+            <td>⚪ للعلم</td>
+            <td>👑 <strong>توقيع واعتماد حصري</strong></td>
+          </tr>
+          <tr>
+            <td>اعتماد مسير الرواتب الشهري</td>
+            <td>⚪ إعداد الكشف (HR)</td>
+            <td>🟢 تدقيق مالي شامل</td>
+            <td>⚪ للعلم</td>
+            <td>👑 <strong>توقيع واعتماد إلزامي</strong></td>
+          </tr>
+          <tr>
+            <td>إضافة مستخدم وتعديل صلاحيات</td>
+            <td>⛔ محجوب تماماً</td>
+            <td>⛔ محجوب تماماً</td>
+            <td>⛔ محجوب تماماً</td>
+            <td>👑 <strong>حصري لـ Super Admin</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Signatures -->
+    <div class="signatures-section">
+      <div class="signatures-grid">
+        <div class="sig-box">
+          <div class="sig-title">إعداد وتوثيق (Operations Lead)</div>
+          <div class="sig-name">أ. طارق عبد العزيز</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-title">المراجعة والتدقيق المالي (CFO)</div>
+          <div class="sig-name">أ. ياسمين خليل</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-title">المستشار القانوني العام (Legal)</div>
+          <div class="sig-name">المستشار / أحمد فهمي</div>
+        </div>
+        <div class="sig-box" style="border: 2px solid #b45309; background: #fffbeb;">
+          <div class="sig-title" style="color: #b45309;">الاعتماد النهائي والتصديق (Super Admin 👑)</div>
+          <div class="sig-name" style="color: #78350f;">م. هشام حنفي (رئيس مجلس الإدارة)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      جميع الحقوق محفوظة لشركة أخيل لتكنولوجيا النقل والخدمات اللوجستية ش.م.م © 2026 • وثيقة سياسات وإجراءات رسمية معتمدة
+    </div>
+  </div>
+</body>
+</html>
