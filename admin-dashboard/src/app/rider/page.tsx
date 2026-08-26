@@ -26,6 +26,7 @@ import {
   Wallet,
   CreditCard
 } from 'lucide-react';
+import LiveInteractiveMap, { MapMarker } from '../../components/LiveInteractiveMap';
 
 interface ServiceCategory {
   id: string;
@@ -206,6 +207,36 @@ export default function RiderWebApp() {
                       <span className="text-xs font-bold text-amber-300">مول سيتي ستارز، مدينة نصر (12.4 كم)</span>
                     </div>
                   </div>
+                </div>
+
+                {/* Live Interactive Map with Google Maps / Satellite / Night Mode */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
+                      <span>🗺️</span> خريطة التتبع الحية ومحيط الكباتن
+                    </span>
+                    <span className="text-[9px] text-emerald-400 font-semibold animate-pulse">
+                      ● 3 كباتن بالقرب منك
+                    </span>
+                  </div>
+                  <LiveInteractiveMap
+                    height="200px"
+                    center={[30.0444, 31.2357]}
+                    zoom={13}
+                    markers={[
+                      { id: 'pickup', lat: 30.0444, lng: 31.2357, title: 'موقعك: ميدان التحرير', type: 'pickup' },
+                      { id: 'dest', lat: 30.0733, lng: 31.3467, title: 'الوجهة: سيتي ستارز', type: 'destination' },
+                      { id: 'd1', lat: 30.0480, lng: 31.2400, title: 'محمود السيد (كابتن أخيل 👑)', car: 'تويوتا كورولا', rating: 4.95, type: 'driver' },
+                      { id: 'd2', lat: 30.0410, lng: 31.2300, title: 'أحمد فؤاد (أخيل)', car: 'هيونداي إلنترا', rating: 4.88, type: 'driver' },
+                      { id: 'd3', lat: 30.0460, lng: 31.2320, title: 'نورا السعيد (برثونة معتمدة 🌸)', car: 'كيا سيراتو', rating: 5.00, type: 'parthona' },
+                    ]}
+                    routePolyline={[
+                      [30.0444, 31.2357],
+                      [30.0520, 31.2650],
+                      [30.0610, 31.3100],
+                      [30.0733, 31.3467],
+                    ]}
+                  />
                 </div>
 
                 {/* 10 AKHIL Services Carousel */}

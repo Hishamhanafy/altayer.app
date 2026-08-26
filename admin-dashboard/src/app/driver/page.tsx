@@ -27,6 +27,7 @@ import {
   Zap,
   Award
 } from 'lucide-react';
+import LiveInteractiveMap from '../../components/LiveInteractiveMap';
 
 export default function DriverWebApp() {
   const [activeTab, setActiveTab] = useState<'radar' | 'wallet' | 'incentives' | 'profile'>('radar');
@@ -186,14 +187,26 @@ export default function DriverWebApp() {
         {activeTab === 'radar' && (
           <div className="flex-1 flex flex-col justify-between p-4 overflow-y-auto">
             {driverState === 'idle' && (
-              <div className="space-y-4 text-center py-10">
-                <div className="w-20 h-20 bg-indigo-950/60 border-2 border-dashed border-amber-500/50 rounded-full flex items-center justify-center mx-auto text-3xl animate-pulse">
-                  🛰️
+              <div className="space-y-3.5 text-center py-2">
+                <div className="flex justify-between items-center px-1 text-right">
+                  <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
+                    <span>🛰️</span> خريطة الرادار الملاحي والطلب الحي
+                  </span>
+                  <span className="text-[9px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full animate-pulse">
+                    ● أنت متصل الآن (Live GPS)
+                  </span>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="font-extrabold text-base text-white">رادار أخيل يبحث عن مشاوير...</h3>
-                  <p className="text-xs text-slate-400">أنت في نطاق الطلبات المرتفعة (وسط البلد ومصر الجديدة)</p>
-                </div>
+
+                <LiveInteractiveMap
+                  height="220px"
+                  center={[30.0444, 31.2357]}
+                  zoom={13}
+                  markers={[
+                    { id: 'me', lat: 30.0444, lng: 31.2357, title: 'موقعك الحالي (كابتن أخيل 👑)', car: 'تويوتا كورولا 2023', type: 'driver' },
+                    { id: 'hot1', lat: 30.0580, lng: 31.2500, title: 'منطقة طلب مرتفع: العتبة ورمسيس 🔥', type: 'heat' },
+                    { id: 'hot2', lat: 30.0733, lng: 31.3467, title: 'منطقة طلب مرتفع: سيتي ستارز ومصر الجديدة 🔥', type: 'heat' },
+                  ]}
+                />
 
                 <div className="p-3 bg-slate-950 border border-slate-800 rounded-2xl text-right text-xs space-y-2">
                   <div className="flex justify-between text-slate-400">
@@ -207,7 +220,7 @@ export default function DriverWebApp() {
 
                 <button
                   onClick={handleSimulateIncoming}
-                  className="w-full py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition shadow-lg shadow-amber-500/20"
+                  className="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-2xl text-xs transition shadow-lg shadow-amber-500/20"
                 >
                   محاكاة استقبال طلب رحلة جديد ⚡
                 </button>
