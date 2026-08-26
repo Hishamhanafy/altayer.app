@@ -1,0 +1,10 @@
+﻿{
+  "name": "3altayer-akhil-enterprise",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix admin-dashboard",
+    "build": "npm run build --prefix admin-dashboard",
+    "start": "npm run start --prefix admin-dashboard"
+  }
+}

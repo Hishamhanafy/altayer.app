@@ -1,0 +1,5 @@
+﻿{
+  "buildCommand": "npm run build --prefix admin-dashboard",
+  "outputDirectory": "admin-dashboard/.next",
+  "framework": "nextjs"
+}
