@@ -36,16 +36,292 @@ import {
   Download, 
   Printer, 
   Calendar, 
-  PieChart 
+  PieChart,
+  Lock,
+  Key,
+  MessageSquare,
+  PhoneCall,
+  UserCheck,
+  LifeBuoy
 } from 'lucide-react';
 import { translations, Locale } from '../locales/translations';
 
 export default function AdminDashboardPage() {
   const [lang, setLang] = useState<Locale>('ar');
-  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'hr_payroll' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'hr_payroll' | 'crm_support' | 'rbac_users' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [simulatedDriversCount, setSimulatedDriversCount] = useState(142);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  // CRM & Customer Service State
+  const [crmViewMode, setCrmViewMode] = useState<'tickets' | 'customer_profiles' | 'lost_items' | 'sos_emergency'>('tickets');
+  const [crmFilter, setCrmFilter] = useState<'all' | 'open' | 'resolved' | 'urgent'>('all');
+
+  const [supportTicketsList, setSupportTicketsList] = useState([
+    {
+      id: 'TCK-8801',
+      user: 'سارة إبراهيم (راكبة VIP 💎)',
+      phone: '+201011223344',
+      type: 'مشكلة تسعير / زيادة أجرة',
+      channel: 'شات مباشر (In-App)',
+      priority: 'HIGH',
+      status: 'OPEN',
+      rideId: '#ALT-8821',
+      date: 'منذ 15 دقيقة',
+      agent: 'مصطفى النجار',
+      desc: 'الكابتن سلك مساراً أطول بسبب غلق طريق المحور مما زاد الأجرة بمقدار 20 ج.م عن التقدير.',
+    },
+    {
+      id: 'TCK-8802',
+      user: 'أحمد فؤاد (كابتن ذهبي 👑)',
+      phone: '+201122334455',
+      type: 'استفسار عن حافز الضمان المالي',
+      channel: 'اتصال هاتفي 📞',
+      priority: 'NORMAL',
+      status: 'RESOLVED',
+      rideId: '-',
+      date: 'منذ ساعة',
+      agent: 'مصطفى النجار',
+      desc: 'استفسار عن موعد صرف حافز الـ 50 مشوار الأسبوعي، تم الشرح وتحويل الرصيد لمحفظته.',
+    },
+    {
+      id: 'TCK-8803',
+      user: 'ياسمين مصطفى (برثونة 🌸)',
+      phone: '+201233445566',
+      type: 'مفقودات داخل السيارة (Lost Item)',
+      channel: 'واتساب رسمي (WhatsApp)',
+      priority: 'HIGH',
+      status: 'IN_PROGRESS',
+      rideId: '#ALT-8810',
+      date: 'منذ ساعتين',
+      agent: 'مروة الشافعي',
+      desc: 'الراكبة نسيت حقيبة يد صغيرة جلد سوداء في المقعد الخلفي، تم التواصل مع الكابتن لتسليمها.',
+    },
+    {
+      id: 'TCK-8804',
+      user: 'عمر خالد (راكب)',
+      phone: '+201099881122',
+      type: 'طوارئ وأمان (SOS Alert 🚨)',
+      channel: 'زر الطوارئ SOS',
+      priority: 'URGENT',
+      status: 'RESOLVED',
+      rideId: '#ALT-8805',
+      date: 'أمس 11:30 م',
+      agent: 'طارق عبد العزيز (مدير العمليات)',
+      desc: 'تم الضغط بالخطأ على زر الطوارئ، وتم الاتصال بالراكب فوراً في 45 ثانية والتأكد من سلامته.',
+    },
+  ]);
+
+  const [crmProfilesList, setCrmProfilesList] = useState([
+    {
+      id: 'CRM-R01',
+      name: 'سارة إبراهيم',
+      type: 'RIDER',
+      tier: 'VIP 💎',
+      totalRides: 142,
+      totalSpent: '12,850 ج.م',
+      rating: '4.95 ⭐',
+      walletBalance: '240.00 ج.م',
+      status: 'ACTIVE',
+      joined: '01/2025',
+    },
+    {
+      id: 'CRM-D02',
+      name: 'محمود السيد',
+      type: 'DRIVER',
+      tier: 'بلاتيني 👑',
+      totalRides: 890,
+      totalEarned: '74,200 ج.م',
+      rating: '4.98 ⭐',
+      walletBalance: '132.50 ج.م',
+      status: 'ACTIVE',
+      joined: '11/2024',
+    },
+    {
+      id: 'CRM-R03',
+      name: 'محمد سامح',
+      type: 'RIDER',
+      tier: 'ذهبي 🥇',
+      totalRides: 68,
+      totalSpent: '5,900 ج.م',
+      rating: '4.88 ⭐',
+      walletBalance: '85.00 ج.م',
+      status: 'ACTIVE',
+      joined: '03/2025',
+    },
+  ]);
+
+  const [lostItemsList, setLostItemsList] = useState([
+    { id: 'LST-01', item: 'حقيبة يد جلد سوداء', rideId: '#ALT-8810', rider: 'ياسمين مصطفى', driver: 'حسن علي', status: 'IN_PROGRESS', date: '26/08/2026' },
+    { id: 'LST-02', item: 'نظارة شمسية RayBan', rideId: '#ALT-8790', rider: 'كريم عبد الله', driver: 'أحمد فؤاد', status: 'DELIVERED', date: '24/08/2026' },
+  ]);
+
+  const [showAddTicketModal, setShowAddTicketModal] = useState(false);
+  const [newTicket, setNewTicket] = useState({
+    user: '',
+    phone: '',
+    type: 'مشكلة تسعير / زيادة أجرة',
+    channel: 'شات مباشر (In-App)',
+    priority: 'HIGH',
+    desc: '',
+    rideId: '',
+  });
+
+  const handleCreateTicketSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTicket.user || !newTicket.desc) {
+      alert('يرجى إدخال اسم العميل وشرح الشكوى!');
+      return;
+    }
+    const created = {
+      id: `TCK-880${supportTicketsList.length + 1}`,
+      user: newTicket.user,
+      phone: newTicket.phone || '+201000000000',
+      type: newTicket.type,
+      channel: newTicket.channel,
+      priority: newTicket.priority,
+      status: 'OPEN',
+      rideId: newTicket.rideId || '-',
+      date: 'الآن',
+      agent: 'مصطفى النجار',
+      desc: newTicket.desc,
+    };
+    setSupportTicketsList(prev => [created, ...prev]);
+    setShowAddTicketModal(false);
+    setNewTicket({
+      user: '',
+      phone: '',
+      type: 'مشكلة تسعير / زيادة أجرة',
+      channel: 'شات مباشر (In-App)',
+      priority: 'HIGH',
+      desc: '',
+      rideId: '',
+    });
+    alert(`تم فتح تذكرة الدعم (${created.id}) وتوجيهها لفريق العمليات بنجاح 🎧🟢`);
+  };
+
+  const handleResolveTicket = (id: string) => {
+    setSupportTicketsList(prev => prev.map(t => t.id === id ? { ...t, status: 'RESOLVED' } : t));
+    alert('تم إغلاق التذكرة وتأكيد رضا العميل بنجاح 🟢');
+  };
+
+  const handleRefundTicket = (id: string, user: string, amount: number = 25) => {
+    setSupportTicketsList(prev => prev.map(t => t.id === id ? { ...t, status: 'RESOLVED' } : t));
+    alert(`تم تعويض رصيد ${amount} ج.م في محفظة (${user}) وإغلاق التذكرة بنجاح 💎🟢`);
+  };
+
+  // RBAC & Users Roles State
+  const [rbacViewMode, setRbacViewMode] = useState<'users' | 'roles_matrix' | 'audit_logs'>('users');
+
+  const [adminUsersList, setAdminUsersList] = useState([
+    {
+      id: 'USR-01',
+      name: 'هشام حنفي (Super Admin 👑)',
+      email: 'admin@akhil.app',
+      role: 'مدير النظام العام (Super Admin)',
+      permissions: ['ALL_PERMISSIONS', 'FINANCIALS', 'PRICING', 'HR', 'CRM', 'KYC', 'RADAR'],
+      twoFactor: true,
+      lastLogin: 'منذ دقيقة (IP: 197.38.112.4)',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'USR-02',
+      name: 'طارق عبد العزيز',
+      email: 'tarek.ops@akhil.app',
+      role: 'مدير العمليات والأمان (Ops Lead)',
+      permissions: ['RADAR', 'RIDES', 'HOTSPOTS', 'DISPUTES', 'PAYOUTS', 'CRM_FULL'],
+      twoFactor: true,
+      lastLogin: 'منذ 10 دقائق',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'USR-03',
+      name: 'ياسمين خليل',
+      email: 'yasmine.fin@akhil.app',
+      role: 'المدير المالي والمحاسبة (Finance Officer)',
+      permissions: ['FINANCIALS', 'STARTUP_CAPITAL', 'JOURNAL_ENTRIES', 'PAYROLL', 'PAYOUTS'],
+      twoFactor: true,
+      lastLogin: 'منذ ساعتين',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'USR-04',
+      name: 'مروة الشافعي',
+      email: 'marwa.kyc@akhil.app',
+      role: 'مسؤول توثيق الكباتن والفحص الطبي (KYC Officer)',
+      permissions: ['DRIVERS_KYC', 'MEDICAL_TESTS', 'CRIMINAL_RECORDS'],
+      twoFactor: true,
+      lastLogin: 'منذ 3 ساعات',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'USR-05',
+      name: 'مصطفى النجار',
+      email: 'mostafa.support@akhil.app',
+      role: 'أخصائي خدمة عملاء (Support Specialist)',
+      permissions: ['CRM_TICKETS', 'LOST_ITEMS', 'REFUND_LIMITED_50EGP', 'CHAT_VIEW'],
+      twoFactor: false,
+      lastLogin: 'منذ 5 دقائق',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'USR-06',
+      name: 'سارة عبد الفتاح',
+      email: 'sara.marketing@akhil.app',
+      role: 'مدير التسويق والعروض (Growth & Promo Lead)',
+      permissions: ['PROMO_CODES', 'DRIVER_QUESTS', 'REPORTS_VIEW'],
+      twoFactor: true,
+      lastLogin: 'منذ يوم',
+      status: 'ACTIVE',
+    },
+  ]);
+
+  const [auditLogsList, setAuditLogsList] = useState([
+    { id: 'AUD-901', user: 'هشام حنفي (Super Admin)', action: 'تعديل رأس المال المصدر ومصاريف التأسيس', module: 'الماليات', time: '26/08/2026 11:40', ip: '197.38.112.4' },
+    { id: 'AUD-900', user: 'ياسمين خليل (Finance)', action: 'اعتماد وصرف مسير رواتب شهر أغسطس', module: 'الموارد البشرية', time: '26/08/2026 11:20', ip: '197.38.110.12' },
+    { id: 'AUD-899', user: 'مروة الشافعي (KYC)', action: 'اعتماد نتيجة فحص معمل البرج للكابتن #101', module: 'الفحص الطبي', time: '26/08/2026 10:45', ip: '197.38.115.89' },
+    { id: 'AUD-898', user: 'مصطفى النجار (Support)', action: 'تعويض محفظة راكب بـ 25 ج.م لتذكرة #8801', module: 'خدمة العملاء', time: '26/08/2026 10:15', ip: '197.38.111.33' },
+  ]);
+
+  const [showAddAdminUserModal, setShowAddAdminUserModal] = useState(false);
+  const [newAdminUser, setNewAdminUser] = useState({
+    name: '',
+    email: '',
+    role: 'أخصائي خدمة عملاء (Support Specialist)',
+    password: '',
+  });
+
+  const handleCreateAdminUserSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAdminUser.name || !newAdminUser.email) {
+      alert('يرجى إدخال اسم المستخدم وبريده الإلكتروني!');
+      return;
+    }
+    const created = {
+      id: `USR-0${adminUsersList.length + 1}`,
+      name: newAdminUser.name,
+      email: newAdminUser.email,
+      role: newAdminUser.role,
+      permissions: newAdminUser.role.includes('Super Admin') ? ['ALL_PERMISSIONS'] : ['CRM_TICKETS', 'VIEW_ONLY'],
+      twoFactor: true,
+      lastLogin: 'لم يسجل دخول بعد',
+      status: 'ACTIVE',
+    };
+    setAdminUsersList(prev => [...prev, created]);
+    setShowAddAdminUserModal(false);
+    setNewAdminUser({
+      name: '',
+      email: '',
+      role: 'أخصائي خدمة عملاء (Support Specialist)',
+      password: '',
+    });
+    alert(`تم إنشاء حساب المستخدم (${created.name}) وتعيين الصلاحيات المحددة بنجاح 🛡️🟢`);
+  };
+
+  const handleToggleAdminUserStatus = (id: string) => {
+    setAdminUsersList(prev => prev.map(u => u.id === id ? { ...u, status: u.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE' } : u));
+    alert('تم تحديث حالة تفعيل حساب المستخدم 🔄');
+  };
 
   // HR & Payroll Module State
   const [hrViewMode, setHrViewMode] = useState<'employees' | 'payroll' | 'leaves' | 'insurance_taxes'>('employees');
@@ -842,6 +1118,29 @@ export default function AdminDashboardPage() {
               <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-cyan-500/20 text-cyan-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
                 {employeesList.length} موظف
               </span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('crm_support')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'crm_support' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Headphones className="w-4 h-4 text-emerald-400" />
+              خدمة العملاء وCRM 🎧
+              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                {supportTicketsList.filter(t => t.status === 'OPEN').length} شكوى
+              </span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('rbac_users')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'rbac_users' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Lock className="w-4 h-4 text-purple-400" />
+              المستخدمين والصلاحيات (RBAC) 🛡️
             </button>
 
             <button
@@ -1763,6 +2062,525 @@ export default function AdminDashboardPage() {
                         تُستقطع تلقائياً من مسير الرواتب شهرياً وتُورد لمصلحة الضرائب والتأمينات وفق الشرائح الرسمية المعفية والخاضعة.
                       </p>
                     </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB: CRM & CUSTOMER SERVICE (خدمة العملاء وإدارة علاقات العملاء) */}
+          {activeTab === 'crm_support' && (
+            <div className="space-y-6">
+              {/* Sub-Tab Navigation */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+                <div className="flex flex-wrap gap-1.5 text-xs font-bold">
+                  {[
+                    { id: 'tickets', label: '🎫 تذاكر الدعم والشكاوى' },
+                    { id: 'customer_profiles', label: '👤 سجل العملاء والكباتن (CRM 360°)' },
+                    { id: 'lost_items', label: '💼 المفقودات داخل السيارات' },
+                    { id: 'sos_emergency', label: '🚨 مركز الطوارئ والسلامة (SOS)' },
+                  ].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setCrmViewMode(sub.id as any)}
+                      className={`px-3.5 py-2 rounded-xl transition ${
+                        crmViewMode === sub.id 
+                          ? 'bg-indigo-900 text-amber-300 font-black shadow-lg shadow-indigo-900/40 border border-amber-500/30' 
+                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowAddTicketModal(true)}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow"
+                  >
+                    <span>➕</span> فتح تذكرة دعم جديدة 🎧
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-700"
+                  >
+                    <Printer className="w-4 h-4" />
+                    طباعة التقرير 📄
+                  </button>
+                </div>
+              </div>
+
+              {/* SUB-VIEW 1: SUPPORT TICKETS */}
+              {crmViewMode === 'tickets' && (
+                <div className="space-y-6">
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">إجمالي التذاكر المسجلة</span>
+                      <div className="text-xl font-black text-white font-mono">{supportTicketsList.length} تذكرة</div>
+                      <span className="text-[10px] text-slate-400">اليوم والأسبوع الجاري</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-amber-500/30 rounded-2xl space-y-1">
+                      <span className="text-xs text-amber-300">تذاكر قيد المتابعة والحل</span>
+                      <div className="text-xl font-black text-amber-400 font-mono">
+                        {supportTicketsList.filter(t => t.status === 'OPEN' || t.status === 'IN_PROGRESS').length} تذكرة
+                      </div>
+                      <span className="text-[10px] text-amber-400">متوسط وقت الرد: 4.2 دقيقة ⚡</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-emerald-500/30 rounded-2xl space-y-1">
+                      <span className="text-xs text-emerald-300">تذاكر تم حلها ورضا العميل</span>
+                      <div className="text-xl font-black text-emerald-400 font-mono">
+                        {supportTicketsList.filter(t => t.status === 'RESOLVED').length} تذكرة (94%)
+                      </div>
+                      <span className="text-[10px] text-emerald-300">معدل تقييم الخدمة 4.9 ⭐</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-rose-500/30 rounded-2xl space-y-1">
+                      <span className="text-xs text-rose-300">حالات طوارئ SOS عاجلة</span>
+                      <div className="text-xl font-black text-rose-400 font-mono">
+                        {supportTicketsList.filter(t => t.priority === 'URGENT').length} حالة
+                      </div>
+                      <span className="text-[10px] text-rose-300 font-bold">زمن الاستجابة &lt; دقيقة 🚨</span>
+                    </div>
+                  </div>
+
+                  {/* Tickets Table */}
+                  <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                      <h3 className="font-extrabold text-base text-white">جدول تذاكر الدعم الفني وخدمة العملاء 24/7:</h3>
+                      <div className="flex gap-1 text-xs font-bold">
+                        {(['all', 'open', 'resolved', 'urgent'] as const).map((f) => (
+                          <button
+                            key={f}
+                            onClick={() => setCrmFilter(f)}
+                            className={`px-2.5 py-1 rounded-lg transition ${
+                              crmFilter === f ? 'bg-indigo-900 text-amber-300' : 'text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            {f === 'all' ? 'الكل' : f === 'open' ? 'المفتوحة ⏳' : f === 'resolved' ? 'المغلقة 🟢' : 'طوارئ SOS 🚨'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-right text-xs">
+                        <thead>
+                          <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                            <th className="pb-3 px-3">رقم التذكرة</th>
+                            <th className="pb-3 px-3">العميل والهاتف</th>
+                            <th className="pb-3 px-3">نوع الشكوى</th>
+                            <th className="pb-3 px-3">القناة</th>
+                            <th className="pb-3 px-3">الأولوية</th>
+                            <th className="pb-3 px-3">التفاصيل والوقت</th>
+                            <th className="pb-3 px-3">المسؤول</th>
+                            <th className="pb-3 px-3">الحالة</th>
+                            <th className="pb-3 px-3">الإجراء السريع</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                          {supportTicketsList
+                            .filter(t => {
+                              if (crmFilter === 'open') return t.status === 'OPEN' || t.status === 'IN_PROGRESS';
+                              if (crmFilter === 'resolved') return t.status === 'RESOLVED';
+                              if (crmFilter === 'urgent') return t.priority === 'URGENT';
+                              return true;
+                            })
+                            .map((tck) => (
+                              <tr key={tck.id} className="hover:bg-slate-950/60 transition">
+                                <td className="py-3.5 px-3 font-mono font-bold text-amber-400">{tck.id}</td>
+                                <td className="py-3.5 px-3">
+                                  <div className="font-bold text-white text-xs">{tck.user}</div>
+                                  <div className="text-[10px] text-slate-400 font-mono">{tck.phone}</div>
+                                </td>
+                                <td className="py-3.5 px-3 font-semibold text-slate-200">{tck.type}</td>
+                                <td className="py-3.5 px-3 text-slate-400 text-[11px]">{tck.channel}</td>
+                                <td className="py-3.5 px-3">
+                                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                    tck.priority === 'URGENT' 
+                                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse' 
+                                      : tck.priority === 'HIGH' 
+                                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
+                                      : 'bg-slate-800 text-slate-300'
+                                  }`}>
+                                    {tck.priority === 'URGENT' ? '🚨 عاجل SOS' : tck.priority === 'HIGH' ? '⚡ عالي' : 'عادي'}
+                                  </span>
+                                </td>
+                                <td className="py-3.5 px-3 max-w-xs">
+                                  <div className="truncate text-slate-300 text-[11px]">{tck.desc}</div>
+                                  <div className="text-[10px] text-slate-500 font-mono">{tck.date} • رحلة {tck.rideId}</div>
+                                </td>
+                                <td className="py-3.5 px-3 text-slate-300 text-[11px]">{tck.agent}</td>
+                                <td className="py-3.5 px-3">
+                                  {tck.status === 'RESOLVED' ? (
+                                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                      تم الحل 🟢
+                                    </span>
+                                  ) : (
+                                    <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                      قيد المتابعة ⏳
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="py-3.5 px-3">
+                                  {tck.status !== 'RESOLVED' && (
+                                    <div className="flex gap-1">
+                                      <button
+                                        onClick={() => handleResolveTicket(tck.id)}
+                                        className="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-[10px]"
+                                      >
+                                        إغلاق 🟢
+                                      </button>
+                                      <button
+                                        onClick={() => handleRefundTicket(tck.id, tck.user, 25)}
+                                        className="px-2 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white rounded-lg font-bold text-[10px]"
+                                      >
+                                        تعويض 25 ج 💎
+                                      </button>
+                                    </div>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 2: CRM 360 PROFILES */}
+              {crmViewMode === 'customer_profiles' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white">سجل الـ CRM وملفات العملاء والكباتن الشاملة (360° View):</h3>
+                    <span className="text-xs bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-xl font-mono font-bold">
+                      تصنيف الولاء الماسي 💎
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">كود الحساب</th>
+                          <th className="pb-3 px-4">الاسم والنوع</th>
+                          <th className="pb-3 px-4">مستوى الولاء</th>
+                          <th className="pb-3 px-4">إجمالي الرحلات</th>
+                          <th className="pb-3 px-4">إجمالي الإنفاق / الأرباح</th>
+                          <th className="pb-3 px-4">التقييم</th>
+                          <th className="pb-3 px-4">رصيد المحفظة</th>
+                          <th className="pb-3 px-4">تاريخ الانضمام</th>
+                          <th className="pb-3 px-4">الحالة</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {crmProfilesList.map((prof) => (
+                          <tr key={prof.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{prof.id}</td>
+                            <td className="py-3.5 px-4">
+                              <div className="font-bold text-white text-xs">{prof.name}</div>
+                              <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${prof.type === 'RIDER' ? 'bg-sky-500/20 text-sky-300' : 'bg-amber-500/20 text-amber-300'}`}>
+                                {prof.type === 'RIDER' ? 'راكب 🧑🏻' : 'كابتن 👨🏻‍✈️'}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 font-bold text-amber-300">{prof.tier}</td>
+                            <td className="py-3.5 px-4 font-mono font-bold text-white">{prof.totalRides} رحلة</td>
+                            <td className="py-3.5 px-4 font-mono font-black text-emerald-400">{prof.totalSpent || prof.totalEarned}</td>
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{prof.rating}</td>
+                            <td className="py-3.5 px-4 font-mono font-bold text-purple-300">{prof.walletBalance}</td>
+                            <td className="py-3.5 px-4 font-mono text-slate-400">{prof.joined}</td>
+                            <td className="py-3.5 px-4">
+                              <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                نشط 🟢
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 3: LOST AND FOUND */}
+              {crmViewMode === 'lost_items' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <h3 className="font-extrabold text-base text-white">سجل المفقودات والمتعلقات المستردة داخل سيارات أخيل:</h3>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">رقم البلاغ</th>
+                          <th className="pb-3 px-4">الشيء المفقود</th>
+                          <th className="pb-3 px-4">رقم الرحلة</th>
+                          <th className="pb-3 px-4">الراكب</th>
+                          <th className="pb-3 px-4">الكابتن</th>
+                          <th className="pb-3 px-4">التاريخ</th>
+                          <th className="pb-3 px-4">حالة الاسترداد</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {lostItemsList.map((item) => (
+                          <tr key={item.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{item.id}</td>
+                            <td className="py-3.5 px-4 font-bold text-white">{item.item}</td>
+                            <td className="py-3.5 px-4 font-mono text-sky-400">{item.rideId}</td>
+                            <td className="py-3.5 px-4 text-slate-300">{item.rider}</td>
+                            <td className="py-3.5 px-4 text-slate-300">{item.driver}</td>
+                            <td className="py-3.5 px-4 font-mono text-slate-400">{item.date}</td>
+                            <td className="py-3.5 px-4">
+                              {item.status === 'DELIVERED' ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  تم التسليم للراكب 🟢
+                                </span>
+                              ) : (
+                                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  جاري التنسيق والتسليم ⏳
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 4: SOS EMERGENCY HUB */}
+              {crmViewMode === 'sos_emergency' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-6">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <div>
+                      <h3 className="font-extrabold text-base text-rose-400 flex items-center gap-2">
+                        <AlertTriangle className="w-5 h-5 text-rose-500 animate-pulse" />
+                        مركز طوارئ وأمان الرحلات الفوري (SOS Emergency Hub)
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">مراقبة تنبيهات الطوارئ والاتصال الفوري والتنسيق مع النجدة والإسعاف</p>
+                    </div>
+                    <span className="text-xs bg-rose-500/20 text-rose-300 px-3 py-1 rounded-xl font-bold font-mono animate-pulse">
+                      استجابة فورية 24/7
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-slate-950 border border-rose-500/30 rounded-2xl space-y-2">
+                      <span className="text-xs text-rose-300 font-bold">متوسط وقت الاستجابة لبلاغ SOS:</span>
+                      <div className="text-2xl font-black text-rose-400 font-mono">42 ثانية ⚡</div>
+                      <p className="text-[10px] text-slate-400">اتصال صوتي مباشر + مشاركة الإحداثيات الحية مع النجدة</p>
+                    </div>
+
+                    <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-300 font-bold">التسجيل الصوتي المشفر للرحلات:</span>
+                      <div className="text-2xl font-black text-emerald-400 font-mono">مفعل 100% 🎙️</div>
+                      <p className="text-[10px] text-slate-400">يُحفظ بأعلى معايير التشفير لفض النزاعات وحماية الركاب والكباتن</p>
+                    </div>
+
+                    <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-300 font-bold">فريق الأمان والسلامة الميداني:</span>
+                      <div className="text-2xl font-black text-cyan-400 font-mono">جاهزية 24/7 🛡️</div>
+                      <p className="text-[10px] text-slate-400">إمكانية إيقاف المركبة عن بُعد والتواصل مع جهات إنفاذ القانون</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB: RBAC & USER PERMISSIONS (إدارة المستخدمين والصلاحيات) */}
+          {activeTab === 'rbac_users' && (
+            <div className="space-y-6">
+              {/* RBAC Sub-Tab Navigation */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+                <div className="flex flex-wrap gap-1.5 text-xs font-bold">
+                  {[
+                    { id: 'users', label: '🛡️ مديري ومستخدمي لوحة التحكم' },
+                    { id: 'roles_matrix', label: '📊 مصفوفة الصلاحيات والأدوار' },
+                    { id: 'audit_logs', label: '📜 سجل الرقابة والعمليات الأمنية (Audit Logs)' },
+                  ].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setRbacViewMode(sub.id as any)}
+                      className={`px-3.5 py-2 rounded-xl transition ${
+                        rbacViewMode === sub.id 
+                          ? 'bg-indigo-900 text-amber-300 font-black shadow-lg shadow-indigo-900/40 border border-amber-500/30' 
+                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowAddAdminUserModal(true)}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow"
+                  >
+                    <span>➕</span> إضافة مستخدم أو مدير جديد 🛡️
+                  </button>
+                </div>
+              </div>
+
+              {/* SUB-VIEW 1: ADMIN USERS DIRECTORY */}
+              {rbacViewMode === 'users' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white">مديرو ومسؤولو لوحة التحكم والمستويات الأمنية:</h3>
+                    <span className="text-xs bg-purple-500/20 text-purple-300 px-3 py-1 rounded-xl font-mono font-bold">
+                      تشفير وصلاحيات دقيقة (RBAC)
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">كود المستخدم</th>
+                          <th className="pb-3 px-4">الاسم والبريد الإلكتروني</th>
+                          <th className="pb-3 px-4">الدور الوظيفي (Role)</th>
+                          <th className="pb-3 px-4">المصادقة الثنائية (2FA)</th>
+                          <th className="pb-3 px-4">آخر تسجيل دخول</th>
+                          <th className="pb-3 px-4">الحالة</th>
+                          <th className="pb-3 px-4">الإجراء</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {adminUsersList.map((user) => (
+                          <tr key={user.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{user.id}</td>
+                            <td className="py-3.5 px-4">
+                              <div className="font-bold text-white text-xs">{user.name}</div>
+                              <div className="text-[10px] text-slate-400 font-mono">{user.email}</div>
+                            </td>
+                            <td className="py-3.5 px-4 font-semibold text-purple-300">{user.role}</td>
+                            <td className="py-3.5 px-4">
+                              {user.twoFactor ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  مفعلة 🔒
+                                </span>
+                              ) : (
+                                <span className="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  معطلة ⚠️
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4 font-mono text-[11px] text-slate-400">{user.lastLogin}</td>
+                            <td className="py-3.5 px-4">
+                              {user.status === 'ACTIVE' ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  نشط 🟢
+                                </span>
+                              ) : (
+                                <span className="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  معطل 🚫
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3.5 px-4">
+                              <button
+                                onClick={() => handleToggleAdminUserStatus(user.id)}
+                                className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${
+                                  user.status === 'ACTIVE' ? 'bg-rose-600/80 hover:bg-rose-600 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                                }`}
+                              >
+                                {user.status === 'ACTIVE' ? 'تعطيل الحساب' : 'تفعيل'}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 2: ROLES PERMISSIONS MATRIX */}
+              {rbacViewMode === 'roles_matrix' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <h3 className="font-extrabold text-base text-white">مصفوفة الصلاحيات حسب الدور الوظيفي (Access Matrix):</h3>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-3">الوحدة / القسم</th>
+                          <th className="pb-3 px-3">Super Admin 👑</th>
+                          <th className="pb-3 px-3">مدير العمليات 🚗</th>
+                          <th className="pb-3 px-3">مشرف KYC 🧪</th>
+                          <th className="pb-3 px-3">خدمة العملاء 🎧</th>
+                          <th className="pb-3 px-3">المدير المالي 📑</th>
+                          <th className="pb-3 px-3">التسويق 🎟️</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {[
+                          { mod: 'رادار الرحلات والمحاكاة الحية', sa: 'كامل', ops: 'كامل', kyc: 'قراءة', sup: 'قراءة', fin: 'قراءة', mkt: 'قراءة' },
+                          { mod: 'الحسابات الختامية ورأس المال', sa: 'كامل', ops: 'محجوب', kyc: 'محجوب', sup: 'محجوب', fin: 'كامل', mkt: 'محجوب' },
+                          { mod: 'الموارد البشرية ومسير الرواتب', sa: 'كامل', ops: 'محجوب', kyc: 'محجوب', sup: 'محجوب', fin: 'كامل', mkt: 'محجوب' },
+                          { mod: 'فحص التحاليل الطبية والـ KYC', sa: 'كامل', ops: 'قراءة', kyc: 'كامل', sup: 'قراءة', fin: 'محجوب', mkt: 'محجوب' },
+                          { mod: 'خدمة العملاء والتذاكر والتعويضات', sa: 'كامل', ops: 'كامل', kyc: 'قراءة', sup: 'كامل (حد 100 ج)', fin: 'قراءة', mkt: 'قراءة' },
+                          { mod: 'العروض وأكواد الخصم والكويستات', sa: 'كامل', ops: 'قراءة', kyc: 'محجوب', sup: 'قراءة', fin: 'قراءة', mkt: 'كامل' },
+                          { mod: 'التسعير الماستر والعمولات 10%', sa: 'كامل', ops: 'محجوب', kyc: 'محجوب', sup: 'محجوب', fin: 'محجوب', mkt: 'محجوب' },
+                          { mod: 'إدارة المستخدمين والصلاحيات', sa: 'كامل', ops: 'محجوب', kyc: 'محجوب', sup: 'محجوب', fin: 'محجوب', mkt: 'محجوب' },
+                        ].map((row, idx) => (
+                          <tr key={idx} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3 px-3 font-bold text-white">{row.mod}</td>
+                            <td className="py-3 px-3 text-emerald-400 font-bold">{row.sa}</td>
+                            <td className="py-3 px-3 font-semibold">{row.ops === 'كامل' ? '🟢 كامل' : row.ops === 'قراءة' ? '👁️ قراءة' : '⛔ محجوب'}</td>
+                            <td className="py-3 px-3 font-semibold">{row.kyc === 'كامل' ? '🟢 كامل' : row.kyc === 'قراءة' ? '👁️ قراءة' : '⛔ محجوب'}</td>
+                            <td className="py-3 px-3 font-semibold">{row.sup.includes('كامل') ? '🟢 كامل' : row.sup === 'قراءة' ? '👁️ قراءة' : '⛔ محجوب'}</td>
+                            <td className="py-3 px-3 font-semibold">{row.fin === 'كامل' ? '🟢 كامل' : row.fin === 'قراءة' ? '👁️ قراءة' : '⛔ محجوب'}</td>
+                            <td className="py-3 px-3 font-semibold">{row.mkt === 'كامل' ? '🟢 كامل' : row.mkt === 'قراءة' ? '👁️ قراءة' : '⛔ محجوب'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 3: AUDIT LOGS */}
+              {rbacViewMode === 'audit_logs' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <h3 className="font-extrabold text-base text-white">سجل الرقابة والعمليات الأمنية (System Audit Trail):</h3>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">رقم الحركة</th>
+                          <th className="pb-3 px-4">المستخدم</th>
+                          <th className="pb-3 px-4">العملية المنفذة</th>
+                          <th className="pb-3 px-4">الوحدة</th>
+                          <th className="pb-3 px-4">التوقيت</th>
+                          <th className="pb-3 px-4">عنوان الـ IP</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {auditLogsList.map((log) => (
+                          <tr key={log.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{log.id}</td>
+                            <td className="py-3.5 px-4 font-bold text-white">{log.user}</td>
+                            <td className="py-3.5 px-4 text-slate-200">{log.action}</td>
+                            <td className="py-3.5 px-4">
+                              <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px]">
+                                {log.module}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-4 font-mono text-slate-400">{log.time}</td>
+                            <td className="py-3.5 px-4 font-mono text-purple-300 text-[11px]">{log.ip}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               )}
@@ -3263,6 +4081,223 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddEmployeeModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 7: ADD CRM SUPPORT TICKET */}
+        {showAddTicketModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🎧</span> فتح وتسجيل تذكرة دعم فني / شكوى عميل
+                </h3>
+                <button
+                  onClick={() => setShowAddTicketModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateTicketSubmit} className="space-y-3.5 text-xs">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">اسم العميل أو الكابتن:</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="مثال: سارة إبراهيم"
+                      value={newTicket.user}
+                      onChange={(e) => setNewTicket({ ...newTicket, user: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رقم الهاتف:</label>
+                    <input
+                      type="tel"
+                      placeholder="010XXXXXXXX"
+                      value={newTicket.phone}
+                      onChange={(e) => setNewTicket({ ...newTicket, phone: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">نوع الشكوى / البلاغ:</label>
+                    <select
+                      value={newTicket.type}
+                      onChange={(e) => setNewTicket({ ...newTicket, type: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="مشكلة تسعير / زيادة أجرة">مشكلة تسعير / زيادة أجرة</option>
+                      <option value="مفقودات داخل السيارة (Lost Item)">مفقودات داخل السيارة</option>
+                      <option value="استفسار عن حافز أو محفظة">استفسار عن حافز أو محفظة</option>
+                      <option value="سلوك غير لائق أو نظافة المركبة">سلوك غير لائق أو نظافة المركبة</option>
+                      <option value="طوارئ وأمان (SOS Alert 🚨)">طوارئ وأمان (SOS Alert 🚨)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">قناة الاستقبال:</label>
+                    <select
+                      value={newTicket.channel}
+                      onChange={(e) => setNewTicket({ ...newTicket, channel: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="شات مباشر (In-App)">شات مباشر (In-App)</option>
+                      <option value="اتصال هاتفي 📞">اتصال هاتفي 📞</option>
+                      <option value="واتساب رسمي (WhatsApp)">واتساب رسمي (WhatsApp)</option>
+                      <option value="زر الطوارئ SOS">زر الطوارئ SOS</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">مستوى الأولوية (Priority):</label>
+                    <select
+                      value={newTicket.priority}
+                      onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="HIGH">⚡ عالي (High SLA)</option>
+                      <option value="URGENT">🚨 عاجل SOS (&lt; دقيقة)</option>
+                      <option value="NORMAL">عادي (Normal)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">كود الرحلة المرتبطة (إن وجد):</label>
+                    <input
+                      type="text"
+                      placeholder="مثال: #ALT-8821"
+                      value={newTicket.rideId}
+                      onChange={(e) => setNewTicket({ ...newTicket, rideId: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">شرح وتفاصيل الشكوى:</label>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="اكتب تفاصيل المحادثة أو البلاغ المقدم من العميل..."
+                    value={newTicket.desc}
+                    onChange={(e) => setNewTicket({ ...newTicket, desc: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    تسجيل التذكرة فوراً 🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddTicketModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 8: ADD ADMIN USER & PERMISSIONS */}
+        {showAddAdminUserModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🛡️</span> إنشاء حساب مستخدم وصلاحيات جديدة (RBAC)
+                </h3>
+                <button
+                  onClick={() => setShowAddAdminUserModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateAdminUserSubmit} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">اسم المسؤول / المستخدم:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: يوسف أحمد"
+                    value={newAdminUser.name}
+                    onChange={(e) => setNewAdminUser({ ...newAdminUser, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">البريد الإلكتروني للعمل:</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@akhil.app"
+                    value={newAdminUser.email}
+                    onChange={(e) => setNewAdminUser({ ...newAdminUser, email: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">الدور الوظيفي ومستوى الصلاحيات (Role):</label>
+                  <select
+                    value={newAdminUser.role}
+                    onChange={(e) => setNewAdminUser({ ...newAdminUser, role: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  >
+                    <option value="مدير النظام العام (Super Admin)">مدير النظام العام (Super Admin 👑 - صلاحيات 100%)</option>
+                    <option value="مدير العمليات والأمان (Ops Lead)">مدير العمليات ومراقبة الأسطول (Ops Lead 🚗)</option>
+                    <option value="المدير المالي والمحاسبة (Finance Officer)">المدير المالي والمحاسبة (Finance Officer 📑)</option>
+                    <option value="مسؤول توثيق الكباتن والفحص الطبي (KYC Officer)">مسؤول توثيق الكباتن والفحص الطبي (KYC Officer 🧪)</option>
+                    <option value="أخصائي خدمة عملاء (Support Specialist)">أخصائي خدمة عملاء (Support Specialist 🎧)</option>
+                    <option value="مدير التسويق والعروض (Growth & Promo Lead)">مدير التسويق والعروض والكويستات (Marketing 🎟️)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">كلمة المرور الافتتاحية:</label>
+                  <input
+                    type="password"
+                    placeholder="••••••••••••"
+                    value={newAdminUser.password}
+                    onChange={(e) => setNewAdminUser({ ...newAdminUser, password: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                  />
+                  <span className="text-[10px] text-slate-400 mt-1 block">سيُطلب من المستخدم تفعيل المصادقة الثنائية (2FA) عند أول تسجيل دخول 🔒</span>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    إنشاء الحساب وتفعيل الصلاحيات 🛡️🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddAdminUserModal(false)}
                     className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
                   >
                     إلغاء
