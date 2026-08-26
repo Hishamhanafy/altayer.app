@@ -1930,6 +1930,14 @@ export default function AdminDashboardPage() {
               👨🏻‍✈️ تطبيق الكابتن والبرثونة (AKHIL Captain) <ExternalLink className="w-3 h-3" />
             </a>
 
+            <a
+              href="/sop-pdf"
+              target="_blank"
+              className="text-xs bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow"
+            >
+              📄 الدورة المستندية (PDF) <ExternalLink className="w-3 h-3" />
+            </a>
+
             <div className="flex items-center gap-2 px-3 py-1 bg-slate-950/80 border border-slate-800 rounded-xl text-xs">
               <span className="text-base">{currentAuthUser.avatar}</span>
               <div className="text-right">
