@@ -59,3 +59,9 @@ APKs/
 *.apk
 *.zip
 
+
+download_apks.js
+fetch_apks_direct.js
+monitor_and_download_apks.ps1
+*.ps1
+

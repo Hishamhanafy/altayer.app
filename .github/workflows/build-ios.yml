@@ -1,0 +1,69 @@
+name: Build AKHIL iOS Applications
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.1'
+          channel: 'stable'
+          cache: true
+
+      - name: Verify Flutter Installation
+        run: flutter doctor -v
+
+      # --- Build AKHIL Rider App (iOS) ---
+      - name: Install Rider App Dependencies
+        run: |
+          cd mobile/apps/rider_app
+          flutter pub get
+
+      - name: Build Rider App (iOS Runner & IPA)
+        run: |
+          cd mobile/apps/rider_app
+          flutter build ios --no-codesign --release
+          mkdir -p build/ios/iphoneos/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
+          cd build/ios/iphoneos
+          zip -r akhil-rider-app-unsigned.ipa Payload
+          cd ../../../..
+
+      - name: Upload AKHIL Rider iOS IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: akhil-rider-ios-ipa
+          path: mobile/apps/rider_app/build/ios/iphoneos/akhil-rider-app-unsigned.ipa
+          retention-days: 14
+
+      # --- Build AKHIL Driver App (iOS) ---
+      - name: Install Driver App Dependencies
+        run: |
+          cd mobile/apps/driver_app
+          flutter pub get
+
+      - name: Build Driver App (iOS Runner & IPA)
+        run: |
+          cd mobile/apps/driver_app
+          flutter build ios --no-codesign --release
+          mkdir -p build/ios/iphoneos/Payload
+          cp -r build/ios/iphoneos/Runner.app build/ios/iphoneos/Payload/
+          cd build/ios/iphoneos
+          zip -r akhil-driver-app-unsigned.ipa Payload
+          cd ../../../..
+
+      - name: Upload AKHIL Driver iOS IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: akhil-driver-ios-ipa
+          path: mobile/apps/driver_app/build/ios/iphoneos/akhil-driver-app-unsigned.ipa
+          retention-days: 14
