@@ -415,6 +415,38 @@ export default function RiderWebApp() {
                   </span>
                 </div>
 
+                {/* Payment Method Selector in Booking Screen */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center px-1">
+                    <span className="text-[11px] font-bold text-slate-300">طريقة الدفع:</span>
+                    <span className="text-[10px] text-emerald-400 font-mono font-bold">
+                      رصيد المحفظة: {welcomeBalance} ج.م
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 text-xs">
+                    {[
+                      { id: 'cash', name: 'كاش للكابتن 💵' },
+                      { id: 'wallet', name: `المحفظة (${welcomeBalance} ج) 💳` },
+                      { id: 'instapay', name: 'إنستاباي (InstaPay) ⚡' },
+                      { id: 'credit', name: 'ادفع بعدين (Credit) 🛡️' },
+                    ].map((m) => (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => setSelectedPayment(m.id)}
+                        className={`py-2 px-2.5 rounded-xl border text-right transition flex items-center justify-between text-[11px] font-bold ${
+                          selectedPayment === m.id
+                            ? 'bg-indigo-950 border-amber-500 text-amber-300 shadow'
+                            : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        <span>{m.name}</span>
+                        {selectedPayment === m.id && <span className="text-amber-400 text-xs">✓</span>}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Price Box & CTA */}
                 <div className="pt-2">
                   <div className="flex justify-between items-center mb-2 px-1">
@@ -520,39 +552,79 @@ export default function RiderWebApp() {
 
                 <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800 space-y-2 text-xs">
                   <div className="flex justify-between text-slate-300">
-                    <span>طريقة الدفع:</span>
-                    <strong className="text-white">كاش (نقداً)</strong>
+                    <span>طريقة الدفع المختارة:</span>
+                    <strong className="text-amber-300 font-bold">
+                      {selectedPayment === 'wallet' && '💳 محفظة أخيل الرقمية (خصم آلي)'}
+                      {selectedPayment === 'instapay' && '⚡ إنستاباي فوري (InstaPay)'}
+                      {selectedPayment === 'credit' && '🛡️ ادفع بعدين (AKHIL CREDIT)'}
+                      {selectedPayment === 'cash' && '💵 نقداً (كاش للكابتن)'}
+                      {selectedPayment === 'vodafone_cash' && '📱 فودافون كاش وميزة'}
+                    </strong>
                   </div>
                   <div className="flex justify-between text-slate-300">
                     <span>قيمة المشوار:</span>
-                    <strong className="text-amber-400 font-mono font-bold">{selectedDriver?.fare || currentFare} ج.م</strong>
+                    <strong className="text-amber-400 font-mono font-bold text-sm">{selectedDriver?.fare || currentFare} ج.م</strong>
                   </div>
                 </div>
 
                 <button
                   onClick={() => {
+                    const fare = selectedDriver?.fare || currentFare;
+                    if (selectedPayment === 'wallet') {
+                      setWelcomeBalance(prev => Math.max(0, prev - fare));
+                    } else if (selectedPayment === 'credit') {
+                      setAkhilCreditLimit(prev => Math.max(0, prev - fare));
+                    }
                     setStep('completed');
-                    setWelcomeBalance(prev => Math.max(0, prev - 25));
                   }}
-                  className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-xs shadow-lg"
+                  className="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white rounded-2xl font-black text-xs shadow-lg flex items-center justify-center gap-2"
                 >
-                  محاكاة إنهاء الرحلة بنجاح 🏁
+                  <span>🏁</span>
+                  محاكاة إنهاء الرحلة وتسوية الدفع
                 </button>
               </div>
             )}
 
-            {/* Step: Completed */}
+            {/* Step: Completed with Invoice */}
             {step === 'completed' && (
-              <div className="text-center py-8 space-y-4">
-                <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl">
+              <div className="text-center py-6 space-y-4">
+                <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl animate-bounce">
                   🎉
                 </div>
-                <h3 className="font-black text-lg text-white">حمد الله على سلامتك!</h3>
-                <p className="text-xs text-slate-400">تم إكمال مشوار أخيل بنجاح وإضافة 25 نقطة ولاء إلى رصيدك 🎁</p>
+                <div className="space-y-1">
+                  <h3 className="font-black text-lg text-white">حمد الله على سلامتك!</h3>
+                  <p className="text-xs text-slate-400">تم إكمال مشوار أخيل وتسوية الحساب بنجاح</p>
+                </div>
+
+                {/* Digital Receipt Card */}
+                <div className="p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-right text-xs space-y-2 max-w-sm mx-auto shadow-inner">
+                  <div className="flex justify-between text-slate-400 border-b border-slate-800 pb-1.5 font-bold">
+                    <span>فاتورة المشوار الرقمية:</span>
+                    <span className="font-mono text-amber-400">#ALT-{Math.floor(1000 + Math.random() * 9000)}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-300">
+                    <span>طريقة السداد:</span>
+                    <span className="font-bold text-emerald-400">
+                      {selectedPayment === 'wallet' && 'تم الخصم من المحفظة 💳'}
+                      {selectedPayment === 'instapay' && 'تم التحويل عبر InstaPay ⚡'}
+                      {selectedPayment === 'credit' && 'مُرحل على خدمة ادفع بعدين 🛡️'}
+                      {selectedPayment === 'cash' && 'سُدد نقداً للكابتن 💵'}
+                      {selectedPayment === 'vodafone_cash' && 'سُدد بمحفظة ميزة / فودافون كاش 📱'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-slate-300">
+                    <span>المبلغ المسدد:</span>
+                    <span className="font-mono font-bold text-white">{selectedDriver?.fare || currentFare} ج.م</span>
+                  </div>
+                  <div className="flex justify-between text-slate-400 border-t border-slate-800 pt-1.5 text-[11px]">
+                    <span>رصيد محفظتك الحالي:</span>
+                    <span className="font-mono font-bold text-emerald-400">{welcomeBalance} ج.م</span>
+                  </div>
+                </div>
 
                 <button
                   onClick={() => setStep('create')}
-                  className="w-full py-3 bg-amber-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-amber-400 shadow-lg"
+                  className="w-full py-3.5 bg-amber-500 text-slate-950 font-black rounded-2xl text-xs hover:bg-amber-400 shadow-lg"
                 >
                   طلب مشوار جديد 🐎
                 </button>
@@ -599,15 +671,39 @@ export default function RiderWebApp() {
 
         {/* TAB 3: WALLET & PAYMENT METHODS */}
         {activeTab === 'wallet' && (
-          <div className="flex-1 p-4 space-y-3 overflow-y-auto">
-            <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
+          <div className="flex-1 p-4 space-y-3.5 overflow-y-auto">
+            <div className="p-4 bg-gradient-to-br from-indigo-950 to-slate-950 border border-slate-800 rounded-2xl space-y-3 shadow-lg">
               <div className="flex justify-between items-center">
-                <span className="text-xs text-slate-400 font-medium">رصيد محفظة أخيل المتاح:</span>
-                <span className="text-lg font-black text-emerald-400 font-mono">{welcomeBalance} ج.م</span>
+                <span className="text-xs text-slate-300 font-medium">رصيد محفظة أخيل المتاح:</span>
+                <span className="text-xl font-black text-emerald-400 font-mono">{welcomeBalance} ج.م</span>
               </div>
-              <div className="flex justify-between items-center text-xs text-slate-400 pt-1 border-t border-slate-800">
+              <div className="flex justify-between items-center text-xs text-slate-400 pt-2 border-t border-slate-800">
                 <span>حد خدمة AKHIL CREDIT (ادفع بعدين):</span>
                 <span className="font-bold text-amber-400 font-mono">{akhilCreditLimit} ج.م</span>
+              </div>
+            </div>
+
+            {/* Quick Top-Up Wallet via InstaPay */}
+            <div className="p-3 bg-slate-950 border border-slate-800 rounded-2xl space-y-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="font-bold text-white flex items-center gap-1.5">
+                  <span>⚡</span> شحن المحفظة فوري (InstaPay):
+                </span>
+                <span className="text-[10px] text-emerald-400">إيداع لحظي 24/7</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {[50, 100, 200].map((amt) => (
+                  <button
+                    key={amt}
+                    type="button"
+                    onClick={() => {
+                      setWelcomeBalance(prev => prev + amt);
+                    }}
+                    className="py-2 px-2 bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white border border-emerald-500/30 rounded-xl text-xs font-bold transition shadow"
+                  >
+                    + {amt} ج.م
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -615,9 +711,10 @@ export default function RiderWebApp() {
               <span className="text-xs font-bold text-slate-300">وسائل الدفع المعتمدة:</span>
               {[
                 { id: 'cash', name: 'نقداً (كاش للكابتن مباشرة)', icon: '💵' },
+                { id: 'wallet', name: `محفظة أخيل (${welcomeBalance} ج.م)`, icon: '💳' },
                 { id: 'instapay', name: 'إنستاباي (InstaPay IPA)', icon: '⚡' },
                 { id: 'vodafone_cash', name: 'محافظ فودافون كاش وميزة', icon: '📱' },
-                { id: 'credit', name: 'خدمة AKHIL CREDIT (ادفع بعدين)', icon: '💳' },
+                { id: 'credit', name: 'خدمة AKHIL CREDIT (ادفع بعدين)', icon: '🛡️' },
               ].map((p) => (
                 <button
                   key={p.id}
