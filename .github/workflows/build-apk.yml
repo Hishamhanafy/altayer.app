@@ -53,15 +53,48 @@ jobs:
         working-directory: mobile/apps/driver_app
         run: flutter build apk --release --no-tree-shake-icons
 
-      # 3. Upload APK Artifacts
+      # 3. Rename and Prepare APKs
+      - name: Prepare APKs
+        run: |
+          mkdir -p output_apks
+          cp mobile/apps/rider_app/build/app/outputs/flutter-apk/app-release.apk output_apks/akhil-rider-app.apk
+          cp mobile/apps/driver_app/build/app/outputs/flutter-apk/app-release.apk output_apks/akhil-driver-app.apk
+
+      # 4. Upload APK Artifacts
       - name: Upload Rider App APK
         uses: actions/upload-artifact@v4
         with:
-          name: 3altayer-rider-release-apk
-          path: mobile/apps/rider_app/build/app/outputs/flutter-apk/app-release.apk
+          name: akhil-rider-release-apk
+          path: output_apks/akhil-rider-app.apk
 
       - name: Upload Driver App APK
         uses: actions/upload-artifact@v4
         with:
-          name: 3altayer-driver-release-apk
-          path: mobile/apps/driver_app/build/app/outputs/flutter-apk/app-release.apk
+          name: akhil-driver-release-apk
+          path: output_apks/akhil-driver-app.apk
+
+      # 5. Create / Update GitHub Release with Direct APK Download Links
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+        with:
+          tag_name: latest-apks
+          name: "AKHIL Android Release APKs (Latest)"
+          body: |
+            ## 🐎 أخيل - AKHIL Smart Transportation Mobile APKs
+            Updated build compiled directly via GitHub Actions cloud runner.
+
+            ### 📱 Download Links:
+            - **[akhil-rider-app.apk](https://github.com/Hishamhanafy/altayer.app/releases/download/latest-apks/akhil-rider-app.apk)** (Rider App)
+            - **[akhil-driver-app.apk](https://github.com/Hishamhanafy/altayer.app/releases/download/latest-apks/akhil-driver-app.apk)** (Driver / Captain App)
+
+            ### ✨ Key Features Included:
+            - 📸 Live Camera KYC & Biometric Face Verification
+            - 📍 Dynamic Pickup & Destination selector in Cairo & Giza
+            - ⚡ Instant InstaPay Payouts & Wallet Top-up
+            - 🗺️ Multi-layer Interactive Maps
+          files: |
+            output_apks/akhil-rider-app.apk
+            output_apks/akhil-driver-app.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
