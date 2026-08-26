@@ -96,7 +96,7 @@ class _DriverPayoutSettingsScreenState extends State<DriverPayoutSettingsScreen>
                 ),
                 Switch(
                   value: _autoDailyPayout,
-                  activeColor: DriverColors.primary,
+                  activeThumbColor: DriverColors.primary,
                   onChanged: (val) => setState(() => _autoDailyPayout = val),
                 ),
               ],
