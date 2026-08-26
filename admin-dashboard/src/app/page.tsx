@@ -47,14 +47,133 @@ export default function AdminDashboardPage() {
   const [simulatedDriversCount, setSimulatedDriversCount] = useState(142);
   const [isSimulating, setIsSimulating] = useState(false);
 
-  // Financials Statements State (Q2 2026, Q1 2026, Full Year 2025)
+  // Financials Statements & Sub-tabs State
   const [financialsPeriod, setFinancialsPeriod] = useState<'2026_Q2' | '2026_Q1' | '2025_ANNUAL'>('2026_Q2');
+  const [financialsViewMode, setFinancialsViewMode] = useState<'statements' | 'startup_capital' | 'chart_of_accounts' | 'journal_entries'>('statements');
 
-  // Medical & Drug Screening Filter State
-  const [medicalFilter, setMedicalFilter] = useState<'all' | 'valid' | 'expired' | 'pending'>('all');
+  // Startup Capital & Incorporation Expenses State
+  const [startupAccounts, setStartupAccounts] = useState({
+    authorizedCapital: 5000000, // رأس المال المرخص به
+    paidInCapital: 2500000, // رأس المال المصدر والمدفوع
+    legalIncorporation: 120000, // رسوم التأسيس والسجل التجاري والتراخيص
+    techDevelopment: 350000, // تكاليف البرمجة وتجهيز السيرفرات والخرائط
+    initialMarketing: 280000, // حملة الإطلاق والهوية البصرية
+    officeSetup: 150000, // تجهيزات المقر والأجهزة
+    cashOpeningBank: 1200000, // النقدية الافتتاحية بالبنوك
+    cashOpeningWallets: 400000, // المحافظ الرقمية الافتتاحية (InstaPay / فودافون كاش)
+    retainedReserve: 0, // الأرباح المبقاة الافتتاحية
+  });
 
-  // Reports Filter State (Daily, Weekly, Monthly, Yearly)
-  const [reportPeriod, setReportPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly');
+  const [showEditStartupModal, setShowEditStartupModal] = useState(false);
+  const [startupForm, setStartupForm] = useState({ ...startupAccounts });
+
+  // Chart of Accounts (شجرة الحسابات المحاسبية الموحدة)
+  const chartOfAccountsList = [
+    { code: '1000', name: 'الأصول (Assets)', type: 'أصول', balance: '4,450,000 ج.م', nature: 'مدين' },
+    { code: '1010', name: 'النقدية بالبنوك المحلية (CIB / الأهلي / مصر)', type: 'أصول متداولة', balance: '2,450,000 ج.م', nature: 'مدين' },
+    { code: '1020', name: 'محافظ الدفع اللحظي (InstaPay / فودافون كاش)', type: 'أصول متداولة', balance: '680,000 ج.م', nature: 'مدين' },
+    { code: '1030', name: 'مديونيات الكاش المستحقة لدى الكباتن', type: 'أصول متداولة', balance: '185,000 ج.م', nature: 'مدين' },
+    { code: '1040', name: 'مصاريف تأسيس مؤجلة (أصول غير ملموسة)', type: 'أصول غير ملموسة', balance: '750,000 ج.م', nature: 'مدين' },
+    { code: '1050', name: 'أصول ثابتة وتجهيزات وأجهزة خوادم', type: 'أصول ثابتة', balance: '385,000 ج.م', nature: 'مدين' },
+    { code: '2000', name: 'الخصوم والالتزامات (Liabilities)', type: 'خصوم', balance: '610,000 ج.م', nature: 'دائن' },
+    { code: '2010', name: 'مستحقات الكباتن القابلة للسحب الفوري', type: 'خصوم متداولة', balance: '390,000 ج.م', nature: 'دائن' },
+    { code: '2020', name: 'أمانات وأرصدة محافظ الركاب', type: 'خصوم متداولة', balance: '220,000 ج.م', nature: 'دائن' },
+    { code: '3000', name: 'حقوق الملكية ورأس المال (Equity)', type: 'حقوق ملكية', balance: '2,705,000 ج.م', nature: 'دائن' },
+    { code: '3010', name: 'رأس المال المصدر والمدفوع (Paid-in Capital)', type: 'حقوق ملكية', balance: '2,500,000 ج.م', nature: 'دائن' },
+    { code: '3020', name: 'الاحتياطي النظامي والأرباح المرحلة', type: 'حقوق ملكية', balance: '205,000 ج.م', nature: 'دائن' },
+    { code: '4000', name: 'الإيرادات التشغيلية (Revenue)', type: 'إيرادات', balance: '1,085,000 ج.م', nature: 'دائن' },
+    { code: '4010', name: 'إيرادات عمولات الرحلات (10% Take Rate)', type: 'إيرادات', balance: '845,000 ج.م', nature: 'دائن' },
+    { code: '4020', name: 'إيرادات اشتراكات الضمان المالي (AKHIL GUARANTEE)', type: 'إيرادات', balance: '145,000 ج.م', nature: 'دائن' },
+    { code: '4030', name: 'إيرادات عقود شراكات الفعاليات', type: 'إيرادات', balance: '95,000 ج.م', nature: 'دائن' },
+    { code: '5000', name: 'المصروفات التشغيلية والتأسيسية (Expenses)', type: 'مصروفات', balance: '670,000 ج.م', nature: 'مدين' },
+    { code: '5010', name: 'مصاريف السيرفرات والبنية السحابية وبوابات الدفع', type: 'مصروفات تشغيل', balance: '165,000 ج.م', nature: 'مدين' },
+    { code: '5020', name: 'مخصصات حوافز الركاب والترحيب (200 ج)', type: 'مصروفات تسويق', balance: '110,000 ج.م', nature: 'مدين' },
+    { code: '5030', name: 'مخصصات حوافز الكباتن وصندوق السيارة الملكية', type: 'مصروفات حوافز', balance: '185,000 ج.م', nature: 'مدين' },
+    { code: '5040', name: 'المصروفات الإدارية ورواتب الدعم الفني والعمليات', type: 'مصروفات إدارية', balance: '210,000 ج.م', nature: 'مدين' },
+  ];
+
+  // Journal Entries (سجل قيود اليومية المحاسبية)
+  const [journalEntriesList, setJournalEntriesList] = useState([
+    {
+      id: 'JV-001',
+      date: '01/01/2026',
+      desc: 'قيد الافتتاح: إيداع رأس المال النقدي بالبنك ومصاريف التأسيس',
+      debitAcc: '1010 النقدية بالبنك (1,200,000) + 1040 مصاريف التأسيس (1,300,000)',
+      creditAcc: '3010 رأس المال المدفوع',
+      amount: 2500000,
+      ref: 'عقد التأسيس #849',
+    },
+    {
+      id: 'JV-002',
+      date: '15/01/2026',
+      desc: 'سداد مصاريف التراخيص والرسوم الحكومية وتراخيص التطبيق',
+      debitAcc: '1040 مصاريف تأسيس وتراخيص',
+      creditAcc: '1010 النقدية بالبنك',
+      amount: 120000,
+      ref: 'إيصال حكومي #310',
+    },
+    {
+      id: 'JV-003',
+      date: '01/02/2026',
+      desc: 'تغذية المحافظ الرقمية الافتتاحية (InstaPay وفودافون كاش)',
+      debitAcc: '1020 محافظ الدفع اللحظي',
+      creditAcc: '1010 النقدية بالبنك',
+      amount: 400000,
+      ref: 'تحويل بنكي #552',
+    },
+    {
+      id: 'JV-004',
+      date: '30/06/2026',
+      desc: 'إثبات إيرادات العمولات المحصلة للربع الثاني (10%)',
+      debitAcc: '1020 المحافظ + 1030 مديونيات الكاش',
+      creditAcc: '4010 إيرادات عمولات الرحلات',
+      amount: 845000,
+      ref: 'تسوية شهرية Q2',
+    },
+  ]);
+
+  const [showAddJournalModal, setShowAddJournalModal] = useState(false);
+  const [newJournal, setNewJournal] = useState({
+    desc: '',
+    debitAcc: '1010 النقدية بالبنوك',
+    creditAcc: '3010 رأس المال المدفوع',
+    amount: 100000,
+    ref: '',
+  });
+
+  const handleUpdateStartupSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStartupAccounts({ ...startupForm });
+    setShowEditStartupModal(false);
+    alert('تم حفظ وتحديث الحسابات الافتتاحية ومصاريف التأسيس ورأس المال بنجاح 🟢');
+  };
+
+  const handleCreateJournalSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newJournal.desc) {
+      alert('يرجى كتابة بيان القيد!');
+      return;
+    }
+    const created = {
+      id: `JV-00${journalEntriesList.length + 1}`,
+      date: '26/08/2026',
+      desc: newJournal.desc,
+      debitAcc: newJournal.debitAcc,
+      creditAcc: newJournal.creditAcc,
+      amount: Number(newJournal.amount),
+      ref: newJournal.ref || `سند #${Date.now().toString().slice(-4)}`,
+    };
+    setJournalEntriesList(prev => [created, ...prev]);
+    setShowAddJournalModal(false);
+    setNewJournal({
+      desc: '',
+      debitAcc: '1010 النقدية بالبنوك',
+      creditAcc: '3010 رأس المال المدفوع',
+      amount: 100000,
+      ref: '',
+    });
+    alert(`تم تسجيل القيد المحاسبي (${created.id}) وترحيله لدفتر الأستاذ العام بنجاح 📑🟢`);
+  };
 
   // Interactive Data Entry Modals State
   const [showAddDriverModal, setShowAddDriverModal] = useState(false);
@@ -709,185 +828,382 @@ export default function AdminDashboardPage() {
         {/* Content Container */}
         <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
 
-          {/* TAB: CLOSING FINANCIALS (الحسابات الختامية والقوائم المالية) */}
+          {/* TAB: CLOSING FINANCIALS & STARTUP ACCOUNTS */}
           {activeTab === 'financials' && (
             <div className="space-y-6">
-              {/* Header & Period Filters */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-6 rounded-2xl">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <DollarSign className="w-6 h-6 text-emerald-400" />
-                    <h2 className="font-extrabold text-xl text-white">الحسابات الختامية والقوائم المالية الرسمية</h2>
-                  </div>
-                  <p className="text-xs text-slate-400">
-                    قائمة الدخل (P&L)، الميزانية العمومية، التدفقات النقدية، ومخصصات الحوافز لـ: <strong className="text-amber-400 font-bold">{closingFinancialsData[financialsPeriod].periodName}</strong>
-                  </p>
+              {/* Financials Sub-Tab Navigation */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+                <div className="flex flex-wrap gap-1.5 text-xs font-bold">
+                  {[
+                    { id: 'statements', label: '📊 القوائم المالية الختامية (P&L & Balance Sheet)' },
+                    { id: 'startup_capital', label: '🏛️ رأس المال ومصاريف التأسيس والحسابات الافتتاحية' },
+                    { id: 'chart_of_accounts', label: '📑 شجرة الحسابات المحاسبية (COA)' },
+                    { id: 'journal_entries', label: '📝 قيود اليومية ودفتر الأستاذ' },
+                  ].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setFinancialsViewMode(sub.id as any)}
+                      className={`px-3.5 py-2 rounded-xl transition ${
+                        financialsViewMode === sub.id 
+                          ? 'bg-indigo-900 text-amber-300 font-black shadow-lg shadow-indigo-900/40 border border-amber-500/30' 
+                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
                 </div>
 
-                <div className="flex items-center gap-2 flex-wrap">
-                  <div className="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1 text-xs font-bold">
-                    {(['2026_Q2', '2026_Q1', '2025_ANNUAL'] as const).map((period) => (
-                      <button
-                        key={period}
-                        onClick={() => setFinancialsPeriod(period)}
-                        className={`px-3 py-1.5 rounded-lg transition ${
-                          financialsPeriod === period ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
-                        }`}
-                      >
-                        {period === '2026_Q2' ? 'الربع الثاني 2026' : period === '2026_Q1' ? 'الربع الأول 2026' : 'العام المالي 2025'}
-                      </button>
-                    ))}
-                  </div>
-
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => window.print()}
                     className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow"
                   >
                     <Printer className="w-4 h-4" />
-                    طباعة وتصدير القوائم الختامية 📄
+                    طباعة التقرير المالي 📄
                   </button>
                 </div>
               </div>
 
-              {/* KPI Financial Overview Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
-                  <span className="text-xs text-slate-400 font-medium block">إجمالي قيمة المشاوير (GMV)</span>
-                  <span className="text-2xl font-black text-white font-mono">{closingFinancialsData[financialsPeriod].gmv.toLocaleString()} ج.م</span>
-                  <span className="text-[11px] text-emerald-400 font-bold block">↑ +24.8% نمو ربع سنوي</span>
-                </div>
+              {/* SUB-VIEW 1: FINANCIAL STATEMENTS (P&L & BALANCE SHEET) */}
+              {financialsViewMode === 'statements' && (
+                <div className="space-y-6">
+                  {/* Period Filter */}
+                  <div className="flex justify-between items-center bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                    <span className="text-xs text-slate-300 font-bold">
+                      الفترة المالية: <strong className="text-amber-400 font-mono font-black">{closingFinancialsData[financialsPeriod].periodName}</strong>
+                    </span>
+                    <div className="flex gap-1 text-xs font-bold">
+                      {(['2026_Q2', '2026_Q1', '2025_ANNUAL'] as const).map((period) => (
+                        <button
+                          key={period}
+                          onClick={() => setFinancialsPeriod(period)}
+                          className={`px-3 py-1.5 rounded-lg transition ${
+                            financialsPeriod === period ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {period === '2026_Q2' ? 'الربع الثاني 2026' : period === '2026_Q1' ? 'الربع الأول 2026' : 'العام المالي 2025'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
-                  <span className="text-xs text-slate-400 font-medium block">إجمالي الإيرادات التشغيلية للشركة</span>
-                  <span className="text-2xl font-black text-amber-400 font-mono">{closingFinancialsData[financialsPeriod].totalRevenue.toLocaleString()} ج.م</span>
-                  <span className="text-[11px] text-slate-400 block">عمولات 10% + اشتراكات وفعاليات</span>
-                </div>
+                  {/* KPI Financial Overview Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">إجمالي قيمة المشاوير (GMV)</span>
+                      <span className="text-2xl font-black text-white font-mono">{closingFinancialsData[financialsPeriod].gmv.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-emerald-400 font-bold block">↑ +24.8% نمو ربع سنوي</span>
+                    </div>
 
-                <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
-                  <span className="text-xs text-slate-400 font-medium block">الأرباح التشغيلية (EBITDA)</span>
-                  <span className="text-2xl font-black text-indigo-300 font-mono">{closingFinancialsData[financialsPeriod].ebitda.toLocaleString()} ج.م</span>
-                  <span className="text-[11px] text-indigo-400 block font-bold">هامش أرباح تشغيلية 38.2%</span>
-                </div>
+                    <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">إجمالي الإيرادات التشغيلية</span>
+                      <span className="text-2xl font-black text-amber-400 font-mono">{closingFinancialsData[financialsPeriod].totalRevenue.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-slate-400 block">عمولات 10% + اشتراكات وفعاليات</span>
+                    </div>
 
-                <div className="p-5 bg-slate-900/80 border border-emerald-500/40 rounded-2xl space-y-2 bg-gradient-to-br from-emerald-950/40 to-slate-900">
-                  <span className="text-xs text-emerald-300 font-bold block">صافي الربح الصافي بعد الضرائب</span>
-                  <span className="text-2xl font-black text-emerald-400 font-mono">{closingFinancialsData[financialsPeriod].netProfit.toLocaleString()} ج.م</span>
-                  <span className="text-[11px] text-emerald-300 block font-bold">صافي هامش ربح 30% للمنظومة 🟢</span>
-                </div>
-              </div>
+                    <div className="p-5 bg-slate-900/80 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">الأرباح التشغيلية (EBITDA)</span>
+                      <span className="text-2xl font-black text-indigo-300 font-mono">{closingFinancialsData[financialsPeriod].ebitda.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-indigo-400 block font-bold">هامش أرباح تشغيلية 38.2%</span>
+                    </div>
 
-              {/* Two Detailed Tables: P&L Statement & Balance Sheet */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                {/* 1. Income Statement (قائمة الدخل والأرباح والخسائر) */}
+                    <div className="p-5 bg-slate-900/80 border border-emerald-500/40 rounded-2xl space-y-2 bg-gradient-to-br from-emerald-950/40 to-slate-900">
+                      <span className="text-xs text-emerald-300 font-bold block">صافي الربح الصافي بعد الضرائب</span>
+                      <span className="text-2xl font-black text-emerald-400 font-mono">{closingFinancialsData[financialsPeriod].netProfit.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-emerald-300 block font-bold">صافي هامش ربح 30% للمنظومة 🟢</span>
+                    </div>
+                  </div>
+
+                  {/* Tables: P&L Statement & Balance Sheet */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Income Statement */}
+                    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                          <PieChart className="w-5 h-5 text-amber-400" />
+                          قائمة الدخل والأرباح والخسائر (P&L Statement)
+                        </h3>
+                        <span className="text-xs font-mono font-bold text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-lg">
+                          معتمدة محاسبياً
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-emerald-400">الإيرادات (Gross Revenue):</div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• عمولات الرحلات (10% Take Rate)</span>
+                          <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].commissionRevenue.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• اشتراكات الضمان المالي (AKHIL GUARANTEE)</span>
+                          <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].guaranteeRevenue.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• عقود شراكات الفعاليات والمؤتمرات</span>
+                          <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].eventsRevenue.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-2 px-3 bg-indigo-950/60 border border-indigo-500/30 rounded-xl font-bold text-white">
+                          <span>إجمالي الإيرادات التشغيلية</span>
+                          <span className="font-mono text-amber-300">{closingFinancialsData[financialsPeriod].totalRevenue.toLocaleString()} ج.م</span>
+                        </div>
+
+                        <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-rose-400 pt-2">المصروفات ومخصصات الجوائز (Operating Expenses):</div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• البنية التحتية السحابية وخرائط Google وبوابات الدفع</span>
+                          <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].techOpex.toLocaleString()} ج.م)</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• مخصصات حوافز الركاب والترحيب (200 ج + العروض)</span>
+                          <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].riderIncentives.toLocaleString()} ج.م)</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• مخصصات حوافز الكباتن وإهلاك جائزة السيارة السنوية (FREE CAR 👑)</span>
+                          <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].driverRewards.toLocaleString()} ج.م)</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• المصروفات الإدارية ورواتب الدعم الفني والعمليات</span>
+                          <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].adminSalaries.toLocaleString()} ج.م)</strong>
+                        </div>
+
+                        <div className="flex justify-between py-3 px-3.5 bg-emerald-950/80 border border-emerald-500/50 rounded-xl font-black text-sm text-white mt-3">
+                          <span>صافي الأرباح الختامية (Net Profit)</span>
+                          <span className="font-mono text-emerald-400">{closingFinancialsData[financialsPeriod].netProfit.toLocaleString()} ج.م</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Balance Sheet */}
+                    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                      <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                          <Wallet className="w-5 h-5 text-emerald-400" />
+                          الميزانية العمومية والمركز المالي (Balance Sheet)
+                        </h3>
+                        <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                          سيولة ممتازة 🟢
+                        </span>
+                      </div>
+
+                      <div className="space-y-2 text-xs">
+                        <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-sky-400">الأصول المتداولة والسيولة (Current Assets):</div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• النقدية وأرصدة البنوك المحلية</span>
+                          <strong className="font-mono text-white">{closingFinancialsData[financialsPeriod].cashInBank.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• أرصدة محافظ InstaPay وفودافون كاش وميزة</span>
+                          <strong className="font-mono text-white">{closingFinancialsData[financialsPeriod].instaPayWallets.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• مديونيات الكاش المستحقة على الكباتن (ضمن حد 1000 ج)</span>
+                          <strong className="font-mono text-amber-400 font-bold">{closingFinancialsData[financialsPeriod].receivablesDebt.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-2 px-3 bg-slate-800/80 rounded-xl font-bold text-sky-300">
+                          <span>إجمالي الأصول والسيولة</span>
+                          <span className="font-mono">{(closingFinancialsData[financialsPeriod].cashInBank + closingFinancialsData[financialsPeriod].instaPayWallets + closingFinancialsData[financialsPeriod].receivablesDebt).toLocaleString()} ج.م</span>
+                        </div>
+
+                        <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-amber-400 pt-2">الالتزامات وحقوق الملكية (Liabilities & Equity):</div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• مستحقات الكباتن القابلة للسحب الفوري (InstaPay Payables)</span>
+                          <strong className="font-mono text-amber-300 font-bold">{closingFinancialsData[financialsPeriod].driverPayables.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• أمانات وأرصدة محافظ الركاب (Rider Wallet Balances)</span>
+                          <strong className="font-mono text-amber-300 font-bold">{closingFinancialsData[financialsPeriod].riderDeposits.toLocaleString()} ج.م</strong>
+                        </div>
+                        <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
+                          <span>• حقوق الملكية وصافي رأس المال الاحتياطي المجمع</span>
+                          <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].equityReserve.toLocaleString()} ج.م</strong>
+                        </div>
+
+                        <div className="flex justify-between py-3 px-3.5 bg-indigo-950/80 border border-indigo-500/50 rounded-xl font-black text-sm text-white mt-3">
+                          <span>إجمالي الخصوم وحقوق الملكية</span>
+                          <span className="font-mono text-amber-400">{(closingFinancialsData[financialsPeriod].driverPayables + closingFinancialsData[financialsPeriod].riderDeposits + closingFinancialsData[financialsPeriod].equityReserve).toLocaleString()} ج.م</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 2: STARTUP CAPITAL & INCORPORATION EXPENSES HUB */}
+              {financialsViewMode === 'startup_capital' && (
+                <div className="space-y-6">
+                  {/* Header with Edit Button */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-6 rounded-2xl">
+                    <div>
+                      <h3 className="font-black text-lg text-white flex items-center gap-2">
+                        <span>🏛️</span> رأس المال والحسابات الافتتاحية ومصاريف التأسيس
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        توثيق رأس المال المصدر، مساهمات المؤسسين، ومصاريف ما قبل التشغيل ورسوم التراخيص القانونية
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setStartupForm({ ...startupAccounts });
+                        setShowEditStartupModal(true);
+                      }}
+                      className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition shadow-lg shadow-amber-500/20"
+                    >
+                      <span>✏️</span> تعديل / إدخال بنود رأس المال والتأسيس
+                    </button>
+                  </div>
+
+                  {/* Overview Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">رأس المال المصدر والمدفوع</span>
+                      <span className="text-2xl font-black text-emerald-400 font-mono">{startupAccounts.paidInCapital.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-slate-400 block font-mono">المرخص به: {startupAccounts.authorizedCapital.toLocaleString()} ج.م</span>
+                    </div>
+
+                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">إجمالي مصاريف التأسيس والتجهيز</span>
+                      <span className="text-2xl font-black text-amber-400 font-mono">{(startupAccounts.legalIncorporation + startupAccounts.techDevelopment + startupAccounts.initialMarketing + startupAccounts.officeSetup).toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-amber-300 block font-bold">مصاريف مؤجلة (أصول غير ملموسة)</span>
+                    </div>
+
+                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">السيولة النقدية الافتتاحية بالبنوك</span>
+                      <span className="text-2xl font-black text-sky-400 font-mono">{startupAccounts.cashOpeningBank.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-slate-400 block">حسابات جارية بنكية معتمدة</span>
+                    </div>
+
+                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-2">
+                      <span className="text-xs text-slate-400 font-medium block">محافظ الدفع اللحظي الافتتاحية</span>
+                      <span className="text-2xl font-black text-purple-400 font-mono">{startupAccounts.cashOpeningWallets.toLocaleString()} ج.م</span>
+                      <span className="text-[11px] text-slate-400 block">InstaPay / Vodafone Cash / ميزة</span>
+                    </div>
+                  </div>
+
+                  {/* Detailed Table of Startup & Incorporation Breakdown */}
+                  <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h4 className="font-bold text-sm text-white border-b border-slate-800 pb-3">
+                      كشف تفصيلي ببنود مصاريف التأسيس والحسابات الافتتاحية:
+                    </h4>
+
+                    <div className="space-y-3 text-xs">
+                      {[
+                        { name: '1. رسوم التأسيس القانوني، السجل التجاري، والبطاقة الضريبية والتراخيص الحكومية', amount: startupAccounts.legalIncorporation, cat: 'مصاريف قانونية ورسمية' },
+                        { name: '2. تكاليف التطوير البرمجي وتجهيز السيرفرات السحابية والخرائط ومفاتيح الـ APIs', amount: startupAccounts.techDevelopment, cat: 'تطوير وبنية تحتية' },
+                        { name: '3. حملة التسويق الافتتاحية وتصميم الهوية البصرية وتجهيز منصات التواصل', amount: startupAccounts.initialMarketing, cat: 'تسويق وإطلاق' },
+                        { name: '4. تجهيزات المقر الرئيسي، شبكات الاتصال، أجهزة العمل، والدعم الفني', amount: startupAccounts.officeSetup, cat: 'أصول ثابتة وتجهيزات' },
+                        { name: '5. رصيد النقدية الافتتاحي في الحسابات البنكية لتغطية العمليات الأولية', amount: startupAccounts.cashOpeningBank, cat: 'سيولة نقدية جارية' },
+                        { name: '6. أرصدة محافظ الدفع اللحظي (InstaPay / فودافون كاش) لتسويات السحب', amount: startupAccounts.cashOpeningWallets, cat: 'محافظ إلكترونية' },
+                      ].map((item, idx) => (
+                        <div key={idx} className="p-3.5 bg-slate-950 border border-slate-800 rounded-xl flex justify-between items-center">
+                          <div>
+                            <span className="font-bold text-slate-100 block">{item.name}</span>
+                            <span className="text-[10px] text-slate-400">{item.cat}</span>
+                          </div>
+                          <span className="font-mono font-black text-emerald-400 text-sm">{item.amount.toLocaleString()} ج.م</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 3: CHART OF ACCOUNTS (شجرة الحسابات) */}
+              {financialsViewMode === 'chart_of_accounts' && (
                 <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h3 className="font-extrabold text-base text-white flex items-center gap-2">
-                      <PieChart className="w-5 h-5 text-amber-400" />
-                      قائمة الدخل والأرباح والخسائر (P&L Statement)
-                    </h3>
-                    <span className="text-xs font-mono font-bold text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-lg">
-                      معتمدة محاسبياً
+                    <div>
+                      <h3 className="font-black text-base text-white flex items-center gap-2">
+                        <span>📑</span> دليل شجرة الحسابات المحاسبية الموحدة (Chart of Accounts - COA)
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">تصنيف الحسابات الخمسة الرئيسية: الأصول، الخصوم، حقوق الملكية، الإيرادات، والمصروفات</p>
+                    </div>
+                    <span className="text-xs bg-indigo-500/20 text-indigo-300 px-3 py-1 rounded-xl font-bold font-mono">
+                      نظام القيد المزدوج
                     </span>
                   </div>
 
-                  <div className="space-y-2.5 text-xs">
-                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-emerald-400">بند الإيرادات (Gross Revenue):</div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• إيرادات عمولات الرحلات (10% Take Rate)</span>
-                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].commissionRevenue.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• إيرادات اشتراكات الضمان المالي (AKHIL GUARANTEE)</span>
-                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].guaranteeRevenue.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• إيرادات عقود شراكات الفعاليات (PARTNER OF EVENTS)</span>
-                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].eventsRevenue.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-2 px-3 bg-indigo-950/60 border border-indigo-500/30 rounded-xl font-bold text-white">
-                      <span>إجمالي الإيرادات التشغيلية</span>
-                      <span className="font-mono text-amber-300">{closingFinancialsData[financialsPeriod].totalRevenue.toLocaleString()} ج.م</span>
-                    </div>
-
-                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-rose-400 pt-2">بند المصروفات ومخصصات الجوائز (Operating Expenses):</div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• البنية التحتية السحابية وخرائط Google وبوابات الدفع</span>
-                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].techOpex.toLocaleString()} ج.م)</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• مخصصات حوافز الركاب والترحيب (200 ج + العروض)</span>
-                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].riderIncentives.toLocaleString()} ج.م)</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• مخصصات حوافز الكباتن وإهلاك جائزة السيارة السنوية (FREE CAR 👑)</span>
-                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].driverRewards.toLocaleString()} ج.م)</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• المصروفات الإدارية ورواتب الدعم الفني والعمليات</span>
-                      <strong className="font-mono text-rose-400">({closingFinancialsData[financialsPeriod].adminSalaries.toLocaleString()} ج.م)</strong>
-                    </div>
-
-                    <div className="flex justify-between py-3 px-3.5 bg-emerald-950/80 border border-emerald-500/50 rounded-xl font-black text-sm text-white mt-3">
-                      <span>صافي الأرباح الختامية (Net Profit)</span>
-                      <span className="font-mono text-emerald-400">{closingFinancialsData[financialsPeriod].netProfit.toLocaleString()} ج.م</span>
-                    </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">رقم الحساب</th>
+                          <th className="pb-3 px-4">اسم الحساب المحاسبي</th>
+                          <th className="pb-3 px-4">النوع والتصنيف</th>
+                          <th className="pb-3 px-4">طبيعة الحساب</th>
+                          <th className="pb-3 px-4">الرصيد الدفتري الحالي</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {chartOfAccountsList.map((acc, idx) => (
+                          <tr key={idx} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3 px-4 font-mono font-bold text-amber-400">{acc.code}</td>
+                            <td className="py-3 px-4 font-bold text-white">{acc.name}</td>
+                            <td className="py-3 px-4 text-slate-400">{acc.type}</td>
+                            <td className="py-3 px-4 font-bold">
+                              <span className={acc.nature === 'مدين' ? 'text-sky-400' : 'text-amber-400'}>
+                                {acc.nature}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 font-mono font-black text-emerald-400">{acc.balance}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
+              )}
 
-                {/* 2. Balance Sheet & Financial Position (الميزانية العمومية) */}
+              {/* SUB-VIEW 4: JOURNAL ENTRIES (قيود اليومية) */}
+              {financialsViewMode === 'journal_entries' && (
                 <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h3 className="font-extrabold text-base text-white flex items-center gap-2">
-                      <Wallet className="w-5 h-5 text-emerald-400" />
-                      الميزانية العمومية والمركز المالي (Balance Sheet)
-                    </h3>
-                    <span className="text-xs font-mono font-bold text-emerald-300 bg-emerald-500/10 px-2.5 py-1 rounded-lg">
-                      سيولة ممتازة 🟢
-                    </span>
+                    <div>
+                      <h3 className="font-black text-base text-white flex items-center gap-2">
+                        <span>📝</span> سجل قيود اليومية العامة ودفتر الأستاذ (General Journal)
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-0.5">توثيق جميع العمليات المالية والتأسيسية بالقيد المزدوج المتزن</p>
+                    </div>
+
+                    <button
+                      onClick={() => setShowAddJournalModal(true)}
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow"
+                    >
+                      <span>➕</span> تسجيل قيد محاسبي جديد
+                    </button>
                   </div>
 
-                  <div className="space-y-2.5 text-xs">
-                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-sky-400">الأصول المتداولة والسيولة (Current Assets):</div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• النقدية وأرصدة البنوك المحلية</span>
-                      <strong className="font-mono text-white">{closingFinancialsData[financialsPeriod].cashInBank.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• أرصدة محافظ InstaPay وفودافون كاش وميزة</span>
-                      <strong className="font-mono text-white">{closingFinancialsData[financialsPeriod].instaPayWallets.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• مديونيات الكاش المستحقة على الكباتن (ضمن حد 1000 ج)</span>
-                      <strong className="font-mono text-amber-400 font-bold">{closingFinancialsData[financialsPeriod].receivablesDebt.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-2 px-3 bg-slate-800/80 rounded-xl font-bold text-sky-300">
-                      <span>إجمالي الأصول والسيولة</span>
-                      <span className="font-mono">{(closingFinancialsData[financialsPeriod].cashInBank + closingFinancialsData[financialsPeriod].instaPayWallets + closingFinancialsData[financialsPeriod].receivablesDebt).toLocaleString()} ج.م</span>
-                    </div>
-
-                    <div className="text-slate-400 font-bold text-[11px] uppercase tracking-wider text-amber-400 pt-2">الالتزامات وحقوق الملكية (Liabilities & Equity):</div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• مستحقات الكباتن القابلة للسحب الفوري (InstaPay Payables)</span>
-                      <strong className="font-mono text-amber-300 font-bold">{closingFinancialsData[financialsPeriod].driverPayables.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• أمانات وأرصدة محافظ الركاب (Rider Wallet Balances)</span>
-                      <strong className="font-mono text-amber-300 font-bold">{closingFinancialsData[financialsPeriod].riderDeposits.toLocaleString()} ج.م</strong>
-                    </div>
-                    <div className="flex justify-between py-1.5 px-3 bg-slate-950 rounded-xl">
-                      <span>• حقوق الملكية وصافي رأس المال الاحتياطي المجمع</span>
-                      <strong className="font-mono text-emerald-400 font-bold">{closingFinancialsData[financialsPeriod].equityReserve.toLocaleString()} ج.م</strong>
-                    </div>
-
-                    <div className="flex justify-between py-3 px-3.5 bg-indigo-950/80 border border-indigo-500/50 rounded-xl font-black text-sm text-white mt-3">
-                      <span>إجمالي الخصوم وحقوق الملكية</span>
-                      <span className="font-mono text-amber-400">{(closingFinancialsData[financialsPeriod].driverPayables + closingFinancialsData[financialsPeriod].riderDeposits + closingFinancialsData[financialsPeriod].equityReserve).toLocaleString()} ج.م</span>
-                    </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-3">رقم القيد</th>
+                          <th className="pb-3 px-3">التاريخ</th>
+                          <th className="pb-3 px-3">البيان والشرح</th>
+                          <th className="pb-3 px-3">الطرف المدين (Debit)</th>
+                          <th className="pb-3 px-3">الطرف الدائن (Credit)</th>
+                          <th className="pb-3 px-3">المبلغ (ج.م)</th>
+                          <th className="pb-3 px-3">رقم السند المرجعي</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {journalEntriesList.map((entry) => (
+                          <tr key={entry.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-3 font-mono font-bold text-amber-400">{entry.id}</td>
+                            <td className="py-3.5 px-3 font-mono text-slate-400">{entry.date}</td>
+                            <td className="py-3.5 px-3 font-semibold text-white">{entry.desc}</td>
+                            <td className="py-3.5 px-3 font-mono text-sky-300">{entry.debitAcc}</td>
+                            <td className="py-3.5 px-3 font-mono text-amber-300">{entry.creditAcc}</td>
+                            <td className="py-3.5 px-3 font-mono font-black text-emerald-400">{entry.amount.toLocaleString()} ج.م</td>
+                            <td className="py-3.5 px-3 text-slate-400 font-mono text-[11px]">{entry.ref}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
+              )}
 
-              </div>
             </div>
           )}
 
@@ -2014,6 +2330,239 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddPromoModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 4: EDIT STARTUP CAPITAL & INCORPORATION EXPENSES */}
+        {showEditStartupModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-2xl w-full space-y-5 shadow-2xl max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🏛️</span> تعديل وإدخال بيانات رأس المال ومصاريف التأسيس
+                </h3>
+                <button
+                  onClick={() => setShowEditStartupModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleUpdateStartupSubmit} className="space-y-4 text-xs">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رأس المال المرخص به (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={startupForm.authorizedCapital}
+                      onChange={(e) => setStartupForm({ ...startupForm, authorizedCapital: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رأس المال المصدر والمدفوع (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={startupForm.paidInCapital}
+                      onChange={(e) => setStartupForm({ ...startupForm, paidInCapital: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-emerald-400 font-mono font-black"
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-800 pt-3">
+                  <span className="text-xs font-bold text-amber-400 block mb-2">بنود مصاريف التأسيس والتجهيز (ما قبل التشغيل):</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-slate-300 font-medium block mb-1">رسوم التأسيس القانوني والتراخيص الحكومية:</label>
+                      <input
+                        type="number"
+                        value={startupForm.legalIncorporation}
+                        onChange={(e) => setStartupForm({ ...startupForm, legalIncorporation: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 font-medium block mb-1">تطوير المنصة والسيرفرات والخرائط:</label>
+                      <input
+                        type="number"
+                        value={startupForm.techDevelopment}
+                        onChange={(e) => setStartupForm({ ...startupForm, techDevelopment: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 font-medium block mb-1">حملة التسويق الافتتاحية والهوية:</label>
+                      <input
+                        type="number"
+                        value={startupForm.initialMarketing}
+                        onChange={(e) => setStartupForm({ ...startupForm, initialMarketing: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 font-medium block mb-1">تجهيزات المقر والأجهزة والشبكات:</label>
+                      <input
+                        type="number"
+                        value={startupForm.officeSetup}
+                        onChange={(e) => setStartupForm({ ...startupForm, officeSetup: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-slate-800 pt-3">
+                  <span className="text-xs font-bold text-sky-400 block mb-2">الأرصدة النقدية الافتتاحية:</span>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-slate-300 font-medium block mb-1">النقدية الافتتاحية بالحسابات البنكية:</label>
+                      <input
+                        type="number"
+                        value={startupForm.cashOpeningBank}
+                        onChange={(e) => setStartupForm({ ...startupForm, cashOpeningBank: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-slate-300 font-medium block mb-1">محافظ الدفع اللحظي (InstaPay / فودافون كاش):</label>
+                      <input
+                        type="number"
+                        value={startupForm.cashOpeningWallets}
+                        onChange={(e) => setStartupForm({ ...startupForm, cashOpeningWallets: Number(e.target.value) })}
+                        className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-3">
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl transition shadow-lg shadow-amber-500/20"
+                  >
+                    حفظ وتحديث الأرقام المحاسبية فوراً 🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowEditStartupModal(false)}
+                    className="py-3 px-5 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 5: ADD MANUAL JOURNAL ENTRY */}
+        {showAddJournalModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>📝</span> تسجيل قيد يومية محاسبي (Journal Entry)
+                </h3>
+                <button
+                  onClick={() => setShowAddJournalModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateJournalSubmit} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">البيان / شرح العملية المالية:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: سداد اشتراك السيرفرات السحابية لشهر أغسطس"
+                    value={newJournal.desc}
+                    onChange={(e) => setNewJournal({ ...newJournal, desc: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الطرف المدين (Debit):</label>
+                    <select
+                      value={newJournal.debitAcc}
+                      onChange={(e) => setNewJournal({ ...newJournal, debitAcc: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="1010 النقدية بالبنوك">1010 النقدية بالبنوك</option>
+                      <option value="1020 محافظ الدفع اللحظي">1020 محافظ الدفع اللحظي</option>
+                      <option value="1030 مديونيات الكباتن">1030 مديونيات الكباتن</option>
+                      <option value="1040 مصاريف التأسيس والتراخيص">1040 مصاريف التأسيس والتراخيص</option>
+                      <option value="5010 مصاريف السيرفرات والتقنية">5010 مصاريف السيرفرات والتقنية</option>
+                      <option value="5020 مصاريف الحوافز والترحيب">5020 مصاريف الحوافز والترحيب</option>
+                      <option value="5040 المصروفات الإدارية">5040 المصروفات الإدارية</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الطرف الدائن (Credit):</label>
+                    <select
+                      value={newJournal.creditAcc}
+                      onChange={(e) => setNewJournal({ ...newJournal, creditAcc: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="3010 رأس المال المدفوع">3010 رأس المال المدفوع</option>
+                      <option value="1010 النقدية بالبنوك">1010 النقدية بالبنوك</option>
+                      <option value="1020 محافظ الدفع اللحظي">1020 محافظ الدفع اللحظي</option>
+                      <option value="2010 مستحقات الكباتن">2010 مستحقات الكباتن</option>
+                      <option value="2020 أمانات محافظ الركاب">2020 أمانات محافظ الركاب</option>
+                      <option value="4010 إيرادات عمولات الرحلات">4010 إيرادات عمولات الرحلات</option>
+                      <option value="4020 إيرادات الضمان المالي">4020 إيرادات الضمان المالي</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">المبلغ (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={newJournal.amount}
+                      onChange={(e) => setNewJournal({ ...newJournal, amount: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-emerald-400 font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رقم السند المرجعي:</label>
+                    <input
+                      type="text"
+                      placeholder="مثال: فاتورة #492"
+                      value={newJournal.ref}
+                      onChange={(e) => setNewJournal({ ...newJournal, ref: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    ترحيل القيد لدفتر الأستاذ 🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddJournalModal(false)}
                     className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
                   >
                     إلغاء
