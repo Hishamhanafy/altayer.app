@@ -1,0 +1,499 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>دليل وسياسة التسعير العادل واحتساب الكيلومترات والأرباح - شركة أخيل</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 12mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.6;
+      font-size: 11px;
+    }
+    .page-container {
+      max-width: 210mm;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 20px 25px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #1e1b4b;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #1e1b4b, #b45309);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #fff;
+    }
+    .brand-title h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 900;
+      color: #1e1b4b;
+    }
+    .brand-title p {
+      margin: 2px 0 0 0;
+      font-size: 10px;
+      color: #b45309;
+      font-weight: 700;
+    }
+    .doc-meta {
+      text-align: left;
+      font-size: 9.5px;
+      color: #64748b;
+    }
+    .doc-meta strong {
+      color: #0f172a;
+      display: block;
+      font-size: 10.5px;
+    }
+    .badge-confidential {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 8.5px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .doc-title-box {
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-title-box h2 {
+      margin: 0;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #fef08a;
+    }
+    .doc-title-box p {
+      margin: 3px 0 0 0;
+      font-size: 10px;
+      color: #cbd5e1;
+    }
+    .section {
+      margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .section-header h3 {
+      margin: 0;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #1e1b4b;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .card h4 {
+      margin: 0 0 4px 0;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .card p, .card ul {
+      margin: 0;
+      font-size: 10px;
+      color: #334155;
+      padding-right: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5px;
+      margin-top: 6px;
+    }
+    table th {
+      background-color: #1e1b4b;
+      color: #ffffff;
+      padding: 6px 8px;
+      text-align: right;
+      font-weight: 700;
+      border: 1px solid #1e1b4b;
+    }
+    table td {
+      padding: 5.5px 8px;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
+    }
+    table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .highlight-box {
+      background-color: #fffbeb;
+      border: 1px solid #fde68a;
+      border-right: 4px solid #b45309;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 10px;
+      color: #78350f;
+      margin: 8px 0;
+    }
+    .formula-box {
+      background: #0f172a;
+      color: #38bdf8;
+      border: 1px solid #1e293b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: bold;
+      text-align: center;
+      margin: 6px 0;
+    }
+    .signatures-section {
+      margin-top: 20px;
+      border-top: 2px dashed #cbd5e1;
+      padding-top: 12px;
+      page-break-inside: avoid;
+    }
+    .signatures-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+    .sig-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 6px;
+    }
+    .sig-title {
+      font-size: 9px;
+      font-weight: 700;
+      color: #64748b;
+      margin-bottom: 18px;
+    }
+    .sig-name {
+      font-size: 10px;
+      font-weight: 800;
+      color: #0f172a;
+      border-top: 1px solid #94a3b8;
+      padding-top: 3px;
+    }
+    .footer {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 8.5px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <!-- Header -->
+    <div class="header">
+      <div class="brand">
+        <div class="logo-badge">🐎</div>
+        <div class="brand-title">
+          <h1>شركة أخيل لتكنولوجيا النقل والخدمات اللوجستية ش.م.م</h1>
+          <p>AKHIL Smart Transportation & Logistics Enterprise</p>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <span class="badge-confidential">معتمد مالياً ورسمياً 🔒</span>
+        <strong>كود الوثيقة: AKH-PRICE-2026-V1</strong>
+        <span>تاريخ الاعتماد: 26 أغسطس 2026</span>
+      </div>
+    </div>
+
+    <!-- Title Box -->
+    <div class="doc-title-box">
+      <div>
+        <h2>دليل وسياسة التسعير العادل واحتساب الكيلومترات والأرباح (Pricing & Mileage Policy)</h2>
+        <p>المعايير الرقمية لاحتساب الأجرة، عمولة الـ 10%، تسعير فئات أخيل الـ 10، وسحب الأرباح الفوري</p>
+      </div>
+      <div style="text-align: left; font-size: 10px;">
+        <span style="background: rgba(255,255,255,0.15); padding: 4px 8px; border-radius: 6px; font-weight: 700;">
+          معتمد من الإدارة المالية 📑
+        </span>
+      </div>
+    </div>
+
+    <!-- Section 1: Pricing Formula -->
+    <div class="section">
+      <div class="section-header">
+        <h3>1. معادلة التسعير القياسية واحتساب الكيلومترات آلياً (The Calculation Engine) 📐</h3>
+      </div>
+      <div class="formula-box">
+        الأجرة التقديرية = [ 20 ج (فتح العداد) + (المسافة بالـ KM × 4.5 ج) + (دقائق الانتظار × 3 ج) ] × معامل الفئة
+      </div>
+      <div class="grid-3" style="margin-top: 8px;">
+        <div class="card" style="border-right: 3px solid #10b981;">
+          <h4>1. فتح العداد (Base Fare):</h4>
+          <p><strong>20.00 ج.م ثابتة</strong> تشمل أول دقيقتين انتظار مجاناً عند نقطة الانطلاق.</p>
+        </div>
+        <div class="card" style="border-right: 3px solid #f59e0b;">
+          <h4>2. تسعير الكيلومتر (Per KM):</h4>
+          <p><strong>4.50 ج.م / كم</strong> تُحسب وفق مسار الـ GPS الفعلي على خرائط جوجل.</p>
+        </div>
+        <div class="card" style="border-right: 3px solid #6366f1;">
+          <h4>3. التقريب لأعلى 5 جنيهات:</h4>
+          <p>تقريب آلي لأعلى 5 ج (مثال: 61 ج تصبح 65 ج) لحل أزمة الفكة نهائياً.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Services Multipliers Table -->
+    <div class="section">
+      <div class="section-header">
+        <h3>2. جدول معاملات تسعير فئات أخيل الـ 10 (10 AKHIL Services Matrix) 🎛️</h3>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>الفئة / الخدمة</th>
+            <th>المعامل (Multiplier)</th>
+            <th>فتح العداد</th>
+            <th>سعر الكيلومتر</th>
+            <th>الميزة والسياسة التشغيلية المعتمدة</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>🚗 أخيل اقتصادي (ECONOMY)</strong></td>
+            <td><strong>1.00x</strong></td>
+            <td>20.00 ج.م</td>
+            <td>4.50 ج.م</td>
+            <td>الخدمة القياسية اليومية بأعلى معايير النظافة والراحة.</td>
+          </tr>
+          <tr style="background:#fdf2f8;">
+            <td><strong>🌸 أخيل برثونة النسائي (PARTHONA)</strong></td>
+            <td><strong>1.00x (بدون زيادة)</strong></td>
+            <td>20.00 ج.م</td>
+            <td>4.50 ج.م</td>
+            <td>سيارات وسائقات سيدات حصراً بنفس السعر العادي دعماً للعدالة والخصوصية.</td>
+          </tr>
+          <tr>
+            <td><strong>🚘 أخيل بلس (PLUS)</strong></td>
+            <td><strong>1.10x</strong></td>
+            <td>22.00 ج.م</td>
+            <td>4.95 ج.م</td>
+            <td>موديلات سيارات أحدث ومستوى راحة وترفيه إضافي.</td>
+          </tr>
+          <tr>
+            <td><strong>💼 أخيل رجال أعمال (BUSINESS)</strong></td>
+            <td><strong>1.20x</strong></td>
+            <td>24.00 ج.م</td>
+            <td>5.40 ج.م</td>
+            <td>سيارات فارهة VIP مخصصة للشركات والاجتماعات الرسمية.</td>
+          </tr>
+          <tr>
+            <td><strong>⏱️ أخيل مجدولة (TIME)</strong></td>
+            <td><strong>1.00x (خصم حتى 20%)</strong></td>
+            <td>20.00 ج.م</td>
+            <td>4.50 ج.م</td>
+            <td>حجز مسبق (ONE / ROUTINE / CONTRACT) مع خصومات للرحلات الدورية.</td>
+          </tr>
+          <tr>
+            <td><strong>➕ أخيل إضافي (EXTRA)</strong></td>
+            <td><strong>1.50x</strong></td>
+            <td>30.00 ج.م</td>
+            <td>6.75 ج.م</td>
+            <td>نقل ركاب إضافيين (+50% لشخصين، +75% لـ 3، +100% لـ 4 ركاب).</td>
+          </tr>
+          <tr>
+            <td><strong>📦 أخيل حمولة (CARRY)</strong></td>
+            <td><strong>2.00x</strong></td>
+            <td>40.00 ج.م</td>
+            <td>9.00 ج.م</td>
+            <td>حمولة أمتعة وبضائع كبيرة (المجاني بالعادي: شنطة كبيرة + صغيرة).</td>
+          </tr>
+          <tr>
+            <td><strong>📫 أخيل طرد (BOX)</strong></td>
+            <td><strong>1.00x</strong></td>
+            <td>20.00 ج.م</td>
+            <td>4.50 ج.م</td>
+            <td>توصيل مستندات وطرود بدون راكب مع كود تسليم أمني (OTP).</td>
+          </tr>
+          <tr>
+            <td><strong>🛣️ أخيل سفر بين المحافظات (TRIP)</strong></td>
+            <td><strong>1.80x</strong></td>
+            <td>36.00 ج.م</td>
+            <td>8.10 ج.م</td>
+            <td>سفر لجميع المحافظات + 15 دقيقة استراحة مجانية لكل 100 كم.</td>
+          </tr>
+          <tr>
+            <td><strong>🎪 شريك الفعاليات (PARTNER OF EVENTS)</strong></td>
+            <td><strong>2.50x</strong></td>
+            <td>50.00 ج.م</td>
+            <td>11.25 ج.م</td>
+            <td>أسطول مخصص للقمم والمؤتمرات الكبرى والمعارض الدولية.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Section 3: Rider vs Driver Guide -->
+    <div class="section">
+      <div class="grid-2">
+        <div class="card" style="border-top: 3px solid #3b82f6;">
+          <h4 style="color:#1e3a8a;">🧑🏻 دليل الراكب والشفافية (Rider Guide):</h4>
+          <ul>
+            <li><strong>نظام المزايدة العادلة:</strong> إمكانية تعديل الأجرة المقترحة بالزيادة أو النقصان واختيار الكابتن الأنسب.</li>
+            <li><strong>رصيد الترحيب:</strong> 200 ج.م رصيد ترحيبي + كود خصم 50% على أول مشوار.</li>
+            <li><strong>وسائل الدفع المعتمدة:</strong> نقداً (كاش للكابتن)، InstaPay لحظي، فودافون كاش، وخدمة ادفع بعدين (AKHIL CREDIT).</li>
+          </ul>
+        </div>
+
+        <div class="card" style="border-top: 3px solid #10b981;">
+          <h4 style="color:#065f46;">👨🏻‍✈️ دليل الكابتن والأرباح (Driver Revenue):</h4>
+          <ul>
+            <li><strong>عمولة الشركة الأقل في مصر (10% فقط):</strong> يحصل الكابتن على <strong>90% صافي أرباح فورية</strong>.</li>
+            <li><strong>السحب اللحظي 24/7:</strong> تحويل فوري للأرباح إلى حساب InstaPay أو المحافظ الإلكترونية.</li>
+            <li><strong>صندوق سيارة الكابتن الملكية 👑:</strong> كل مشوار يمنح الكابتن نقاطاً للتنافس على سيارة العام المجانية.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Real Simulations in Cairo & Giza -->
+    <div class="section">
+      <div class="section-header">
+        <h3>3. نماذج محاكاة لأسعار أشهر مشاوير القاهرة والجيزة (Real Trip Simulations) 🚗</h3>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>مسار الرحلة (الانطلاق 📍 ⬅️ الوجهة 🏁)</th>
+            <th>المسافة</th>
+            <th>الزمن التقديري</th>
+            <th>أجرة أخيل العادلة</th>
+            <th>صافي ربح الكابتن (90%)</th>
+            <th>عمولة أخيل (10%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ميدان التحرير ⬅️ سيتي ستارز (مدينة نصر)</td>
+            <td>12.4 كم</td>
+            <td>22 دقيقة</td>
+            <td><strong>75.00 ج.م</strong></td>
+            <td style="color:#059669; font-weight:bold;">67.50 ج.م</td>
+            <td style="color:#b45309;">7.50 ج.م</td>
+          </tr>
+          <tr>
+            <td>ميدان الدقي ⬅️ التجمع الخامس (كايرو فيستيفال)</td>
+            <td>24.5 كم</td>
+            <td>35 دقيقة</td>
+            <td><strong>130.00 ج.م</strong></td>
+            <td style="color:#059669; font-weight:bold;">117.00 ج.م</td>
+            <td style="color:#b45309;">13.00 ج.م</td>
+          </tr>
+          <tr>
+            <td>المهندسين (ميدان لبنان) ⬅️ هايبر وان (الشيخ زايد)</td>
+            <td>18.2 كم</td>
+            <td>25 دقيقة</td>
+            <td><strong>105.00 ج.م</strong></td>
+            <td style="color:#059669; font-weight:bold;">94.50 ج.م</td>
+            <td style="color:#b45309;">10.50 ج.م</td>
+          </tr>
+          <tr>
+            <td>هضبة الأهرام (الهرم) ⬅️ مطار القاهرة الدولي</td>
+            <td>36.0 كم</td>
+            <td>45 دقيقة</td>
+            <td><strong>185.00 ج.م</strong></td>
+            <td style="color:#059669; font-weight:bold;">166.50 ج.م</td>
+            <td style="color:#b45309;">18.50 ج.م</td>
+          </tr>
+          <tr>
+            <td>المعادي (شارع 9) ⬅️ ميدان الحصري (6 أكتوبر)</td>
+            <td>38.5 كم</td>
+            <td>48 دقيقة</td>
+            <td><strong>195.00 ج.م</strong></td>
+            <td style="color:#059669; font-weight:bold;">175.50 ج.م</td>
+            <td style="color:#b45309;">19.50 ج.م</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Signatures -->
+    <div class="signatures-section">
+      <div class="signatures-grid">
+        <div class="sig-box">
+          <div class="sig-title">إعداد التسعير ومراقبة العمليات</div>
+          <div class="sig-name">أ. طارق عبد العزيز (Ops Lead)</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-title">الاعتماد المالي والضرائب</div>
+          <div class="sig-name">أ. ياسمين خليل (CFO)</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-title">المستشار القانوني العام</div>
+          <div class="sig-name">المستشار / أحمد فهمي</div>
+        </div>
+        <div class="sig-box" style="border: 2px solid #b45309; background: #fffbeb;">
+          <div class="sig-title" style="color: #b45309;">التصديق النهائي والتنفيذ 👑</div>
+          <div class="sig-name" style="color: #78350f;">م. هشام حنفي (رئيس مجلس الإدارة)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      جميع الحقوق محفوظة لشركة أخيل لتكنولوجيا النقل والخدمات اللوجستية ش.م.م © 2026 • وثيقة سياسة التسعير العادل الرسمية
+    </div>
+  </div>
+</body>
+</html>

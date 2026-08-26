@@ -1933,9 +1933,17 @@ export default function AdminDashboardPage() {
             <a
               href="/sop-pdf"
               target="_blank"
-              className="text-xs bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow"
+              className="text-xs bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow"
             >
               📄 الدورة المستندية (PDF) <ExternalLink className="w-3 h-3" />
+            </a>
+
+            <a
+              href="/pricing-pdf"
+              target="_blank"
+              className="text-xs bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow"
+            >
+              💰 دليل التسعير والأرباح (PDF) <ExternalLink className="w-3 h-3" />
             </a>
 
             <div className="flex items-center gap-2 px-3 py-1 bg-slate-950/80 border border-slate-800 rounded-xl text-xs">
