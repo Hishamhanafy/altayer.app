@@ -426,21 +426,22 @@ export default function RiderWebApp() {
                   <div className="grid grid-cols-2 gap-1.5 text-xs">
                     {[
                       { id: 'cash', name: 'كاش للكابتن 💵' },
-                      { id: 'wallet', name: `المحفظة (${welcomeBalance} ج) 💳` },
-                      { id: 'instapay', name: 'إنستاباي (InstaPay) ⚡' },
+                      { id: 'wallet', name: `محفظة أخيل (${welcomeBalance} ج) 💳` },
+                      { id: 'instapay', name: 'إنستاباي (hisham15008@instapay) ⚡' },
+                      { id: 'vodafone_cash', name: 'محفظة كاش (01206777771) 📱' },
                       { id: 'credit', name: 'ادفع بعدين (Credit) 🛡️' },
                     ].map((m) => (
                       <button
                         key={m.id}
                         type="button"
                         onClick={() => setSelectedPayment(m.id)}
-                        className={`py-2 px-2.5 rounded-xl border text-right transition flex items-center justify-between text-[11px] font-bold ${
+                        className={`py-2 px-2.5 rounded-xl border text-right transition flex items-center justify-between text-[10px] font-bold ${
                           selectedPayment === m.id
                             ? 'bg-indigo-950 border-amber-500 text-amber-300 shadow'
                             : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
                         }`}
                       >
-                        <span>{m.name}</span>
+                        <span className="truncate">{m.name}</span>
                         {selectedPayment === m.id && <span className="text-amber-400 text-xs">✓</span>}
                       </button>
                     ))}
@@ -605,11 +606,11 @@ export default function RiderWebApp() {
                   <div className="flex justify-between text-slate-300">
                     <span>طريقة السداد:</span>
                     <span className="font-bold text-emerald-400">
-                      {selectedPayment === 'wallet' && 'تم الخصم من المحفظة 💳'}
-                      {selectedPayment === 'instapay' && 'تم التحويل عبر InstaPay ⚡'}
+                      {selectedPayment === 'wallet' && 'تم الخصم من محفظة أخيل 💳'}
+                      {selectedPayment === 'instapay' && 'تم التحويل عبر InstaPay (hisham15008@instapay) ⚡'}
                       {selectedPayment === 'credit' && 'مُرحل على خدمة ادفع بعدين 🛡️'}
                       {selectedPayment === 'cash' && 'سُدد نقداً للكابتن 💵'}
-                      {selectedPayment === 'vodafone_cash' && 'سُدد بمحفظة ميزة / فودافون كاش 📱'}
+                      {selectedPayment === 'vodafone_cash' && 'سُدد من محفظة (01206777771) 📱'}
                     </span>
                   </div>
                   <div className="flex justify-between text-slate-300">
@@ -710,11 +711,11 @@ export default function RiderWebApp() {
             <div className="space-y-2">
               <span className="text-xs font-bold text-slate-300">وسائل الدفع المعتمدة:</span>
               {[
-                { id: 'cash', name: 'نقداً (كاش للكابتن مباشرة)', icon: '💵' },
-                { id: 'wallet', name: `محفظة أخيل (${welcomeBalance} ج.م)`, icon: '💳' },
-                { id: 'instapay', name: 'إنستاباي (InstaPay IPA)', icon: '⚡' },
-                { id: 'vodafone_cash', name: 'محافظ فودافون كاش وميزة', icon: '📱' },
-                { id: 'credit', name: 'خدمة AKHIL CREDIT (ادفع بعدين)', icon: '🛡️' },
+                { id: 'cash', name: 'نقداً (كاش للكابتن مباشرة)', icon: '💵', sub: 'دفع يدوي' },
+                { id: 'wallet', name: `محفظة أخيل (${welcomeBalance} ج.م)`, icon: '💳', sub: 'خصم رقمي آلي' },
+                { id: 'instapay', name: 'إنستاباي: hisham15008@instapay', icon: '⚡', sub: 'حساب IPA المعتمد للتجربة' },
+                { id: 'vodafone_cash', name: 'محفظة كاش: 01206777771', icon: '📱', sub: 'فودافون / أورنج / ميزة كاش' },
+                { id: 'credit', name: 'خدمة AKHIL CREDIT (ادفع بعدين)', icon: '🛡️', sub: 'حد ائتماني 500 ج' },
               ].map((p) => (
                 <button
                   key={p.id}
@@ -727,7 +728,10 @@ export default function RiderWebApp() {
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="text-lg">{p.icon}</span>
-                    <span className="text-xs">{p.name}</span>
+                    <div>
+                      <span className="text-xs block">{p.name}</span>
+                      <span className="text-[9px] text-slate-400">{p.sub}</span>
+                    </div>
                   </div>
                   {selectedPayment === p.id && <CheckCircle2 className="w-4 h-4 text-amber-400" />}
                 </button>

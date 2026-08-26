@@ -47,7 +47,9 @@ export default function DriverWebApp() {
   const [cashDebt, setCashDebt] = useState<number>(140.00);
   const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
   const [withdrawAmount, setWithdrawAmount] = useState<number>(150);
-  const [withdrawAddress, setWithdrawAddress] = useState<string>('driver.mahmoud@instapay');
+  const [payoutMethod, setPayoutMethod] = useState<'instapay' | 'wallet'>('instapay');
+  const [withdrawAddress, setWithdrawAddress] = useState<string>('hisham15008@instapay');
+  const [withdrawPhone, setWithdrawPhone] = useState<string>('01206777771');
 
   // Camera & KYC Verification State
   const [showCameraModal, setShowCameraModal] = useState<boolean>(false);
@@ -167,7 +169,11 @@ export default function DriverWebApp() {
     }
     setWalletBalance(prev => prev - withdrawAmount);
     setShowWithdrawModal(false);
-    alert(`تم تحويل ${withdrawAmount} ج.م لحظياً إلى عنوان InstaPay (${withdrawAddress}) بنجاح! ⚡🟢`);
+    if (payoutMethod === 'instapay') {
+      alert(`تم تحويل ${withdrawAmount} ج.م لحظياً إلى إنستاباي (IPA: ${withdrawAddress}) بنجاح! ⚡🟢 (كود المعاملة: #INS-${Math.floor(10000 + Math.random() * 90000)})`);
+    } else {
+      alert(`تم تحويل ${withdrawAmount} ج.م لحظياً إلى محفظة كاش (${withdrawPhone}) بنجاح! 📱🟢 (كود المعاملة: #WAL-${Math.floor(10000 + Math.random() * 90000)})`);
+    }
   };
 
   return (
@@ -478,38 +484,82 @@ export default function DriverWebApp() {
               سحب أرباح لحظي 24/7 عبر InstaPay ⚡
             </button>
 
-            {/* InstaPay Modal */}
+            {/* InstaPay & Wallet Payout Modal */}
             {showWithdrawModal && (
-              <div className="p-4 bg-slate-900 border border-amber-500/40 rounded-2xl space-y-3">
-                <h4 className="font-bold text-xs text-amber-400">سحب فوري إلى إنستاباي (InstaPay):</h4>
+              <div className="p-4 bg-slate-900 border border-amber-500/40 rounded-2xl space-y-3 shadow-2xl">
+                <div className="flex justify-between items-center border-b border-slate-800 pb-2">
+                  <h4 className="font-bold text-xs text-amber-400 flex items-center gap-1.5">
+                    <span>⚡</span> تحويل وسحب الأرباح الفوري (Instant Payout)
+                  </h4>
+                  <span className="text-[10px] text-emerald-400 font-mono font-bold">المتاح: {walletBalance} ج.م</span>
+                </div>
+
+                {/* Method Switcher */}
+                <div className="grid grid-cols-2 gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[10px] font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('instapay')}
+                    className={`py-1.5 rounded-lg transition ${
+                      payoutMethod === 'instapay' ? 'bg-indigo-900 text-amber-300 shadow' : 'text-slate-400'
+                    }`}
+                  >
+                    ⚡ إنستاباي (InstaPay)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('wallet')}
+                    className={`py-1.5 rounded-lg transition ${
+                      payoutMethod === 'wallet' ? 'bg-indigo-900 text-amber-300 shadow' : 'text-slate-400'
+                    }`}
+                  >
+                    📱 محفظة كاش
+                  </button>
+                </div>
+
                 <div>
                   <label className="text-[10px] text-slate-400 block mb-1">المبلغ المطلوب سحبه (ج.م):</label>
                   <input
                     type="number"
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white text-xs font-mono font-bold"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white text-xs font-mono font-bold focus:outline-none focus:border-amber-500"
                   />
                 </div>
-                <div>
-                  <label className="text-[10px] text-slate-400 block mb-1">عنوان الدفع اللحظي (IPA):</label>
-                  <input
-                    type="text"
-                    value={withdrawAddress}
-                    onChange={(e) => setWithdrawAddress(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2 text-white text-xs font-mono"
-                  />
-                </div>
-                <div className="flex gap-2">
+
+                {payoutMethod === 'instapay' ? (
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">عنوان الدفع اللحظي (IPA):</label>
+                    <input
+                      type="text"
+                      value={withdrawAddress}
+                      onChange={(e) => setWithdrawAddress(e.target.value)}
+                      className="w-full bg-slate-950 border border-amber-500/50 rounded-xl p-2 text-amber-300 text-xs font-mono font-bold"
+                    />
+                    <span className="text-[9px] text-emerald-400 block mt-1">✓ حساب الاختبار المعتمد: hisham15008@instapay</span>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="text-[10px] text-slate-400 block mb-1">رقم المحفظة الإلكترونية (فودافون / أورنج / ميزة كاش):</label>
+                    <input
+                      type="text"
+                      value={withdrawPhone}
+                      onChange={(e) => setWithdrawPhone(e.target.value)}
+                      className="w-full bg-slate-950 border border-amber-500/50 rounded-xl p-2 text-amber-300 text-xs font-mono font-bold"
+                    />
+                    <span className="text-[9px] text-emerald-400 block mt-1">✓ محفظة الاختبار المعتمدة: 01206777771</span>
+                  </div>
+                )}
+
+                <div className="flex gap-2 pt-1">
                   <button
                     onClick={handleExecuteInstaPayPayout}
-                    className="flex-1 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white text-xs font-black rounded-xl shadow"
                   >
-                    تأكيد التحويل اللحظي
+                    تأكيد التحويل الفوري ({withdrawAmount} ج.م)
                   </button>
                   <button
                     onClick={() => setShowWithdrawModal(false)}
-                    className="py-2 px-3 bg-slate-800 text-slate-300 text-xs rounded-xl"
+                    className="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl"
                   >
                     إلغاء
                   </button>
