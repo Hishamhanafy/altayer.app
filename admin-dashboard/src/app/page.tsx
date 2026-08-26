@@ -42,16 +42,278 @@ import {
   MessageSquare,
   PhoneCall,
   UserCheck,
-  LifeBuoy
+  LifeBuoy,
+  Building2,
+  ShoppingCart,
+  Package,
+  Briefcase,
+  Calculator
 } from 'lucide-react';
 import { translations, Locale } from '../locales/translations';
 
 export default function AdminDashboardPage() {
   const [lang, setLang] = useState<Locale>('ar');
-  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'hr_payroll' | 'crm_support' | 'rbac_users' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'erp_suite' | 'hr_payroll' | 'crm_support' | 'rbac_users' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [simulatedDriversCount, setSimulatedDriversCount] = useState(142);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  // ERP Enterprise Suite State
+  const [erpViewMode, setErpViewMode] = useState<'assets' | 'procurement' | 'inventory' | 'b2b_contracts' | 'budget_variance'>('assets');
+
+  // 1. Fixed Assets & Fleet Fund List
+  const [fixedAssetsList, setFixedAssetsList] = useState([
+    {
+      id: 'AST-101',
+      name: 'صندوق مخصص سيارة الكابتن الملكية السنوية (FREE CAR 👑)',
+      category: 'أصول سيارات وجوائز',
+      purchaseDate: '01/01/2026',
+      cost: 950000,
+      depreciationRate: '20% سنوياً',
+      accumulatedDepreciation: 95000,
+      netBookValue: 855000,
+      location: 'صندوق الجوائز - الحساب البنكي المخصص',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'AST-102',
+      name: 'خوادم وبنية سحابية مخصصة (Private Cloud Hardware)',
+      category: 'خوادم وتقنية',
+      purchaseDate: '15/01/2026',
+      cost: 380000,
+      depreciationRate: '25% سنوياً',
+      accumulatedDepreciation: 47500,
+      netBookValue: 332500,
+      location: 'مركز بيانات المعادي (Data Center)',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'AST-103',
+      name: 'أجهزة حواسيب وشاشات فريق العمليات ومراقبة الأسطول (15 محطة)',
+      category: 'أجهزة ومعدات مكتبية',
+      purchaseDate: '10/02/2026',
+      cost: 210000,
+      depreciationRate: '20% سنوياً',
+      accumulatedDepreciation: 21000,
+      netBookValue: 189000,
+      location: 'المقر الرئيسي - قاعة العمليات 24/7',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'AST-104',
+      name: 'تجهيزات وشبكات المقر الرئيسي وسنترال الاتصال السحابي',
+      category: 'تجهيزات وشبكات',
+      purchaseDate: '01/01/2026',
+      cost: 150000,
+      depreciationRate: '15% سنوياً',
+      accumulatedDepreciation: 15000,
+      netBookValue: 135000,
+      location: 'المقر الرئيسي - التجمع الخامس',
+      status: 'ACTIVE',
+    },
+  ]);
+
+  // 2. Purchase Orders & Procurement List
+  const [purchaseOrdersList, setPurchaseOrdersList] = useState([
+    {
+      id: 'PO-2026-041',
+      vendor: 'Google Cloud & Maps Enterprise (Ireland)',
+      item: 'حزمة مفاتيح خرائط Google Maps APIs وحساب المسافات',
+      amount: 45000,
+      dept: 'التطوير الهندسي',
+      date: '20/08/2026',
+      dueDate: '05/09/2026',
+      status: 'APPROVED',
+      paymentMethod: 'بطاقة ائتمان الشركات CIB Corporate',
+    },
+    {
+      id: 'PO-2026-042',
+      vendor: 'VictoryLink Egypt (SMS Gateway)',
+      item: 'شحنة 500,000 رسالة OTP وتنبيهات الركاب والكباتن',
+      amount: 32000,
+      dept: 'العمليات والتشغيل',
+      date: '22/08/2026',
+      dueDate: '10/09/2026',
+      status: 'APPROVED',
+      paymentMethod: 'تحويل بنكي بنك مصر',
+    },
+    {
+      id: 'PO-2026-043',
+      vendor: 'مطابع الأهرام الحديثة',
+      item: 'طباعة 10,000 استيكر مغناطيسي عاكس لعلامة أخيل وبرثونة',
+      amount: 18500,
+      dept: 'التسويق والتوثيق',
+      date: '24/08/2026',
+      dueDate: '30/08/2026',
+      status: 'DELIVERED',
+      paymentMethod: 'شيك مصرفي CIB',
+    },
+    {
+      id: 'PO-2026-044',
+      vendor: 'Paymob / كاش كول لنظم المدفوعات',
+      item: 'رسوم تسويات بوابة الدفع الإلكتروني ومحافظ ميزة',
+      amount: 28000,
+      dept: 'الشؤون المالية',
+      date: '25/08/2026',
+      dueDate: '01/09/2026',
+      status: 'PENDING_PAYMENT',
+      paymentMethod: 'خصم تلقائي من الحساب',
+    },
+  ]);
+
+  // 3. Inventory & Operational Supplies List
+  const [inventoryItemsList, setInventoryItemsList] = useState([
+    { id: 'INV-01', name: 'استيكرات لوحات أخيل المغناطيسية للسيارات', sku: 'AKH-STK-01', stock: 3450, reorderLevel: 500, unitCost: '1.85 ج.م', totalVal: '6,382 ج.م', status: 'IN_STOCK' },
+    { id: 'INV-02', name: 'استيكرات برثونة المضيئة (Parthona Pink ✨)', sku: 'AKH-PRT-02', stock: 1200, reorderLevel: 250, unitCost: '2.40 ج.م', totalVal: '2,880 ج.م', status: 'IN_STOCK' },
+    { id: 'INV-03', name: 'كروت رصيد الترحيب للركاب (AKHIL 200 EGP Vouchers)', sku: 'AKH-VCH-200', stock: 8500, reorderLevel: 1000, unitCost: '0.50 ج.م', totalVal: '4,250 ج.م', status: 'IN_STOCK' },
+    { id: 'INV-04', name: 'أجهزة قراءة التحاليل السريعة بنقاط التوثيق الميدانية', sku: 'AKH-MED-KIT', stock: 18, reorderLevel: 5, unitCost: '2,500 ج.م', totalVal: '45,000 ج.م', status: 'IN_STOCK' },
+    { id: 'INV-05', name: 'زي رسمي وهدايا الكباتن المتميزين (T-Shirts & Caps)', sku: 'AKH-APP-01', stock: 85, reorderLevel: 100, unitCost: '120 ج.م', totalVal: '10,200 ج.م', status: 'LOW_STOCK' },
+  ]);
+
+  // 4. B2B Corporate Fleet Contracts List
+  const [b2bContractsList, setB2bContractsList] = useState([
+    {
+      id: 'B2B-801',
+      client: 'شركة فودافون مصر (مبنى القرية الذكية)',
+      type: 'نقل موظفين وورديات ليلية (Fleet Dispatch)',
+      monthlyValue: 145000,
+      carsAllocated: 25,
+      startDate: '01/01/2026',
+      endDate: '31/12/2026',
+      billingCycle: 'فاتورة شهرية (30 يوم)',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'B2B-802',
+      client: 'البنك التجاري الدولي (CIB Head Office)',
+      type: 'مشاوير رجال أعمال VIP للمديرين التنفيذيين',
+      monthlyValue: 85000,
+      carsAllocated: 10,
+      startDate: '15/02/2026',
+      endDate: '14/02/2027',
+      billingCycle: 'دفع مؤجل معتمد',
+      status: 'ACTIVE',
+    },
+    {
+      id: 'B2B-803',
+      client: 'مؤتمر ومعرض القاهرة الدولي للتكنولوجيا (CAIRO ICT)',
+      type: 'الناقل الرسمي الحصري لضيوف الفعالية (Event Partner)',
+      monthlyValue: 120000,
+      carsAllocated: 40,
+      startDate: '01/06/2026',
+      endDate: '30/06/2026',
+      billingCycle: 'عقد فعالية سنوي',
+      status: 'COMPLETED',
+    },
+  ]);
+
+  // 5. Departmental Budget vs Actual Variance List
+  const [budgetVarianceList, setBudgetVarianceList] = useState([
+    { dept: 'التطوير الهندسي والسيرفرات (Tech & Cloud)', budget: 200000, actual: 165000, variance: -35000, status: 'UNDER_BUDGET' },
+    { dept: 'التسويق وحملات الاستحواذ (Marketing & Growth)', budget: 300000, actual: 280000, variance: -20000, status: 'UNDER_BUDGET' },
+    { dept: 'العمليات ومراقبة الأسطول (Operations & Dispatch)', budget: 120000, actual: 115000, variance: -5000, status: 'UNDER_BUDGET' },
+    { dept: 'الموارد البشرية والرواتب (HR & Salaries)', budget: 220000, actual: 210000, variance: -10000, status: 'UNDER_BUDGET' },
+    { dept: 'مخصصات حوافز الكباتن وصندوق السيارة الملكية', budget: 200000, actual: 185000, variance: -15000, status: 'UNDER_BUDGET' },
+    { dept: 'الشؤون القانونية والتراخيص الحكومية', budget: 50000, actual: 42000, variance: -8000, status: 'UNDER_BUDGET' },
+  ]);
+
+  const [showAddAssetModal, setShowAddAssetModal] = useState(false);
+  const [newAsset, setNewAsset] = useState({
+    name: '',
+    category: 'أصول سيارات وجوائز',
+    cost: 100000,
+    depreciationRate: '20% سنوياً',
+    location: 'المقر الرئيسي',
+  });
+
+  const [showAddPoModal, setShowAddPoModal] = useState(false);
+  const [newPo, setNewPo] = useState({
+    vendor: '',
+    item: '',
+    amount: 15000,
+    dept: 'العمليات والتشغيل',
+    dueDate: '15/09/2026',
+    paymentMethod: 'تحويل بنكي',
+  });
+
+  const [showAddContractModal, setShowAddContractModal] = useState(false);
+  const [newContract, setNewContract] = useState({
+    client: '',
+    type: 'نقل موظفين وورديات ليلية',
+    monthlyValue: 50000,
+    carsAllocated: 10,
+    endDate: '31/12/2026',
+  });
+
+  const handleCreateAssetSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAsset.name) {
+      alert('يرجى إدخال اسم الأصل الثابت!');
+      return;
+    }
+    const created = {
+      id: `AST-10${fixedAssetsList.length + 1}`,
+      name: newAsset.name,
+      category: newAsset.category,
+      purchaseDate: '26/08/2026',
+      cost: Number(newAsset.cost),
+      depreciationRate: newAsset.depreciationRate,
+      accumulatedDepreciation: 0,
+      netBookValue: Number(newAsset.cost),
+      location: newAsset.location,
+      status: 'ACTIVE',
+    };
+    setFixedAssetsList(prev => [...prev, created]);
+    setShowAddAssetModal(false);
+    setNewAsset({ name: '', category: 'أصول سيارات وجوائز', cost: 100000, depreciationRate: '20% سنوياً', location: 'المقر الرئيسي' });
+    alert(`تم تسجيل الأصل الثابت (${created.name}) وترحيله لدفتر الأصول بنجاح 🏢🟢`);
+  };
+
+  const handleCreatePoSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPo.vendor || !newPo.item) {
+      alert('يرجى إدخال اسم المورد والبيان!');
+      return;
+    }
+    const created = {
+      id: `PO-2026-04${purchaseOrdersList.length + 1}`,
+      vendor: newPo.vendor,
+      item: newPo.item,
+      amount: Number(newPo.amount),
+      dept: newPo.dept,
+      date: '26/08/2026',
+      dueDate: newPo.dueDate,
+      status: 'APPROVED',
+      paymentMethod: newPo.paymentMethod,
+    };
+    setPurchaseOrdersList(prev => [created, ...prev]);
+    setShowAddPoModal(false);
+    setNewPo({ vendor: '', item: '', amount: 15000, dept: 'العمليات والتشغيل', dueDate: '15/09/2026', paymentMethod: 'تحويل بنكي' });
+    alert(`تم إصدار أمر الشراء المعتمد (${created.id}) بنجاح 🛒🟢`);
+  };
+
+  const handleCreateContractSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newContract.client) {
+      alert('يرجى إدخال اسم الشركة / العميل!');
+      return;
+    }
+    const created = {
+      id: `B2B-80${b2bContractsList.length + 1}`,
+      client: newContract.client,
+      type: newContract.type,
+      monthlyValue: Number(newContract.monthlyValue),
+      carsAllocated: Number(newContract.carsAllocated),
+      startDate: '26/08/2026',
+      endDate: newContract.endDate,
+      billingCycle: 'فاتورة شهرية (30 يوم)',
+      status: 'ACTIVE',
+    };
+    setB2bContractsList(prev => [created, ...prev]);
+    setShowAddContractModal(false);
+    setNewContract({ client: '', type: 'نقل موظفين وورديات ليلية', monthlyValue: 50000, carsAllocated: 10, endDate: '31/12/2026' });
+    alert(`تم توثيق عقد الشركات B2B (${created.client}) بنجاح 📑🟢`);
+  };
 
   // CRM & Customer Service State
   const [crmViewMode, setCrmViewMode] = useState<'tickets' | 'customer_profiles' | 'lost_items' | 'sos_emergency'>('tickets');
@@ -1108,6 +1370,19 @@ export default function AdminDashboardPage() {
             </button>
 
             <button
+              onClick={() => setActiveTab('erp_suite')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'erp_suite' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Building2 className="w-4 h-4 text-amber-400" />
+              نظام إدارة المؤسسة (ERP) 🏢
+              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                شامل
+              </span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('hr_payroll')}
               className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'hr_payroll' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -1708,6 +1983,360 @@ export default function AdminDashboardPage() {
                             <td className="py-3.5 px-3 text-slate-400 font-mono text-[11px]">{entry.ref}</td>
                           </tr>
                         ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB: ERP ENTERPRISE SUITE (نظام إدارة موارد المؤسسة الشامل) */}
+          {activeTab === 'erp_suite' && (
+            <div className="space-y-6">
+              {/* ERP Sub-Tab Navigation */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+                <div className="flex flex-wrap gap-1.5 text-xs font-bold">
+                  {[
+                    { id: 'assets', label: '🏢 الأصول الثابتة وصندوق الجوائز' },
+                    { id: 'procurement', label: '🛒 المشتريات والموردين (PO)' },
+                    { id: 'inventory', label: '📦 المخزون والمستلزمات' },
+                    { id: 'b2b_contracts', label: '📑 عقود الشركات وB2B' },
+                    { id: 'budget_variance', label: '📊 الموازنة والانحرافات' },
+                  ].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setErpViewMode(sub.id as any)}
+                      className={`px-3.5 py-2 rounded-xl transition ${
+                        erpViewMode === sub.id 
+                          ? 'bg-indigo-900 text-amber-300 font-black shadow-lg shadow-indigo-900/40 border border-amber-500/30' 
+                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap">
+                  {erpViewMode === 'assets' && (
+                    <button
+                      onClick={() => setShowAddAssetModal(true)}
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black text-xs px-3.5 py-2 rounded-xl transition shadow"
+                    >
+                      <span>➕</span> تسجيل أصل ثابت جديد 🏢
+                    </button>
+                  )}
+                  {erpViewMode === 'procurement' && (
+                    <button
+                      onClick={() => setShowAddPoModal(true)}
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow"
+                    >
+                      <span>➕</span> إنشاء أمر شراء (PO) 🛒
+                    </button>
+                  )}
+                  {erpViewMode === 'b2b_contracts' && (
+                    <button
+                      onClick={() => setShowAddContractModal(true)}
+                      className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow"
+                    >
+                      <span>➕</span> توثيق عقد B2B جديد 📑
+                    </button>
+                  )}
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-700"
+                  >
+                    <Printer className="w-4 h-4" />
+                    طباعة التقرير 📄
+                  </button>
+                </div>
+              </div>
+
+              {/* SUB-VIEW 1: FIXED ASSETS & FLEET FUND */}
+              {erpViewMode === 'assets' && (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">إجمالي التكلفة التاريخية للأصول</span>
+                      <div className="text-xl font-black text-white font-mono">
+                        {(fixedAssetsList.reduce((acc, a) => acc + a.cost, 0)).toLocaleString()} ج.م
+                      </div>
+                      <span className="text-[10px] text-slate-400">خوادم • تجهيزات • سيارات وجوائز</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">مجمع الإهلاك المحاسبي</span>
+                      <div className="text-xl font-black text-rose-400 font-mono">
+                        ({(fixedAssetsList.reduce((acc, a) => acc + a.accumulatedDepreciation, 0)).toLocaleString()} ج.م)
+                      </div>
+                      <span className="text-[10px] text-rose-300">إهلاك القسط الثابت المعتمد</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-emerald-500/40 rounded-2xl space-y-1 bg-gradient-to-br from-emerald-950/40 to-slate-900">
+                      <span className="text-xs text-emerald-300 font-bold">صافي القيمة الدفترية للأصول (Net Book Value):</span>
+                      <div className="text-xl font-black text-emerald-400 font-mono">
+                        {(fixedAssetsList.reduce((acc, a) => acc + a.netBookValue, 0)).toLocaleString()} ج.م
+                      </div>
+                      <span className="text-[10px] text-emerald-300 font-bold">أصول قائمة ومؤمن عليها 🟢</span>
+                    </div>
+                  </div>
+
+                  {/* Fixed Assets Table */}
+                  <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 className="font-extrabold text-base text-white">سجل الأصول الثابتة وصندوق الجوائز والأجهزة:</h3>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-right text-xs">
+                        <thead>
+                          <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                            <th className="pb-3 px-3">كود الأصل</th>
+                            <th className="pb-3 px-3">اسم الأصل والتوصيف</th>
+                            <th className="pb-3 px-3">التصنيف</th>
+                            <th className="pb-3 px-3">تاريخ الشراء</th>
+                            <th className="pb-3 px-3">التكلفة الأولية</th>
+                            <th className="pb-3 px-3">معدل الإهلاك</th>
+                            <th className="pb-3 px-3">مجمع الإهلاك</th>
+                            <th className="pb-3 px-3">صافي القيمة الدفترية</th>
+                            <th className="pb-3 px-3">الموقع / الحيازة</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                          {fixedAssetsList.map((asset) => (
+                            <tr key={asset.id} className="hover:bg-slate-950/60 transition">
+                              <td className="py-3.5 px-3 font-mono font-bold text-amber-400">{asset.id}</td>
+                              <td className="py-3.5 px-3 font-bold text-white">{asset.name}</td>
+                              <td className="py-3.5 px-3 text-slate-300">{asset.category}</td>
+                              <td className="py-3.5 px-3 font-mono text-slate-400">{asset.purchaseDate}</td>
+                              <td className="py-3.5 px-3 font-mono text-white font-bold">{asset.cost.toLocaleString()} ج.م</td>
+                              <td className="py-3.5 px-3 font-mono text-amber-300">{asset.depreciationRate}</td>
+                              <td className="py-3.5 px-3 font-mono text-rose-400">({asset.accumulatedDepreciation.toLocaleString()} ج.م)</td>
+                              <td className="py-3.5 px-3 font-mono font-black text-emerald-400 text-sm">{asset.netBookValue.toLocaleString()} ج.م</td>
+                              <td className="py-3.5 px-3 text-slate-400 text-[11px]">{asset.location}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 2: PROCUREMENT & PURCHASE ORDERS */}
+              {erpViewMode === 'procurement' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white">أوامر الشراء وفواتير الموردين والخدمات السحابية:</h3>
+                    <span className="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-xl font-bold font-mono">
+                      دورة مشتريات معتمدة 🛒
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-3">رقم الـ PO</th>
+                          <th className="pb-3 px-3">المورد / الجهة</th>
+                          <th className="pb-3 px-3">بيان البند والخدمة</th>
+                          <th className="pb-3 px-3">الإدارة الطالبة</th>
+                          <th className="pb-3 px-3">القيمة (ج.م)</th>
+                          <th className="pb-3 px-3">تاريخ الطلب</th>
+                          <th className="pb-3 px-3">تاريخ الاستحقاق</th>
+                          <th className="pb-3 px-3">طريقة السداد</th>
+                          <th className="pb-3 px-3">الحالة</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {purchaseOrdersList.map((po) => (
+                          <tr key={po.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-3 font-mono font-bold text-cyan-400">{po.id}</td>
+                            <td className="py-3.5 px-3 font-bold text-white">{po.vendor}</td>
+                            <td className="py-3.5 px-3 text-slate-300 max-w-xs truncate">{po.item}</td>
+                            <td className="py-3.5 px-3">
+                              <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px]">
+                                {po.dept}
+                              </span>
+                            </td>
+                            <td className="py-3.5 px-3 font-mono font-black text-amber-400">{po.amount.toLocaleString()} ج.م</td>
+                            <td className="py-3.5 px-3 font-mono text-slate-400">{po.date}</td>
+                            <td className="py-3.5 px-3 font-mono text-slate-300">{po.dueDate}</td>
+                            <td className="py-3.5 px-3 text-slate-400 text-[11px]">{po.paymentMethod}</td>
+                            <td className="py-3.5 px-3">
+                              {po.status === 'DELIVERED' || po.status === 'APPROVED' ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  معتمد / تم التوريد 🟢
+                                </span>
+                              ) : (
+                                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  بانتظار السداد ⏳
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 3: INVENTORY & SUPPLIES */}
+              {erpViewMode === 'inventory' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white">مخزون المستلزمات التشغيلية والمطبوعات وبطاقات الترحيب:</h3>
+                    <span className="text-xs bg-amber-500/20 text-amber-300 px-3 py-1 rounded-xl font-mono font-bold">
+                      مستودع التجمع الخامس المركزي
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">كود الصنف</th>
+                          <th className="pb-3 px-4">اسم المستلزم / الصنف</th>
+                          <th className="pb-3 px-4">الباركود (SKU)</th>
+                          <th className="pb-3 px-4">الرصيد المتاح</th>
+                          <th className="pb-3 px-4">حد إعادة الطلب</th>
+                          <th className="pb-3 px-4">تكلفة الوحدة</th>
+                          <th className="pb-3 px-4">إجمالي القيمة</th>
+                          <th className="pb-3 px-4">حالة التوفر</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {inventoryItemsList.map((inv) => (
+                          <tr key={inv.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{inv.id}</td>
+                            <td className="py-3.5 px-4 font-bold text-white">{inv.name}</td>
+                            <td className="py-3.5 px-4 font-mono text-purple-300">{inv.sku}</td>
+                            <td className="py-3.5 px-4 font-mono font-black text-white">{inv.stock.toLocaleString()}</td>
+                            <td className="py-3.5 px-4 font-mono text-slate-400">{inv.reorderLevel.toLocaleString()}</td>
+                            <td className="py-3.5 px-4 font-mono text-slate-300">{inv.unitCost}</td>
+                            <td className="py-3.5 px-4 font-mono font-black text-emerald-400">{inv.totalVal}</td>
+                            <td className="py-3.5 px-4">
+                              {inv.status === 'IN_STOCK' ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  متوفر ومطابق 🟢
+                                </span>
+                              ) : (
+                                <span className="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold animate-pulse">
+                                  قارب على النفاد ⚠️
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 4: B2B CORPORATE CONTRACTS */}
+              {erpViewMode === 'b2b_contracts' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white">عقود الشركات والرحلات التجارية (B2B Fleet Partnerships):</h3>
+                    <span className="text-xs bg-purple-500/20 text-purple-300 px-3 py-1 rounded-xl font-mono font-bold">
+                      إجمالي العقود النشطة: {(b2bContractsList.filter(c => c.status === 'ACTIVE').reduce((acc, c) => acc + c.monthlyValue, 0)).toLocaleString()} ج.م / شهر
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">رقم العقد</th>
+                          <th className="pb-3 px-4">اسم الشركة / العميل</th>
+                          <th className="pb-3 px-4">طبيعة الخدمة والاتفاق</th>
+                          <th className="pb-3 px-4">القيمة الشهرية</th>
+                          <th className="pb-3 px-4">الأسطول المخصص</th>
+                          <th className="pb-3 px-4">فترة السريان</th>
+                          <th className="pb-3 px-4">دورة الفوترة</th>
+                          <th className="pb-3 px-4">الحالة</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {b2bContractsList.map((contract) => (
+                          <tr key={contract.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3.5 px-4 font-mono font-bold text-amber-400">{contract.id}</td>
+                            <td className="py-3.5 px-4 font-bold text-white">{contract.client}</td>
+                            <td className="py-3.5 px-4 text-slate-300">{contract.type}</td>
+                            <td className="py-3.5 px-4 font-mono font-black text-emerald-400">{contract.monthlyValue.toLocaleString()} ج.م</td>
+                            <td className="py-3.5 px-4 font-mono font-bold text-cyan-300">{contract.carsAllocated} سيارة</td>
+                            <td className="py-3.5 px-4 font-mono text-[11px] text-slate-400">{contract.startDate} إلى {contract.endDate}</td>
+                            <td className="py-3.5 px-4 text-slate-400 text-[11px]">{contract.billingCycle}</td>
+                            <td className="py-3.5 px-4">
+                              {contract.status === 'ACTIVE' ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  ساري ونشط 🟢
+                                </span>
+                              ) : (
+                                <span className="bg-slate-800 text-slate-400 px-2 py-0.5 rounded text-[10px]">
+                                  مكتمل ⚪
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 5: BUDGET & VARIANCE ANALYSIS */}
+              {erpViewMode === 'budget_variance' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 className="font-extrabold text-base text-white">مراقبة الموازنة التقديرية وتحليل الانحرافات (Variance Analysis):</h3>
+                    <span className="text-xs bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-xl font-bold font-mono">
+                      وفر إجمالي في الموازنة: 93,000 ج.م 🟢
+                    </span>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">الإدارة / مركز التكلفة</th>
+                          <th className="pb-3 px-4">الموازنة التقديرية المعتمدة</th>
+                          <th className="pb-3 px-4">المصروف الفعلي حتى تاريخه</th>
+                          <th className="pb-3 px-4">قيمة الانحراف (Variance)</th>
+                          <th className="pb-3 px-4">نسبة الاستهلاك</th>
+                          <th className="pb-3 px-4">حالة الموازنة</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {budgetVarianceList.map((item, idx) => {
+                          const percent = Math.round((item.actual / item.budget) * 100);
+                          return (
+                            <tr key={idx} className="hover:bg-slate-950/60 transition">
+                              <td className="py-3.5 px-4 font-bold text-white">{item.dept}</td>
+                              <td className="py-3.5 px-4 font-mono font-bold text-slate-200">{item.budget.toLocaleString()} ج.م</td>
+                              <td className="py-3.5 px-4 font-mono font-bold text-amber-300">{item.actual.toLocaleString()} ج.م</td>
+                              <td className="py-3.5 px-4 font-mono font-black text-emerald-400">
+                                {item.variance.toLocaleString()} ج.م (وفر)
+                              </td>
+                              <td className="py-3.5 px-4 font-mono">
+                                <div className="flex items-center gap-2">
+                                  <div className="w-16 bg-slate-800 h-2 rounded-full overflow-hidden">
+                                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${percent}%` }} />
+                                  </div>
+                                  <span className="text-[11px] font-bold text-slate-300">{percent}%</span>
+                                </div>
+                              </td>
+                              <td className="py-3.5 px-4">
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  ضمن الموازنة 🟢
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
@@ -4298,6 +4927,311 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddAdminUserModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 9: ADD FIXED ASSET */}
+        {showAddAssetModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🏢</span> تسجيل أصل ثابت جديد في دفتر الأصول
+                </h3>
+                <button
+                  onClick={() => setShowAddAssetModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateAssetSubmit} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">اسم الأصل والتوصيف:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: سيارة مخصصة لصندوق جوائز الكباتن"
+                    value={newAsset.name}
+                    onChange={(e) => setNewAsset({ ...newAsset, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">التصنيف:</label>
+                    <select
+                      value={newAsset.category}
+                      onChange={(e) => setNewAsset({ ...newAsset, category: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="أصول سيارات وجوائز">أصول سيارات وجوائز</option>
+                      <option value="خوادم وتقنية">خوادم وتقنية</option>
+                      <option value="أجهزة ومعدات مكتبية">أجهزة ومعدات مكتبية</option>
+                      <option value="تجهيزات وشبكات">تجهيزات وشبكات</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">التكلفة التاريخية (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={newAsset.cost}
+                      onChange={(e) => setNewAsset({ ...newAsset, cost: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-emerald-400 font-mono font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">معدل الإهلاك السنوي:</label>
+                    <select
+                      value={newAsset.depreciationRate}
+                      onChange={(e) => setNewAsset({ ...newAsset, depreciationRate: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="20% سنوياً">20% سنوياً (5 سنوات)</option>
+                      <option value="25% سنوياً">25% سنوياً (4 سنوات - حواسيب)</option>
+                      <option value="15% سنوياً">15% سنوياً (تجهيزات ومباني)</option>
+                      <option value="10% سنوياً">10% سنوياً</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الموقع / الحيازة:</label>
+                    <input
+                      type="text"
+                      placeholder="المقر الرئيسي / المعادي"
+                      value={newAsset.location}
+                      onChange={(e) => setNewAsset({ ...newAsset, location: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl transition shadow"
+                  >
+                    حفظ وترحيل الأصل 🏢🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddAssetModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 10: ADD PURCHASE ORDER (PO) */}
+        {showAddPoModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🛒</span> إنشاء وإصدار أمر شراء جديد (Purchase Order)
+                </h3>
+                <button
+                  onClick={() => setShowAddPoModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreatePoSubmit} className="space-y-3.5 text-xs">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">اسم المورد / الشركة:</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="مثال: Google Cloud / فودافون"
+                      value={newPo.vendor}
+                      onChange={(e) => setNewPo({ ...newPo, vendor: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">القيمة الإجمالية (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={newPo.amount}
+                      onChange={(e) => setNewPo({ ...newPo, amount: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-amber-400 font-mono font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">بيان البند والخدمة المطلوبة:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: اشتراك خوادم سحابية ورسائل OTP"
+                    value={newPo.item}
+                    onChange={(e) => setNewPo({ ...newPo, item: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الإدارة الطالبة:</label>
+                    <select
+                      value={newPo.dept}
+                      onChange={(e) => setNewPo({ ...newPo, dept: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="التطوير الهندسي">التطوير الهندسي</option>
+                      <option value="العمليات والتشغيل">العمليات والتشغيل</option>
+                      <option value="التسويق والنمو">التسويق والنمو</option>
+                      <option value="الشؤون المالية">الشؤون المالية</option>
+                      <option value="الشؤون الإدارية">الشؤون الإدارية</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">تاريخ الاستحقاق:</label>
+                    <input
+                      type="text"
+                      value={newPo.dueDate}
+                      onChange={(e) => setNewPo({ ...newPo, dueDate: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">طريقة السداد المعتمدة:</label>
+                  <input
+                    type="text"
+                    value={newPo.paymentMethod}
+                    onChange={(e) => setNewPo({ ...newPo, paymentMethod: e.target.value })}
+                    placeholder="تحويل بنكي CIB / شيك / بطاقة ائتمان"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    اعتماد وإصدار الـ PO 🛒🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddPoModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 11: ADD B2B CORPORATE CONTRACT */}
+        {showAddContractModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>📑</span> توثيق عقد شراكة مؤسسية B2B جديد
+                </h3>
+                <button
+                  onClick={() => setShowAddContractModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateContractSubmit} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">اسم الشركة / العميل المؤسسي:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: شركة أوراسكوم للإنشاءات"
+                    value={newContract.client}
+                    onChange={(e) => setNewContract({ ...newContract, client: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">طبيعة الاتفاق والخدمة:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: نقل مهندسي وموظفي المواقع وورديات 24/7"
+                    value={newContract.type}
+                    onChange={(e) => setNewContract({ ...newContract, type: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">القيمة الشهرية للعقد (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={newContract.monthlyValue}
+                      onChange={(e) => setNewContract({ ...newContract, monthlyValue: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-emerald-400 font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الأسطول المخصص (عدد السيارات):</label>
+                    <input
+                      type="number"
+                      required
+                      value={newContract.carsAllocated}
+                      onChange={(e) => setNewContract({ ...newContract, carsAllocated: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">تاريخ انتهاء وسريان العقد:</label>
+                  <input
+                    type="text"
+                    value={newContract.endDate}
+                    onChange={(e) => setNewContract({ ...newContract, endDate: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    توثيق وتفعيل العقد 📑🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddContractModal(false)}
                     className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
                   >
                     إلغاء
