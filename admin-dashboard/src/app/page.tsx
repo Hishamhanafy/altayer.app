@@ -42,10 +42,202 @@ import { translations, Locale } from '../locales/translations';
 
 export default function AdminDashboardPage() {
   const [lang, setLang] = useState<Locale>('ar');
-  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'financials' | 'hr_payroll' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [simulatedDriversCount, setSimulatedDriversCount] = useState(142);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  // HR & Payroll Module State
+  const [hrViewMode, setHrViewMode] = useState<'employees' | 'payroll' | 'leaves' | 'insurance_taxes'>('employees');
+  const [selectedPayrollMonth, setSelectedPayrollMonth] = useState<string>('أغسطس 2026');
+
+  // Staff & Employees List
+  const [employeesList, setEmployeesList] = useState([
+    {
+      id: 'EMP-01',
+      name: 'طارق عبد العزيز',
+      role: 'مدير العمليات ومراقبة الأسطول (Head of Operations)',
+      dept: 'العمليات والتشغيل',
+      salary: 28000,
+      allowance: 4000,
+      deductions: 3100, // Social insurance & Tax
+      netSalary: 28900,
+      phone: '+201011223344',
+      nationalId: '29201010102938',
+      bankAcc: 'CIB: 100049281920',
+      instaPay: 'tarek.ops@instapay',
+      joinDate: '01/01/2025',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 4,
+    },
+    {
+      id: 'EMP-02',
+      name: 'مروة الشافعي',
+      role: 'مشرفة توثيق KYC والفحص الطبي والسلامة',
+      dept: 'الأمان والتوثيق',
+      salary: 16000,
+      allowance: 2500,
+      deductions: 1800,
+      netSalary: 16700,
+      phone: '+201122334455',
+      nationalId: '29505050104829',
+      bankAcc: 'NBE: 200481920194',
+      instaPay: 'marwa.kyc@instapay',
+      joinDate: '15/02/2025',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 2,
+    },
+    {
+      id: 'EMP-03',
+      name: 'كريم المنشاوي',
+      role: 'مهندس برمجيات وتطبيقات الموبايل (Lead Flutter/Node)',
+      dept: 'التطوير الهندسي والتقني',
+      salary: 35000,
+      allowance: 5000,
+      deductions: 3900,
+      netSalary: 36100,
+      phone: '+201233445566',
+      nationalId: '29111010109482',
+      bankAcc: 'QNB: 300928192019',
+      instaPay: 'kareem.tech@instapay',
+      joinDate: '01/01/2025',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 6,
+    },
+    {
+      id: 'EMP-04',
+      name: 'سارة عبد الفتاح',
+      role: 'مديرة التسويق والنمو وشراكات الفعاليات',
+      dept: 'التسويق والنمو',
+      salary: 24000,
+      allowance: 3500,
+      deductions: 2700,
+      netSalary: 24800,
+      phone: '+201099881122',
+      nationalId: '29608080103928',
+      bankAcc: 'CIB: 100092837465',
+      instaPay: 'sara.mkt@instapay',
+      joinDate: '01/03/2025',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 3,
+    },
+    {
+      id: 'EMP-05',
+      name: 'مصطفى النجار',
+      role: 'مسؤول خدمة عملاء ودعم الكباتن 24/7 (Shift Lead)',
+      dept: 'خدمة العملاء والدعم',
+      salary: 12000,
+      allowance: 2000,
+      deductions: 1350,
+      netSalary: 12650,
+      phone: '+201177665544',
+      nationalId: '29802020105938',
+      bankAcc: 'Banque Misr: 400192837465',
+      instaPay: 'mostafa.cs@instapay',
+      joinDate: '01/05/2025',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 5,
+    },
+    {
+      id: 'EMP-06',
+      name: 'ياسمين خليل',
+      role: 'محاسبة مالية ومسؤولة تسويات الكاش وInstaPay',
+      dept: 'الشؤون المالية والمحاسبة',
+      salary: 18000,
+      allowance: 2500,
+      deductions: 2000,
+      netSalary: 18500,
+      phone: '+201255443322',
+      nationalId: '29407070102948',
+      bankAcc: 'CIB: 100038291049',
+      instaPay: 'yasmine.fin@instapay',
+      joinDate: '15/01/2025',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 1,
+    },
+  ]);
+
+  // Leaves Requests List
+  const [leavesList, setLeavesList] = useState([
+    { id: 'LV-101', empName: 'كريم المنشاوي', role: 'مهندس برمجيات', type: 'إجازة اعتيادية سنوية', days: 3, startDate: '01/09/2026', endDate: '03/09/2026', status: 'PENDING' },
+    { id: 'LV-102', empName: 'سارة عبد الفتاح', role: 'مديرة التسويق', type: 'إجازة عارضة', days: 1, startDate: '28/08/2026', endDate: '28/08/2026', status: 'APPROVED' },
+    { id: 'LV-103', empName: 'مصطفى النجار', role: 'دعم فني', type: 'إجازة مرضية (بتقرير طبي)', days: 2, startDate: '10/08/2026', endDate: '11/08/2026', status: 'APPROVED' },
+  ]);
+
+  const [showAddEmployeeModal, setShowAddEmployeeModal] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({
+    name: '',
+    role: '',
+    dept: 'العمليات والتشغيل',
+    salary: 15000,
+    allowance: 2000,
+    phone: '',
+    nationalId: '',
+    bankAcc: '',
+    instaPay: '',
+  });
+
+  const handleCreateEmployeeSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEmployee.name || !newEmployee.role) {
+      alert('يرجى إدخال اسم الموظف والمسمى الوظيفي!');
+      return;
+    }
+    const deductions = Math.round((newEmployee.salary + newEmployee.allowance) * 0.11);
+    const netSalary = newEmployee.salary + newEmployee.allowance - deductions;
+    const created = {
+      id: `EMP-0${employeesList.length + 1}`,
+      name: newEmployee.name,
+      role: newEmployee.role,
+      dept: newEmployee.dept,
+      salary: Number(newEmployee.salary),
+      allowance: Number(newEmployee.allowance),
+      deductions,
+      netSalary,
+      phone: newEmployee.phone || '+201000000000',
+      nationalId: newEmployee.nationalId || '29000000000000',
+      bankAcc: newEmployee.bankAcc || 'CIB: 100000000000',
+      instaPay: newEmployee.instaPay || `${newEmployee.name.split(' ')[0]}@instapay`,
+      joinDate: '26/08/2026',
+      status: 'ACTIVE',
+      annualLeaves: 21,
+      usedLeaves: 0,
+    };
+    setEmployeesList(prev => [...prev, created]);
+    setShowAddEmployeeModal(false);
+    setNewEmployee({
+      name: '',
+      role: '',
+      dept: 'العمليات والتشغيل',
+      salary: 15000,
+      allowance: 2000,
+      phone: '',
+      nationalId: '',
+      bankAcc: '',
+      instaPay: '',
+    });
+    alert(`تمت إضافة الموظف (${created.name}) وتوثيق ملفه في الهيكل الوظيفي بنجاح 👥🟢`);
+  };
+
+  const handleApproveLeave = (id: string) => {
+    setLeavesList(prev => prev.map(l => l.id === id ? { ...l, status: 'APPROVED' } : l));
+    alert('تمت الموافقة على طلب الإجازة وخصمها من الرصيد السنوي للموظف 🟢');
+  };
+
+  const handleRejectLeave = (id: string) => {
+    setLeavesList(prev => prev.map(l => l.id === id ? { ...l, status: 'REJECTED' } : l));
+    alert('تم رفض طلب الإجازة ⚠️');
+  };
+
+  const handleDisburseAllSalaries = () => {
+    alert(`تم اعتماد وصرف مسير رواتب شهر (${selectedPayrollMonth}) بإجمالي صافي ${(employeesList.reduce((acc, e) => acc + e.netSalary, 0)).toLocaleString()} ج.م وتحويلها عبر الحسابات البنكية وInstaPay بنجاح 💵🟢`);
+  };
 
   // Financials Statements & Sub-tabs State
   const [financialsPeriod, setFinancialsPeriod] = useState<'2026_Q2' | '2026_Q1' | '2025_ANNUAL'>('2026_Q2');
@@ -640,6 +832,19 @@ export default function AdminDashboardPage() {
             </button>
 
             <button
+              onClick={() => setActiveTab('hr_payroll')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                activeTab === 'hr_payroll' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+              }`}
+            >
+              <Users className="w-4 h-4 text-cyan-400" />
+              الموارد البشرية والرواتب (HR) 👥
+              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-cyan-500/20 text-cyan-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                {employeesList.length} موظف
+              </span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('medical_tests')}
               className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === 'medical_tests' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
@@ -1206,6 +1411,358 @@ export default function AdminDashboardPage() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+
+          {/* TAB: HR & PAYROLL MANAGEMENT (الموارد البشرية ومسير الرواتب) */}
+          {activeTab === 'hr_payroll' && (
+            <div className="space-y-6">
+              {/* HR Sub-Tab Navigation */}
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
+                <div className="flex flex-wrap gap-1.5 text-xs font-bold">
+                  {[
+                    { id: 'employees', label: '👥 الهيكل الوظيفي والموظفين' },
+                    { id: 'payroll', label: '💵 مسير الرواتب الشهري والأجور' },
+                    { id: 'leaves', label: '📅 سجل الإجازات والطلبات' },
+                    { id: 'insurance_taxes', label: '🏛️ التأمينات الاجتماعية والضرائب' },
+                  ].map((sub) => (
+                    <button
+                      key={sub.id}
+                      onClick={() => setHrViewMode(sub.id as any)}
+                      className={`px-3.5 py-2 rounded-xl transition ${
+                        hrViewMode === sub.id 
+                          ? 'bg-indigo-900 text-amber-300 font-black shadow-lg shadow-indigo-900/40 border border-amber-500/30' 
+                          : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                      }`}
+                    >
+                      {sub.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowAddEmployeeModal(true)}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow"
+                  >
+                    <span>➕</span> إضافة موظف جديد 👥
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl transition border border-slate-700"
+                  >
+                    <Printer className="w-4 h-4" />
+                    طباعة التقرير 📄
+                  </button>
+                </div>
+              </div>
+
+              {/* SUB-VIEW 1: EMPLOYEES DIRECTORY */}
+              {hrViewMode === 'employees' && (
+                <div className="space-y-6">
+                  {/* Overview Stats */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">إجمالي موظفي المنصة</span>
+                      <div className="text-xl font-black text-white font-mono">{employeesList.length} موظف</div>
+                      <span className="text-[10px] text-emerald-400 font-bold">100% دوام كامل</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">إجمالي فاتورة الرواتب الشهرية</span>
+                      <div className="text-xl font-black text-amber-400 font-mono">
+                        {(employeesList.reduce((acc, e) => acc + (e.salary + e.allowance), 0)).toLocaleString()} ج.م
+                      </div>
+                      <span className="text-[10px] text-slate-400">شاملة البدلات والحوافز</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">فريق الدعم والعمليات 24/7</span>
+                      <div className="text-xl font-black text-cyan-400 font-mono">4 موظفين (66%)</div>
+                      <span className="text-[10px] text-slate-400">مراقبة الأسطول والـ KYC</span>
+                    </div>
+
+                    <div className="p-4 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400">فريق الهندسة والنمو والمالية</span>
+                      <div className="text-xl font-black text-purple-400 font-mono">2 موظفين (34%)</div>
+                      <span className="text-[10px] text-slate-400">التطوير والتسويق والتحصيل</span>
+                    </div>
+                  </div>
+
+                  {/* Employees Table */}
+                  <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 className="font-extrabold text-base text-white">دليل الموظفين والهيكل الإداري:</h3>
+                    
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-right text-xs">
+                        <thead>
+                          <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                            <th className="pb-3 px-3">كود الموظف</th>
+                            <th className="pb-3 px-3">الاسم والوظيفة</th>
+                            <th className="pb-3 px-3">القسم</th>
+                            <th className="pb-3 px-3">الهاتف والرقم القومي</th>
+                            <th className="pb-3 px-3">الراتب والبدلات</th>
+                            <th className="pb-3 px-3">صافي الراتب</th>
+                            <th className="pb-3 px-3">طريقة التحويل</th>
+                            <th className="pb-3 px-3">رصيد الإجازات</th>
+                            <th className="pb-3 px-3">الحالة</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                          {employeesList.map((emp) => (
+                            <tr key={emp.id} className="hover:bg-slate-950/60 transition">
+                              <td className="py-3.5 px-3 font-mono font-bold text-cyan-400">{emp.id}</td>
+                              <td className="py-3.5 px-3">
+                                <div className="font-bold text-white text-xs">{emp.name}</div>
+                                <div className="text-[10px] text-amber-300">{emp.role}</div>
+                              </td>
+                              <td className="py-3.5 px-3">
+                                <span className="bg-slate-800 text-slate-300 px-2 py-0.5 rounded text-[10px] font-medium">
+                                  {emp.dept}
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-3 font-mono text-[11px] text-slate-400">
+                                <div>{emp.phone}</div>
+                                <div className="text-[9px] text-slate-500">{emp.nationalId}</div>
+                              </td>
+                              <td className="py-3.5 px-3 font-mono">
+                                <div>{emp.salary.toLocaleString()} ج</div>
+                                <div className="text-[10px] text-emerald-400">+{emp.allowance} بدل</div>
+                              </td>
+                              <td className="py-3.5 px-3 font-mono font-black text-emerald-400 text-sm">
+                                {emp.netSalary.toLocaleString()} ج.م
+                              </td>
+                              <td className="py-3.5 px-3 font-mono text-[10px] text-slate-300">
+                                <div className="text-purple-400 font-bold">{emp.instaPay}</div>
+                                <div className="text-slate-500">{emp.bankAcc}</div>
+                              </td>
+                              <td className="py-3.5 px-3 font-mono text-center">
+                                <span className="bg-slate-800 px-2 py-0.5 rounded text-[10px] font-bold text-white">
+                                  {emp.annualLeaves - emp.usedLeaves} / {emp.annualLeaves} يوم
+                                </span>
+                              </td>
+                              <td className="py-3.5 px-3">
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  نشط 🟢
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 2: MONTHLY PAYROLL PROCESSING */}
+              {hrViewMode === 'payroll' && (
+                <div className="space-y-6">
+                  {/* Payroll Month Selector & Batch Disburse */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-950 border border-slate-800 p-4 rounded-2xl">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-slate-300 font-bold">شهر المسير المالي:</span>
+                      <div className="flex gap-1 text-xs font-bold">
+                        {['أغسطس 2026', 'يوليو 2026', 'يونيو 2026'].map((m) => (
+                          <button
+                            key={m}
+                            onClick={() => setSelectedPayrollMonth(m)}
+                            className={`px-3 py-1.5 rounded-lg transition ${
+                              selectedPayrollMonth === m ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
+                            }`}
+                          >
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={handleDisburseAllSalaries}
+                      className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs px-4 py-2.5 rounded-xl transition shadow-lg shadow-emerald-600/20"
+                    >
+                      <span>💵</span> اعتماد وصرف مسير الرواتب فوراً عبر InstaPay والبنوك
+                    </button>
+                  </div>
+
+                  {/* Summary Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400 font-medium">إجمالي الرواتب الإجمالية (Gross):</span>
+                      <div className="text-2xl font-black text-white font-mono">
+                        {(employeesList.reduce((acc, e) => acc + (e.salary + e.allowance), 0)).toLocaleString()} ج.م
+                      </div>
+                      <p className="text-[10px] text-slate-400">الرواتب الأساسية + البدلات والحوافز</p>
+                    </div>
+
+                    <div className="p-5 bg-slate-900 border border-slate-800 rounded-2xl space-y-1">
+                      <span className="text-xs text-slate-400 font-medium">إجمالي الاستقطاعات (تأمينات وضرائب):</span>
+                      <div className="text-2xl font-black text-rose-400 font-mono">
+                        ({(employeesList.reduce((acc, e) => acc + e.deductions, 0)).toLocaleString()} ج.م)
+                      </div>
+                      <p className="text-[10px] text-slate-400">تأمينات اجتماعية (11%) + ضريبة كسب عمل</p>
+                    </div>
+
+                    <div className="p-5 bg-slate-900 border border-emerald-500/40 rounded-2xl space-y-1 bg-gradient-to-br from-emerald-950/40 to-slate-900">
+                      <span className="text-xs text-emerald-300 font-bold">صافي المسير المستحق للصرف (Net Payroll):</span>
+                      <div className="text-2xl font-black text-emerald-400 font-mono">
+                        {(employeesList.reduce((acc, e) => acc + e.netSalary, 0)).toLocaleString()} ج.م
+                      </div>
+                      <p className="text-[10px] text-emerald-300 font-bold">جاهز للصرف اللحظي 🟢</p>
+                    </div>
+                  </div>
+
+                  {/* Detailed Payroll Breakdown Table */}
+                  <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                    <h3 className="font-extrabold text-base text-white">مسير رواتب شهر {selectedPayrollMonth} التفصيلي:</h3>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-right text-xs">
+                        <thead>
+                          <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                            <th className="pb-3 px-3">الموظف</th>
+                            <th className="pb-3 px-3">الراتب الأساسي</th>
+                            <th className="pb-3 px-3">البدلات والحوافز</th>
+                            <th className="pb-3 px-3">إجمالي الراتب</th>
+                            <th className="pb-3 px-3">التأمينات والضرائب</th>
+                            <th className="pb-3 px-3">الصافي المستحق</th>
+                            <th className="pb-3 px-3">وسيلة التحويل</th>
+                            <th className="pb-3 px-3">حالة الصرف</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                          {employeesList.map((emp) => (
+                            <tr key={emp.id} className="hover:bg-slate-950/60 transition">
+                              <td className="py-3 px-3 font-bold text-white">
+                                <div>{emp.name}</div>
+                                <div className="text-[10px] text-slate-400">{emp.role}</div>
+                              </td>
+                              <td className="py-3 px-3 font-mono">{emp.salary.toLocaleString()} ج.م</td>
+                              <td className="py-3 px-3 font-mono text-emerald-400">+{emp.allowance.toLocaleString()} ج.م</td>
+                              <td className="py-3 px-3 font-mono font-bold text-white">{(emp.salary + emp.allowance).toLocaleString()} ج.م</td>
+                              <td className="py-3 px-3 font-mono text-rose-400">({emp.deductions.toLocaleString()} ج.م)</td>
+                              <td className="py-3 px-3 font-mono font-black text-emerald-400 text-sm">{emp.netSalary.toLocaleString()} ج.م</td>
+                              <td className="py-3 px-3 font-mono text-[11px] text-purple-300">{emp.instaPay}</td>
+                              <td className="py-3 px-3">
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  تم التحويل بنجاح 🟢
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 3: LEAVES & ATTENDANCE */}
+              {hrViewMode === 'leaves' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <div>
+                      <h3 className="font-extrabold text-base text-white">طلبات الإجازات وسجل الحضور والانصراف:</h3>
+                      <p className="text-xs text-slate-400 mt-0.5">متابعة الأرصدة السنوية، الإجازات العارضة والمرضية واعتمادها</p>
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead>
+                        <tr className="text-slate-400 border-b border-slate-800 font-bold text-[11px]">
+                          <th className="pb-3 px-4">رقم الطلب</th>
+                          <th className="pb-3 px-4">الموظف</th>
+                          <th className="pb-3 px-4">نوع الإجازة</th>
+                          <th className="pb-3 px-4">المدة</th>
+                          <th className="pb-3 px-4">من تاريخ</th>
+                          <th className="pb-3 px-4">إلى تاريخ</th>
+                          <th className="pb-3 px-4">الحالة</th>
+                          <th className="pb-3 px-4">الإجراء</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60 text-slate-200">
+                        {leavesList.map((leave) => (
+                          <tr key={leave.id} className="hover:bg-slate-950/60 transition">
+                            <td className="py-3 px-4 font-mono font-bold text-amber-400">{leave.id}</td>
+                            <td className="py-3 px-4 font-bold text-white">{leave.empName}</td>
+                            <td className="py-3 px-4 text-slate-300">{leave.type}</td>
+                            <td className="py-3 px-4 font-bold text-white font-mono">{leave.days} أيام</td>
+                            <td className="py-3 px-4 font-mono text-slate-400">{leave.startDate}</td>
+                            <td className="py-3 px-4 font-mono text-slate-400">{leave.endDate}</td>
+                            <td className="py-3 px-4">
+                              {leave.status === 'APPROVED' ? (
+                                <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  معتمدة 🟢
+                                </span>
+                              ) : leave.status === 'REJECTED' ? (
+                                <span className="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  مرفوضة 🚫
+                                </span>
+                              ) : (
+                                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-bold">
+                                  بانتظار الموافقة ⏳
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-4">
+                              {leave.status === 'PENDING' && (
+                                <div className="flex gap-1.5">
+                                  <button
+                                    onClick={() => handleApproveLeave(leave.id)}
+                                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-[10px]"
+                                  >
+                                    موافقة
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectLeave(leave.id)}
+                                    className="px-2.5 py-1 bg-rose-600/80 hover:bg-rose-600 text-white rounded-lg font-bold text-[10px]"
+                                  >
+                                    رفض
+                                  </button>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+
+              {/* SUB-VIEW 4: SOCIAL INSURANCE & TAXES */}
+              {hrViewMode === 'insurance_taxes' && (
+                <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-6">
+                  <div>
+                    <h3 className="font-extrabold text-base text-white">التأمينات الاجتماعية وضريبة كسب العمل في جمهورية مصر العربية:</h3>
+                    <p className="text-xs text-slate-400 mt-0.5">الامتثال لقانون التأمينات الاجتماعية رقم 148 لسنة 2019 وقانون الضريبة على الدخل</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="p-5 bg-slate-950 border border-slate-800 rounded-2xl space-y-3">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-bold text-sm text-cyan-400">حصة صاحب العمل في التأمينات الاجتماعية (18.75%):</h4>
+                        <span className="font-mono font-black text-emerald-400 text-base">25,600 ج.م / شهر</span>
+                      </div>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        تتحمل الشركة نسبة 18.75% عن أجور الاشتراك التأميني لجميع موظفي المقر والدعم والعمليات وتُسدد شهرياً لمكتب التأمينات المختص.
+                      </p>
+                    </div>
+
+                    <div className="p-5 bg-slate-950 border border-slate-800 rounded-2xl space-y-3">
+                      <div className="flex justify-between items-center">
+                        <h4 className="font-bold text-sm text-amber-400">حصة الموظف في التأمينات (11%) وضريبة الدخل:</h4>
+                        <span className="font-mono font-black text-amber-300 text-base">14,850 ج.م / شهر</span>
+                      </div>
+                      <p className="text-xs text-slate-400 leading-relaxed">
+                        تُستقطع تلقائياً من مسير الرواتب شهرياً وتُورد لمصلحة الضرائب والتأمينات وفق الشرائح الرسمية المعفية والخاضعة.
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -2569,6 +3126,143 @@ export default function AdminDashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddJournalModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 6: ADD NEW EMPLOYEE */}
+        {showAddEmployeeModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>👥</span> إضافة وتعيين موظف جديد في الهيكل الإداري
+                </h3>
+                <button
+                  onClick={() => setShowAddEmployeeModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateEmployeeSubmit} className="space-y-3.5 text-xs">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">اسم الموظف الثلاثي:</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="مثال: أحمد عبد الله سالم"
+                      value={newEmployee.name}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">المسمى الوظيفي:</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="مثال: مسؤول مراقبة أسطول"
+                      value={newEmployee.role}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, role: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">القسم والإدارة:</label>
+                    <select
+                      value={newEmployee.dept}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, dept: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="العمليات والتشغيل">العمليات والتشغيل</option>
+                      <option value="خدمة العملاء والدعم">خدمة العملاء والدعم</option>
+                      <option value="الأمان والتوثيق">الأمان والتوثيق (KYC)</option>
+                      <option value="التطوير الهندسي والتقني">التطوير الهندسي والتقني</option>
+                      <option value="التسويق والنمو">التسويق والنمو</option>
+                      <option value="الشؤون المالية والمحاسبة">الشؤون المالية والمحاسبة</option>
+                      <option value="الموارد البشرية والإدارة">الموارد البشرية والإدارة</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رقم الهاتف والتواصل:</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="010XXXXXXXX"
+                      value={newEmployee.phone}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, phone: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الراتب الأساسي (ج.م):</label>
+                    <input
+                      type="number"
+                      required
+                      value={newEmployee.salary}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, salary: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-emerald-400 font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">البدلات والحوافز (ج.م):</label>
+                    <input
+                      type="number"
+                      value={newEmployee.allowance}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, allowance: Number(e.target.value) })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-amber-400 font-mono font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">عنوان محفظة InstaPay (IPA):</label>
+                    <input
+                      type="text"
+                      placeholder="username@instapay"
+                      value={newEmployee.instaPay}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, instaPay: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-purple-300 font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الرقم القومي (14 رقم):</label>
+                    <input
+                      type="text"
+                      placeholder="29XXXXXXXXXXXX"
+                      value={newEmployee.nationalId}
+                      onChange={(e) => setNewEmployee({ ...newEmployee, nationalId: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    حفظ وإضافة الموظف للهيكل 🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddEmployeeModal(false)}
                     className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
                   >
                     إلغاء
