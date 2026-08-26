@@ -1,0 +1,95 @@
+﻿name: Build AKHIL macOS Desktop Applications (.DMG)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-macos-dmg:
+    name: Build macOS .DMG Installers
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: admin-dashboard/package-lock.json
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      # --- 1. Build AKHIL Admin Command Center macOS .DMG ---
+      - name: Install Admin Dashboard Dependencies
+        run: |
+          cd admin-dashboard
+          npm ci
+          npm install --save-dev electron electron-builder
+
+      - name: Package Admin Dashboard to macOS .DMG
+        run: |
+          cd admin-dashboard
+          npx electron-builder build --mac dmg --universal -c.mac.identity=null -c.appId="app.akhil.admin" -c.productName="AKHIL Enterprise" -c.directories.output="dist" || true
+          # Create a compressed DMG package bundle
+          mkdir -p dist/mac-dmg
+          if [ -d "dist/mac" ]; then
+            hdiutil create -volname "AKHIL-Enterprise-Admin" -srcfolder "dist/mac" -ov -format UDZO dist/mac-dmg/AKHIL-Enterprise-Admin-macOS.dmg || true
+          fi
+
+      - name: Upload Admin Dashboard .DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: AKHIL-Enterprise-Admin-macOS-DMG
+          path: |
+            admin-dashboard/dist/*.dmg
+            admin-dashboard/dist/mac-dmg/*.dmg
+          if-no-files-found: warn
+          retention-days: 14
+
+      # --- 2. Build AKHIL Rider App for macOS ---
+      - name: Enable Flutter macOS Desktop
+        run: flutter config --enable-macos-desktop
+
+      - name: Build Rider App (macOS .DMG)
+        run: |
+          cd mobile/apps/rider_app
+          flutter create --platforms=macos .
+          flutter pub get
+          flutter build macos --release
+          mkdir -p build/macos/dmg
+          hdiutil create -volname "AKHIL-Rider" -srcfolder "build/macos/Build/Products/Release" -ov -format UDZO build/macos/dmg/AKHIL-Rider-macOS.dmg || true
+          cd ../../..
+
+      - name: Upload Rider App .DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: AKHIL-Rider-macOS-DMG
+          path: mobile/apps/rider_app/build/macos/dmg/AKHIL-Rider-macOS.dmg
+          if-no-files-found: warn
+          retention-days: 14
+
+      # --- 3. Build AKHIL Driver App for macOS ---
+      - name: Build Driver App (macOS .DMG)
+        run: |
+          cd mobile/apps/driver_app
+          flutter create --platforms=macos .
+          flutter pub get
+          flutter build macos --release
+          mkdir -p build/macos/dmg
+          hdiutil create -volname "AKHIL-Driver" -srcfolder "build/macos/Build/Products/Release" -ov -format UDZO build/macos/dmg/AKHIL-Driver-macOS.dmg || true
+          cd ../../..
+
+      - name: Upload Driver App .DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: AKHIL-Driver-macOS-DMG
+          path: mobile/apps/driver_app/build/macos/dmg/AKHIL-Driver-macOS.dmg
+          if-no-files-found: warn
+          retention-days: 14
