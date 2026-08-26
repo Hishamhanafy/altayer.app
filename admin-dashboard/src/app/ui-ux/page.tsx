@@ -37,13 +37,13 @@ export default function MobileUiUxShowcase() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-orange-600/30">
-                ⚡
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-900 to-amber-500 flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-amber-500/20">
+                🐎
               </div>
-              <h1 className="text-2xl font-black text-white">منظومة التصميم وتجربة المستخدم (Mobile UI & UX System)</h1>
+              <h1 className="text-2xl font-black text-white">منظومة التصميم وتجربة المستخدم (AKHIL UI & UX System)</h1>
             </div>
             <p className="text-xs text-slate-400">
-              الدليل البصري المتكامل لتطبيقي الراكب والكابتن لمنصة <strong>"عالطاير" (3altayer.app)</strong> 🇪🇬
+              الدليل البصري المتكامل لتطبيقي العميل والكابتن لمنصة <strong>«أخيل | AKHIL — أبعد من طريق»</strong> 🇪🇬
             </p>
           </div>
 
@@ -51,16 +51,16 @@ export default function MobileUiUxShowcase() {
             <a
               href="/rider"
               target="_blank"
-              className="text-xs bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5"
+              className="text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-amber-300 border border-amber-500/30 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5"
             >
-              📱 تجربة تطبيق الراكب الحي
+              📱 تجربة تطبيق العميل (AKHIL Rider)
             </a>
             <a
               href="/driver"
               target="_blank"
               className="text-xs bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5"
             >
-              🚗 تجربة تطبيق الكابتن الحي
+              👨🏻‍✈️ تجربة تطبيق الكابتن (AKHIL Captain)
             </a>
           </div>
         </div>

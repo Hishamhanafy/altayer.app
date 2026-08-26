@@ -413,20 +413,20 @@ export default function AdminDashboardPage() {
             <a
               href="/rider"
               target="_blank"
-              className="text-xs bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1"
+              className="text-xs bg-indigo-600/20 hover:bg-indigo-600/30 text-amber-300 border border-amber-500/30 px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow"
             >
-              📱 فتح تطبيق الراكب <ExternalLink className="w-3 h-3" />
+              🐎 تطبيق العميل (AKHIL Rider) <ExternalLink className="w-3 h-3" />
             </a>
 
             <a
               href="/driver"
               target="_blank"
-              className="text-xs bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1"
+              className="text-xs bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 shadow"
             >
-              🚗 فتح تطبيق الكابتن <ExternalLink className="w-3 h-3" />
+              👨🏻‍✈️ تطبيق الكابتن والبرثونة (AKHIL Captain) <ExternalLink className="w-3 h-3" />
             </a>
 
-            <span className="text-xs bg-orange-500/10 text-orange-400 border border-orange-500/30 px-3 py-1.5 rounded-xl font-bold">
+            <span className="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl font-bold">
               {t.currency} (EGP)
             </span>
           </div>
