@@ -25,7 +25,12 @@ import {
   Crown,
   Sparkles,
   Zap,
-  Award
+  Award,
+  Camera,
+  RefreshCw,
+  X,
+  FileText,
+  UserCheck
 } from 'lucide-react';
 import LiveInteractiveMap from '../../components/LiveInteractiveMap';
 
@@ -39,14 +44,97 @@ export default function DriverWebApp() {
   
   // Wallet State
   const [walletBalance, setWalletBalance] = useState<number>(320.00);
-  const [cashDebt, setCashDebt] = useState<number>(45.00); // Debt limit: 1000 EGP
+  const [cashDebt, setCashDebt] = useState<number>(140.00);
   const [showWithdrawModal, setShowWithdrawModal] = useState<boolean>(false);
-  const [withdrawAmount, setWithdrawAmount] = useState<number>(200);
-  const [withdrawAddress, setWithdrawAddress] = useState<string>('captain.akhil@instapay');
+  const [withdrawAmount, setWithdrawAmount] = useState<number>(150);
+  const [withdrawAddress, setWithdrawAddress] = useState<string>('driver.mahmoud@instapay');
+
+  // Camera & KYC Verification State
+  const [showCameraModal, setShowCameraModal] = useState<boolean>(false);
+  const [kycDocType, setKycDocType] = useState<'selfie' | 'nationalId' | 'license' | 'drugTest'>('selfie');
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [capturedPhotos, setCapturedPhotos] = useState<{ [key: string]: string }>({
+    selfie: '',
+    nationalId: '',
+    license: '',
+    drugTest: '',
+  });
+  const [isScanningAi, setIsScanningAi] = useState<boolean>(false);
+  const [cameraFacing, setCameraFacing] = useState<'user' | 'environment'>('user');
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
 
   // Captain Tier & Score
   const [captainScore, setCaptainScore] = useState<number>(94);
   const [captainTier, setCaptainTier] = useState<string>('نخبة أخيل (ELITE)');
+
+  // Camera Control Functions
+  const startCamera = async (facing: 'user' | 'environment' = cameraFacing) => {
+    try {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+      if (typeof navigator !== 'undefined' && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: facing,
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+        setCameraStream(stream);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }
+    } catch (err) {
+      console.warn('Camera access info:', err);
+    }
+  };
+
+  const stopCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      setCameraStream(null);
+    }
+  };
+
+  const handleSnapPhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        setIsScanningAi(true);
+        setTimeout(() => {
+          setCapturedPhotos(prev => ({ ...prev, [kycDocType]: dataUrl }));
+          setIsScanningAi(false);
+          stopCamera();
+        }, 1200);
+      }
+    }
+  };
+
+  const handleFileCaptureFallback = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setIsScanningAi(true);
+        setTimeout(() => {
+          setCapturedPhotos(prev => ({ ...prev, [kycDocType]: dataUrl }));
+          setIsScanningAi(false);
+        }, 1000);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSimulateIncoming = () => {
     setDriverState('incoming');
@@ -488,6 +576,70 @@ export default function DriverWebApp() {
               </div>
             </div>
 
+            {/* Live Camera KYC Biometric Verification Section */}
+            <div className="p-4 bg-gradient-to-br from-indigo-950 to-slate-950 border border-slate-800 rounded-2xl space-y-3 shadow-xl">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">📸</span>
+                  <div>
+                    <h4 className="font-black text-xs text-white">التوثيق الرقمي بالكاميرا (KYC)</h4>
+                    <p className="text-[10px] text-slate-400">توثيق الوجه البيومتري وفحص المستندات الرسمية</p>
+                  </div>
+                </div>
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
+                  موثق 100% 🟢
+                </span>
+              </div>
+
+              {/* Document Thumbnails Grid */}
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {[
+                  { id: 'selfie', name: 'سيلفي الوجه الحي 👤', photo: capturedPhotos.selfie, desc: 'مطابقة بيومترية' },
+                  { id: 'nationalId', name: 'بطاقة الرقم القومي 🪪', photo: capturedPhotos.nationalId, desc: 'سارية ومطابقة' },
+                  { id: 'license', name: 'رخصة القيادة والسيارة 🚗', photo: capturedPhotos.license, desc: 'فحص مروري معتمد' },
+                  { id: 'drugTest', name: 'الفحص الطبي والمخدرات 🧪', photo: capturedPhotos.drugTest, desc: 'خلو من السموم' },
+                ].map((doc) => (
+                  <div key={doc.id} className="p-2.5 bg-slate-950/80 border border-slate-800 rounded-xl flex flex-col justify-between">
+                    <div>
+                      <div className="font-bold text-white text-[11px] flex items-center justify-between">
+                        <span>{doc.name}</span>
+                        {doc.photo ? <span className="text-emerald-400 text-xs">✓</span> : <span className="text-amber-400 text-[10px]">مكتمل</span>}
+                      </div>
+                      <span className="text-[9px] text-slate-400 block mt-0.5">{doc.desc}</span>
+                    </div>
+                    {doc.photo && (
+                      <div className="mt-2 h-14 rounded-lg overflow-hidden border border-emerald-500/40">
+                        <img src={doc.photo} alt={doc.name} className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <button
+                      onClick={() => {
+                        setKycDocType(doc.id as any);
+                        setShowCameraModal(true);
+                        startCamera(doc.id === 'selfie' ? 'user' : 'environment');
+                      }}
+                      className="mt-2 py-1 px-2 bg-slate-800 hover:bg-indigo-900 text-amber-300 hover:text-white rounded-lg text-[10px] font-bold transition flex items-center justify-center gap-1"
+                    >
+                      <Camera className="w-3 h-3" />
+                      {doc.photo ? 'إعادة التصوير 📸' : 'فتح الكاميرا 📸'}
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => {
+                  setKycDocType('selfie');
+                  setShowCameraModal(true);
+                  startCamera('user');
+                }}
+                className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
+              >
+                <Camera className="w-4 h-4" />
+                فتح الكاميرا والتحقق المباشر (Live Face Scanner)
+              </button>
+            </div>
+
             <div className="space-y-2">
               <span className="text-xs font-bold text-slate-300">سلم مستويات أخيل (100 نقطة):</span>
               {[
@@ -504,6 +656,141 @@ export default function DriverWebApp() {
                   <span className="font-mono text-[10px]">{tier.pts}</span>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* LIVE CAMERA KYC SCANNER MODAL */}
+        {showCameraModal && (
+          <div className="absolute inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex flex-col justify-end p-0">
+            <div className="bg-slate-900 border-t-2 border-amber-500 rounded-t-3xl p-5 space-y-4 max-h-[90%] flex flex-col shadow-2xl animate-in slide-in-from-bottom duration-300">
+              
+              {/* Header */}
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">📸</span>
+                  <div>
+                    <h3 className="font-black text-sm text-white">
+                      {kycDocType === 'selfie' && 'التقاط سيلفي الوجه الحي (Live Selfie)'}
+                      {kycDocType === 'nationalId' && 'مسح بطاقة الرقم القومي (National ID)'}
+                      {kycDocType === 'license' && 'مسح رخصة القيادة والسيارة (License)'}
+                      {kycDocType === 'drugTest' && 'مسح شهادة الفحص الطبي (Medical Test)'}
+                    </h3>
+                    <p className="text-[10px] text-slate-400">وجه الكاميرا داخل الإطار واضغط لالتقاط الصورة</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    stopCamera();
+                    setShowCameraModal(false);
+                  }}
+                  className="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Document Selector Pills */}
+              <div className="grid grid-cols-4 gap-1 text-[9px] font-bold">
+                {[
+                  { id: 'selfie', label: '👤 سيلفي' },
+                  { id: 'nationalId', label: '🪪 البطاقة' },
+                  { id: 'license', label: '🚗 الرخصة' },
+                  { id: 'drugTest', label: '🧪 الفحص' },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => {
+                      setKycDocType(t.id as any);
+                      startCamera(t.id === 'selfie' ? 'user' : 'environment');
+                    }}
+                    className={`py-1.5 rounded-lg transition ${
+                      kycDocType === t.id ? 'bg-amber-500 text-slate-950 font-black' : 'bg-slate-950 text-slate-400 border border-slate-800'
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Live Video Camera Viewfinder Box */}
+              <div className="relative aspect-[4/3] bg-slate-950 rounded-2xl overflow-hidden border-2 border-slate-700 flex items-center justify-center shadow-inner">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="w-full h-full object-cover"
+                />
+                <canvas ref={canvasRef} className="hidden" />
+
+                {/* AR Frame Overlay */}
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-6">
+                  {kycDocType === 'selfie' ? (
+                    <div className="w-44 h-56 rounded-[50%] border-2 border-dashed border-amber-400/80 ring-8 ring-amber-500/10 animate-pulse flex items-center justify-center">
+                      <span className="text-[10px] text-amber-300 font-bold bg-slate-950/70 px-2 py-0.5 rounded-full">
+                        ضع وجهك داخل الإطار 👤
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="w-full h-44 rounded-2xl border-2 border-dashed border-emerald-400/80 ring-8 ring-emerald-500/10 animate-pulse flex items-center justify-center">
+                      <span className="text-[10px] text-emerald-300 font-bold bg-slate-950/70 px-2 py-0.5 rounded-full">
+                        ضع المستند داخل الإطار 🪪
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI Scan Scanning Line */}
+                {isScanningAi && (
+                  <div className="absolute inset-0 bg-emerald-500/20 backdrop-blur-[2px] flex flex-col items-center justify-center gap-2">
+                    <div className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                    <span className="text-xs font-black text-emerald-300 bg-slate-950/90 px-3 py-1 rounded-xl shadow">
+                      جاري التحقق والمطابقة بالذكاء الاصطناعي... 🟢
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Camera Actions */}
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <button
+                    onClick={handleSnapPhoto}
+                    disabled={isScanningAi}
+                    className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                  >
+                    <Camera className="w-4 h-4" />
+                    التقاط الصورة واعتماد التوثيق 📸
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const next = cameraFacing === 'user' ? 'environment' : 'user';
+                      setCameraFacing(next);
+                      startCamera(next);
+                    }}
+                    className="px-3 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold transition flex items-center gap-1 border border-slate-700"
+                    title="تبديل الكاميرا الأمامية والخلفية"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* File Upload Fallback for Any Device */}
+                <label className="w-full py-2.5 bg-slate-950 hover:bg-slate-850 text-slate-400 hover:text-white border border-slate-800 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-2 cursor-pointer">
+                  <span>📁</span>
+                  <span>أو اختر صورة من ألبوم الموبايل / المعرض</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="user"
+                    onChange={handleFileCaptureFallback}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
             </div>
           </div>
         )}
