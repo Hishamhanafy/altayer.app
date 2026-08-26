@@ -15,25 +15,25 @@ extension VehicleCategoryExtension on VehicleCategory {
   String get title {
     switch (this) {
       case VehicleCategory.economy:
-        return 'Economy (إيكونومي)';
+        return 'AKHIL ECONOMY (اقتصادي)';
       case VehicleCategory.plus:
-        return 'Plus (بلس حديث)';
+        return 'AKHIL PLUS (بلس)';
       case VehicleCategory.business:
-        return 'Business (بزنس فاخر)';
+        return 'AKHIL BUSINESS (أعمال)';
       case VehicleCategory.parthona:
-        return 'Parthona (برثونة - نسائي)';
+        return 'AKHIL PARTHONA (برثونة)';
       case VehicleCategory.time:
-        return 'Time (مشاوير بالساعة)';
+        return 'AKHIL TIME (مجدولة)';
       case VehicleCategory.extra:
-        return 'Extra (مساحة أكبر)';
+        return 'AKHIL EXTRA (إضافي)';
       case VehicleCategory.carry:
-        return 'Carry (نقل بضائع)';
+        return 'AKHIL CARRY (حمولة)';
       case VehicleCategory.box:
-        return 'Box (توصيل طرود)';
+        return 'AKHIL BOX (طرد)';
       case VehicleCategory.trip:
-        return 'Trip (سفر ومحافظات)';
+        return 'AKHIL TRIP (سفر)';
       case VehicleCategory.partnerOfEvents:
-        return 'Partner of Events (فعاليات)';
+        return 'PARTNER OF EVENTS (فعاليات)';
     }
   }
 
@@ -65,50 +65,50 @@ extension VehicleCategoryExtension on VehicleCategory {
   String get description {
     switch (this) {
       case VehicleCategory.economy:
-        return 'مشوار يومي اقتصادي بأفضل سعر عادل';
+        return 'الخدمة الأساسية للانتقال اليومي بأعلى معايير الجودة (1.00x)';
       case VehicleCategory.plus:
-        return 'سيارات حديثة ومريحة مكيفة';
+        return 'سيارات حديثة ومستوى راحة وتجربة أعلى للعميل (1.10x)';
       case VehicleCategory.business:
-        return 'سيارات سيدان فارهة لرجال الأعمال';
+        return 'الخدمة المميزة لرجال الأعمال وأعلى فئات السيارات (1.20x)';
       case VehicleCategory.parthona:
-        return 'خدمة مخصصة للسيدات بسائقات معتمدات فقط';
+        return 'رحلة بقيادة برثونة (سائقة معتمدة) دون أي زيادة سعرية (1.00x)';
       case VehicleCategory.time:
-        return 'تأجير سيارة بالساعة مع كابتن خاص';
+        return 'مظلة الرحلات المجدولة (ONE, ROUTINE, CONTRACT)';
       case VehicleCategory.extra:
-        return 'سيارات 7 ركاب ومساحة حقائب واسعة';
+        return 'نقل عدد ركاب إضافي (+50% إلى +100% بحسب العدد)';
       case VehicleCategory.carry:
-        return 'نقل الأغراض والأثاث الخفيف والمقتنيات';
+        return 'نقل العميل مع حمولة كبيرة تتجاوز السيارات العادية (2.00x)';
       case VehicleCategory.box:
-        return 'توصيل مستندات وشحنات سريعة فوري';
+        return 'نقل وتسليم الطرود والأغراض دون راكب بنظام النقل المباشر (1.00x)';
       case VehicleCategory.trip:
-        return 'سفر مريح بين المحافظات والساحل';
+        return 'رحلات السفر عند تجاوز الخطوط الحدودية بين المحافظات (+استراحة 15د/100كم)';
       case VehicleCategory.partnerOfEvents:
-        return 'تنظيم وتوصيل فعاليات وحفلات ومؤتمرات';
+        return 'شراكة وتنظيم نقل الفعاليات والمؤتمرات (تسعير تعاقدي)';
     }
   }
 
   double multiplier() {
     switch (this) {
       case VehicleCategory.economy:
-        return 1.0;
+        return 1.00; // Base x 1.00
       case VehicleCategory.plus:
-        return 1.25;
+        return 1.10; // Base x 1.10
       case VehicleCategory.business:
-        return 1.6;
+        return 1.20; // Base x 1.20
       case VehicleCategory.parthona:
-        return 1.15;
+        return 1.00; // Base x 1.00 (لا زيادة سعرية)
       case VehicleCategory.time:
-        return 2.0;
+        return 1.00; // Base x 1.00
       case VehicleCategory.extra:
-        return 1.4;
+        return 1.50; // Minimum +50%
       case VehicleCategory.carry:
-        return 1.3;
+        return 2.00; // Base x 2.00
       case VehicleCategory.box:
-        return 0.85;
+        return 1.00; // Base x 1.00
       case VehicleCategory.trip:
-        return 2.5;
+        return 1.80; // Distance-based long trip
       case VehicleCategory.partnerOfEvents:
-        return 3.0;
+        return 2.50; // Custom event contract
     }
   }
 }
