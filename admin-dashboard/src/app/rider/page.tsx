@@ -96,6 +96,7 @@ export default function RiderWebApp() {
 
   // Welcome Incentive Bonus
   const [welcomeBalance, setWelcomeBalance] = useState<number>(200);
+  const [akhilCreditLimit, setAkhilCreditLimit] = useState<number>(500);
 
   // Dynamic Distance Calculation (Haversine approx in KM)
   const calculateDistanceKm = () => {
