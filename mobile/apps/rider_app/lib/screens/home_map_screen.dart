@@ -85,6 +85,63 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
     );
   }
 
+  Color _getCategoryBannerBg(VehicleCategory cat) {
+    switch (cat) {
+      case VehicleCategory.parthona:
+        return const Color(0xFF831843).withValues(alpha: 0.3);
+      case VehicleCategory.time:
+        return const Color(0xFF312E81).withValues(alpha: 0.3);
+      case VehicleCategory.extra:
+        return const Color(0xFF7C2D12).withValues(alpha: 0.3);
+      case VehicleCategory.carry:
+        return const Color(0xFF78350F).withValues(alpha: 0.3);
+      case VehicleCategory.box:
+        return const Color(0xFF1E3A8A).withValues(alpha: 0.3);
+      case VehicleCategory.trip:
+        return const Color(0xFF064E3B).withValues(alpha: 0.3);
+      default:
+        return AppColors.surfaceLight;
+    }
+  }
+
+  Color _getCategoryBannerBorder(VehicleCategory cat) {
+    switch (cat) {
+      case VehicleCategory.parthona:
+        return const Color(0xFFEC4899);
+      case VehicleCategory.time:
+        return const Color(0xFF818CF8);
+      case VehicleCategory.extra:
+        return const Color(0xFFF97316);
+      case VehicleCategory.carry:
+        return const Color(0xFFF59E0B);
+      case VehicleCategory.box:
+        return const Color(0xFF3B82F6);
+      case VehicleCategory.trip:
+        return const Color(0xFF10B981);
+      default:
+        return AppColors.border;
+    }
+  }
+
+  Color _getCategoryBannerTextColor(VehicleCategory cat) {
+    switch (cat) {
+      case VehicleCategory.parthona:
+        return const Color(0xFFF472B6);
+      case VehicleCategory.time:
+        return const Color(0xFFA5B4FC);
+      case VehicleCategory.extra:
+        return const Color(0xFFFDBA74);
+      case VehicleCategory.carry:
+        return const Color(0xFFFCD34D);
+      case VehicleCategory.box:
+        return const Color(0xFF93C5FD);
+      case VehicleCategory.trip:
+        return const Color(0xFF6EE7B7);
+      default:
+        return Colors.white;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final int estimatedFare = _calculateRoundedFare();
@@ -319,7 +376,35 @@ class _HomeMapScreenState extends State<HomeMapScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
+
+                  // Dynamic Contextual Service Banner (Master Version)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: _getCategoryBannerBg(_selectedCategory),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: _getCategoryBannerBorder(_selectedCategory)),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(_selectedCategory.icon, style: const TextStyle(fontSize: 16)),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _selectedCategory.description,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                              color: _getCategoryBannerTextColor(_selectedCategory),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
 
                   // Waiting Policy Note
                   Container(
