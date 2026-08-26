@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../theme/driver_theme.dart';
 
 class DriverKycCameraScreen extends StatefulWidget {
@@ -9,16 +11,47 @@ class DriverKycCameraScreen extends StatefulWidget {
 }
 
 class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
-  final Map<String, bool> _uploadedDocs = {
-    'بطاقة الرقم القومي (الوجه الأمامي)': true,
-    'بطاقة الرقم القومي (الوجه الخلفي)': true,
-    'رخصة القيادة السارية': true,
-    'رخصة تسيير السيارة': false,
-    'صحيفة الحالة الجنائية (فيش وتشبيه)': false,
-    'صورة أمامية واضحة للسيارة': false,
+  final ImagePicker _picker = ImagePicker();
+  final Map<String, String?> _capturedPhotos = {
+    'بطاقة الرقم القومي (الوجه الأمامي)': null,
+    'بطاقة الرقم القومي (الوجه الخلفي)': null,
+    'رخصة القيادة السارية': null,
+    'رخصة تسيير السيارة': null,
+    'صحيفة الحالة الجنائية (فيش وتشبيه)': null,
+    'صورة أمامية واضحة للسيارة': null,
+    'سيلفي الوجه الحي (Biometric Face)': null,
   };
 
-  void _simulateCaptureDoc(String docTitle) {
+  Future<void> _pickImage(String docTitle, ImageSource source) async {
+    try {
+      final XFile? photo = await _picker.pickImage(
+        source: source,
+        maxWidth: 1600,
+        maxHeight: 1200,
+        imageQuality: 85,
+        preferredCameraDevice: docTitle.contains('سيلفي') ? CameraDevice.front : CameraDevice.rear,
+      );
+
+      if (photo != null) {
+        setState(() {
+          _capturedPhotos[docTitle] = photo.path;
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('تم التقاط وحفظ ($docTitle) بنجاح 🟢')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('تنبيه الكاميرا: $e')),
+        );
+      }
+    }
+  }
+
+  void _showCameraOptions(String docTitle) {
     showModalBottomSheet(
       context: context,
       backgroundColor: DriverColors.surface,
@@ -31,43 +64,32 @@ class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('📷 تصوير وثيقة: $docTitle', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: DriverColors.textPrimary)),
-              const SizedBox(height: 12),
-              Container(
-                height: 140,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: DriverColors.surfaceLight,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: DriverColors.border, style: BorderStyle.solid),
-                ),
-                child: const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.camera_alt, size: 40, color: DriverColors.primary),
-                      SizedBox(height: 6),
-                      Text('ضع الوثيقة داخل الإطار واضغط تصوير', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
-                    ],
-                  ),
-                ),
-              ),
+              Text('📷 توثيق: $docTitle', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: DriverColors.textPrimary)),
               const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _uploadedDocs[docTitle] = true;
-                    });
-                    Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('تم مسح وتصوير ($docTitle) بنجاح 🟢')),
-                    );
-                  },
-                  icon: const Icon(Icons.check),
-                  label: const Text('التقاط الصورة وتأكيد الوضوح'),
+              ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: DriverColors.primary,
+                  child: Icon(Icons.camera_alt, color: Colors.black),
                 ),
+                title: const Text('التقاط مباشر بالكاميرا الحية 📸', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: DriverColors.textPrimary)),
+                subtitle: const Text('فتح كاميرا الموبايل للتصوير الفوري', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _pickImage(docTitle, ImageSource.camera);
+                },
+              ),
+              const Divider(color: DriverColors.border),
+              ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: DriverColors.surfaceLight,
+                  child: Icon(Icons.photo_library, color: DriverColors.primary),
+                ),
+                title: const Text('اختيار من ألبوم الصور / المعرض 📁', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: DriverColors.textPrimary)),
+                subtitle: const Text('رفع مستند تم تصويره مسبقاً', style: TextStyle(fontSize: 11, color: DriverColors.textMuted)),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  _pickImage(docTitle, ImageSource.gallery);
+                },
               ),
             ],
           ),
@@ -78,8 +100,8 @@ class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final int completedCount = _uploadedDocs.values.where((v) => v).length;
-    final int totalCount = _uploadedDocs.length;
+    final int completedCount = _capturedPhotos.values.where((v) => v != null).length;
+    final int totalCount = _capturedPhotos.length;
 
     return Scaffold(
       backgroundColor: DriverColors.background,
@@ -117,7 +139,7 @@ class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: LinearProgressIndicator(
-                      value: completedCount / totalCount,
+                      value: totalCount > 0 ? completedCount / totalCount : 0,
                       backgroundColor: DriverColors.surfaceLight,
                       valueColor: const AlwaysStoppedAnimation<Color>(DriverColors.primary),
                       minHeight: 6,
@@ -136,10 +158,11 @@ class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
             const SizedBox(height: 10),
 
             // Docs Checklist
-            ..._uploadedDocs.entries.map((entry) {
-              final isDone = entry.value;
+            ..._capturedPhotos.entries.map((entry) {
+              final photoPath = entry.value;
+              final isDone = photoPath != null;
               return Container(
-                margin: const EdgeInsets.only(bottom: 10),
+                margin: const EdgeInsets.only(bottom: 12),
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: DriverColors.surface,
@@ -148,39 +171,56 @@ class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
                     color: isDone ? DriverColors.primary.withValues(alpha: 0.5) : DriverColors.border,
                   ),
                 ),
-                child: Row(
+                child: Column(
                   children: [
-                    Icon(
-                      isDone ? Icons.check_circle : Icons.circle_outlined,
-                      color: isDone ? DriverColors.primary : DriverColors.textMuted,
-                      size: 22,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            entry.key,
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: DriverColors.textPrimary),
+                    Row(
+                      children: [
+                        Icon(
+                          isDone ? Icons.check_circle : Icons.circle_outlined,
+                          color: isDone ? DriverColors.primary : DriverColors.textMuted,
+                          size: 22,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                entry.key,
+                                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: DriverColors.textPrimary),
+                              ),
+                              Text(
+                                isDone ? 'تم التصوير والتحقق بنجاح 🟢' : 'مطلوب التصوير بالكاميرا',
+                                style: TextStyle(fontSize: 10, color: isDone ? DriverColors.primary : DriverColors.textMuted),
+                              ),
+                            ],
                           ),
-                          Text(
-                            isDone ? 'تم التصوير والتحقق' : 'مطلوب التصوير بالكاميرا',
-                            style: TextStyle(fontSize: 10, color: isDone ? DriverColors.primary : DriverColors.textMuted),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: () => _showCameraOptions(entry.key),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isDone ? DriverColors.surfaceLight : DriverColors.primary,
+                            foregroundColor: isDone ? DriverColors.textSecondary : Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
-                        ],
-                      ),
+                          icon: const Icon(Icons.camera_alt, size: 14),
+                          label: Text(isDone ? 'إعادة التصوير' : 'تصوير', style: const TextStyle(fontSize: 11)),
+                        ),
+                      ],
                     ),
-                    ElevatedButton(
-                      onPressed: () => _simulateCaptureDoc(entry.key),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isDone ? DriverColors.surfaceLight : DriverColors.primary,
-                        foregroundColor: isDone ? DriverColors.textSecondary : Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    if (isDone) ...[
+                      const SizedBox(height: 10),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.file(
+                          File(photoPath),
+                          height: 110,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      child: Text(isDone ? 'تعديل' : 'تصوير', style: const TextStyle(fontSize: 11)),
-                    ),
+                    ],
                   ],
                 ),
               );
@@ -196,7 +236,7 @@ class _DriverKycCameraScreenState extends State<DriverKycCameraScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('تم إرسال الوثائق لفريق العمليات للمراجعة والتفعيل الفوري 🚀')),
+                    const SnackBar(content: Text('تم إرسال الوثائق المصورة لفريق العمليات للمراجعة والتفعيل الفوري 🚀')),
                   );
                 },
                 child: const Text('إرسال الوثائق للمراجعة والتفعيل', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w900)),
