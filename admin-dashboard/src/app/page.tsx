@@ -51,6 +51,12 @@ export default function AdminDashboardPage() {
   const [financialsPeriod, setFinancialsPeriod] = useState<'2026_Q2' | '2026_Q1' | '2025_ANNUAL'>('2026_Q2');
   const [financialsViewMode, setFinancialsViewMode] = useState<'statements' | 'startup_capital' | 'chart_of_accounts' | 'journal_entries'>('statements');
 
+  // Medical & Drug Screening Filter State
+  const [medicalFilter, setMedicalFilter] = useState<'all' | 'valid' | 'expired' | 'pending'>('all');
+
+  // Reports Filter State (Daily, Weekly, Monthly, Yearly)
+  const [reportPeriod, setReportPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly');
+
   // Startup Capital & Incorporation Expenses State
   const [startupAccounts, setStartupAccounts] = useState({
     authorizedCapital: 5000000, // رأس المال المرخص به
