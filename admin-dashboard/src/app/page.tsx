@@ -232,12 +232,12 @@ export default function AdminDashboardPage() {
         <div>
           {/* Logo */}
           <div className="flex items-center gap-3 px-3 py-4 mb-4 border-b border-slate-800">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center font-bold text-xl shadow-lg shadow-orange-600/30 text-white">
-              ⚡
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-900 to-amber-500 flex items-center justify-center font-bold text-xl shadow-lg shadow-amber-500/20 text-white">
+              🐎
             </div>
             <div>
-              <h1 className="font-bold text-base text-white">عالطاير (3altayer)</h1>
-              <p className="text-[11px] text-orange-400 font-semibold">{t.appSubtitle}</p>
+              <h1 className="font-bold text-base text-white">أخيل | AKHIL</h1>
+              <p className="text-[11px] text-amber-400 font-semibold">{t.appSubtitle}</p>
             </div>
           </div>
 
@@ -1032,31 +1032,61 @@ export default function AdminDashboardPage() {
           {/* TAB: PRICING */}
           {activeTab === 'pricing' && (
             <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-6">
-              <div>
-                <h2 className="font-bold text-lg text-white">{t.pricing.title}</h2>
-                <p className="text-xs text-slate-400 mt-0.5">{t.pricing.subtitle}</p>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h2 className="font-bold text-lg text-white">إعدادات تسعير منظومة أخيل (AKHIL SERVICES & PRICING MASTER)</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">التحكم في مضاعفات التسعير للخدمات الـ 10، عمولة المنصة (10%)، وحدود المديونية</p>
+                </div>
+                <span className="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl font-bold font-mono">
+                  إصدار الماستر: v2.0.0
+                </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 10 Services Configuration Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { name: '1. AKHIL ECONOMY 🚗', key: 'economy', mult: '1.00x', desc: 'الخدمة الأساسية للانتقال اليومي', color: 'border-blue-500/40 text-blue-400' },
+                  { name: '2. AKHIL PLUS 🚘', key: 'plus', mult: '1.10x', desc: 'سيارات أحدث ومستوى راحة أعلى', color: 'border-sky-500/40 text-sky-400' },
+                  { name: '3. AKHIL BUSINESS 💼', key: 'business', mult: '1.20x', desc: 'خدمة رجال الأعمال المميزة', color: 'border-purple-500/40 text-purple-400' },
+                  { name: '4. AKHIL PARTHONA 🌸', key: 'parthona', mult: '1.00x', desc: 'خدمة نسائية بسائقات معتمدات (بدون زيادة)', color: 'border-pink-500/40 text-pink-400' },
+                  { name: '5. AKHIL TIME ⏱️', key: 'time', mult: 'ONE/ROUTINE/CONTRACT', desc: 'رحلات مجدولة (خصم التعاقد حتى 20%)', color: 'border-indigo-500/40 text-indigo-400' },
+                  { name: '6. AKHIL EXTRA ➕', key: 'extra', mult: '+50% .. +100%', desc: 'نقل ركاب إضافيين (+50% لشخص أو شخصين)', color: 'border-orange-500/40 text-orange-400' },
+                  { name: '7. AKHIL CARRY 📦', key: 'carry', mult: '2.00x', desc: 'حمولة كبيرة (المجاني: شنطة كبيرة + صغيرة)', color: 'border-amber-500/40 text-amber-400' },
+                  { name: '8. AKHIL BOX 📫', key: 'box', mult: '1.00x', desc: 'نقل طرود ومستندات دون راكب بكود OTP', color: 'border-cyan-500/40 text-cyan-400' },
+                  { name: '9. AKHIL TRIP 🛣️', key: 'trip', mult: 'سفر محافظات', desc: 'استراحة 15د مجاناً/100كم و3ج/د توقف', color: 'border-emerald-500/40 text-emerald-400' },
+                  { name: '10. PARTNER OF EVENTS 🎪', key: 'events', mult: 'تعاقدي مخصص', desc: 'تنظيم أسطول نقل الفعاليات والمؤتمرات', color: 'border-rose-500/40 text-rose-400' },
+                ].map((s, idx) => (
+                  <div key={idx} className={`p-4 bg-slate-950 rounded-2xl border ${s.color} space-y-2`}>
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-bold text-xs text-white">{s.name}</h4>
+                      <span className="text-[11px] font-mono font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-800 text-amber-300">{s.mult}</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400">{s.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Commission & Operating Modes */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                 <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
-                  <div className="flex items-center gap-2 text-orange-400 font-bold">
+                  <div className="flex items-center gap-2 text-amber-400 font-bold">
                     <Zap className="w-5 h-5" />
-                    <h3>{t.pricing.instantCommission}</h3>
+                    <h3>أخيل فليكس — AKHIL FLEX (عمولة مرنة متناقصة)</h3>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 block mb-1.5 font-medium">{t.pricing.commissionRate}</label>
-                    <input type="number" defaultValue="15" className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-sm font-mono font-bold" />
+                    <label className="text-xs text-slate-400 block mb-1.5 font-medium">نسبة العمولة الأساسية (تبدأ من 10%)</label>
+                    <input type="number" defaultValue="10" className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-sm font-mono font-bold" />
                   </div>
                 </div>
 
                 <div className="p-5 bg-slate-950 rounded-2xl border border-slate-800 space-y-4">
-                  <div className="flex items-center gap-2 text-amber-400 font-bold">
-                    <HandCoins className="w-5 h-5" />
-                    <h3>{t.pricing.biddingCommission}</h3>
+                  <div className="flex items-center gap-2 text-emerald-400 font-bold">
+                    <ShieldCheck className="w-5 h-5" />
+                    <h3>أخيل ضمان — AKHIL GUARANTEE (الضمان المالي الشهري)</h3>
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400 block mb-1.5 font-medium">{t.pricing.commissionRate}</label>
-                    <input type="number" defaultValue="10" className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-sm font-mono font-bold" />
+                    <label className="text-xs text-slate-400 block mb-1.5 font-medium">قيمة الضمان الشهري للكابتن (ج.م)</label>
+                    <input type="number" defaultValue="15000" className="w-full bg-slate-900 border border-slate-700 rounded-xl p-2.5 text-white text-sm font-mono font-bold" />
                   </div>
                 </div>
               </div>

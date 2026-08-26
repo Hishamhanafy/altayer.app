@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: '3altayer Admin (لوحة تحكم عالطاير)',
-  description: 'Operations Radar & Management Dashboard for 3altayer.app',
+  title: 'أخيل | لوحة التحكم والعمليات المركزية (AKHIL Super Admin Hub)',
+  description: 'Operations Radar, Pricing Management & Analytics Dashboard for AKHIL (أخيل — أبعد من طريق)',
 };
 
 export default function RootLayout({
