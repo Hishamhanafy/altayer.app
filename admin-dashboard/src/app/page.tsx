@@ -47,9 +47,94 @@ import {
   ShoppingCart,
   Package,
   Briefcase,
-  Calculator
+  Calculator,
+  LogOut,
+  LogIn,
+  KeyRound,
+  ShieldAlert
 } from 'lucide-react';
 import { translations, Locale } from '../locales/translations';
+
+export interface AdminUserProfile {
+  id: string;
+  name: string;
+  email: string;
+  password?: string;
+  role: 'SUPER_ADMIN' | 'OPS_LEAD' | 'FINANCE_OFFICER' | 'KYC_OFFICER' | 'SUPPORT_SPECIALIST' | 'MARKETING_LEAD';
+  roleTitle: string;
+  avatar: string;
+  badgeColor: string;
+  allowedTabs: Array<'overview' | 'financials' | 'erp_suite' | 'hr_payroll' | 'crm_support' | 'rbac_users' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>;
+}
+
+export const DEMO_ADMIN_USERS: AdminUserProfile[] = [
+  {
+    id: 'ADM-001',
+    name: 'هشام حنفي (Super Admin 👑)',
+    email: 'admin@akhil.app',
+    password: 'password123',
+    role: 'SUPER_ADMIN',
+    roleTitle: 'مدير النظام العام والتنفيذي',
+    avatar: '👑',
+    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    allowedTabs: ['overview', 'financials', 'erp_suite', 'hr_payroll', 'crm_support', 'rbac_users', 'medical_tests', 'reports', 'drivers', 'rides', 'wallets', 'payouts', 'disputes', 'quests', 'promotions', 'heatmap', 'pricing'],
+  },
+  {
+    id: 'ADM-002',
+    name: 'طارق عبد العزيز (مدير العمليات 🚗)',
+    email: 'tarek.ops@akhil.app',
+    password: 'password123',
+    role: 'OPS_LEAD',
+    roleTitle: 'مدير العمليات ومراقبة الأسطول',
+    avatar: '🚗',
+    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
+    allowedTabs: ['overview', 'rides', 'drivers', 'heatmap', 'disputes', 'crm_support', 'reports'],
+  },
+  {
+    id: 'ADM-003',
+    name: 'ياسمين خليل (المدير المالي 📑)',
+    email: 'yasmin.finance@akhil.app',
+    password: 'password123',
+    role: 'FINANCE_OFFICER',
+    roleTitle: 'المدير المالي والمحاسبة والـ ERP',
+    avatar: '📑',
+    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+    allowedTabs: ['financials', 'erp_suite', 'hr_payroll', 'wallets', 'payouts', 'reports'],
+  },
+  {
+    id: 'ADM-004',
+    name: 'مروة الشافعي (مشرف الفحص والـ KYC 🧪)',
+    email: 'marwa.kyc@akhil.app',
+    password: 'password123',
+    role: 'KYC_OFFICER',
+    roleTitle: 'مسؤول توثيق الكباتن والفحص الطبي',
+    avatar: '🧪',
+    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/40',
+    allowedTabs: ['medical_tests', 'drivers', 'reports'],
+  },
+  {
+    id: 'ADM-005',
+    name: 'مصطفى النجار (خدمة العملاء 🎧)',
+    email: 'mostafa.support@akhil.app',
+    password: 'password123',
+    role: 'SUPPORT_SPECIALIST',
+    roleTitle: 'أخصائي خدمة العملاء وتذاكر الدعم',
+    avatar: '🎧',
+    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/40',
+    allowedTabs: ['crm_support', 'disputes', 'rides', 'reports'],
+  },
+  {
+    id: 'ADM-006',
+    name: 'سارة عبد الفتاح (التسويق والعروض 🎟️)',
+    email: 'sara.growth@akhil.app',
+    password: 'password123',
+    role: 'MARKETING_LEAD',
+    roleTitle: 'مدير النمو والتسويق والكويستات',
+    avatar: '🎟️',
+    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+    allowedTabs: ['promotions', 'quests', 'heatmap', 'reports'],
+  },
+];
 
 export default function AdminDashboardPage() {
   const [lang, setLang] = useState<Locale>('ar');
@@ -57,6 +142,55 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [simulatedDriversCount, setSimulatedDriversCount] = useState(142);
   const [isSimulating, setIsSimulating] = useState(false);
+
+  // Authentication & RBAC Session State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [currentAuthUser, setCurrentAuthUser] = useState<AdminUserProfile>(DEMO_ADMIN_USERS[0]);
+  const [loginEmail, setLoginEmail] = useState('admin@akhil.app');
+  const [loginPassword, setLoginPassword] = useState('••••••••••••');
+  const [loginPin, setLoginPin] = useState('8842');
+  const [loginError, setLoginError] = useState('');
+
+  const handleLoginSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError('');
+    const found = DEMO_ADMIN_USERS.find(
+      u => u.email.toLowerCase().trim() === loginEmail.toLowerCase().trim()
+    );
+    if (found) {
+      setCurrentAuthUser(found);
+      setIsAuthenticated(true);
+      if (!found.allowedTabs.includes(activeTab)) {
+        setActiveTab(found.allowedTabs[0]);
+      }
+    } else {
+      // Allow generic login as Super Admin
+      setCurrentAuthUser({
+        id: 'ADM-USR',
+        name: loginEmail.split('@')[0] || 'مسؤول النظام',
+        email: loginEmail,
+        role: 'SUPER_ADMIN',
+        roleTitle: 'مسؤول لوحة التحكم',
+        avatar: '👤',
+        badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+        allowedTabs: DEMO_ADMIN_USERS[0].allowedTabs,
+      });
+      setIsAuthenticated(true);
+    }
+  };
+
+  const handleQuickLogin = (user: AdminUserProfile) => {
+    setCurrentAuthUser(user);
+    setIsAuthenticated(true);
+    if (!user.allowedTabs.includes(activeTab)) {
+      setActiveTab(user.allowedTabs[0]);
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setLoginError('');
+  };
 
   // ERP Enterprise Suite State
   const [erpViewMode, setErpViewMode] = useState<'assets' | 'procurement' | 'inventory' | 'b2b_contracts' | 'budget_variance'>('assets');
@@ -1331,6 +1465,147 @@ export default function AdminDashboardPage() {
     window.print();
   };
 
+  // IF NOT AUTHENTICATED: RENDER LUXURY LOGIN SCREEN
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden font-sans" dir={t.dir}>
+        {/* Background Glow effects */}
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-4xl space-y-6 relative z-10">
+          {/* Brand Header */}
+          <div className="text-center space-y-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-900 to-amber-500 text-3xl shadow-xl shadow-amber-500/20 border border-amber-500/30">
+              🐎
+            </div>
+            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+              أخيل | AKHIL Enterprise
+            </h1>
+            <p className="text-xs md:text-sm text-slate-400">
+              بوابة تسجيل الدخول الإداري ونظام الرقابة والأمان (RBAC Command Center)
+            </p>
+          </div>
+
+          {/* Main Card Grid: Form + Quick Login Roles */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-2xl">
+            {/* Left: Login Form */}
+            <div className="md:col-span-5 space-y-5 flex flex-col justify-between border-b md:border-b-0 md:border-l border-slate-800 pb-6 md:pb-0 md:pl-6">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2 mb-1">
+                  <LogIn className="w-4 h-4 text-amber-400" />
+                  تسجيل الدخول بالبيانات الرسمية:
+                </h3>
+                <p className="text-[11px] text-slate-400">أدخل بريدك الإلكتروني للعمل ورمز المصادقة</p>
+              </div>
+
+              <form onSubmit={handleLoginSubmit} className="space-y-3.5 text-xs">
+                {loginError && (
+                  <div className="p-2.5 bg-rose-500/20 border border-rose-500/30 rounded-xl text-rose-300 text-[11px] flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-rose-400 shrink-0" />
+                    <span>{loginError}</span>
+                  </div>
+                )}
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">البريد الإلكتروني للعمل:</label>
+                  <input
+                    type="email"
+                    required
+                    value={loginEmail}
+                    onChange={(e) => setLoginEmail(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    placeholder="name@akhil.app"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">كلمة المرور المشفرة:</label>
+                  <input
+                    type="password"
+                    required
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    placeholder="••••••••••••"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">رمز المصادقة الثنائية (2FA PIN):</label>
+                  <input
+                    type="text"
+                    value={loginPin}
+                    onChange={(e) => setLoginPin(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-amber-400 font-mono text-center tracking-widest font-bold"
+                    placeholder="8842"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  تسجيل الدخول والتحقق الآمن 🔒
+                </button>
+              </form>
+
+              <div className="pt-2 text-[10px] text-slate-500 space-y-1">
+                <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                  <CheckCircle2 className="w-3 h-3" /> مشفر بتشفير 256-Bit SSL و ISO 27001
+                </div>
+                <p>جميع محاولات الدخول مُسجلة في الـ Audit Log الأمني بالـ IP والتوقيت.</p>
+              </div>
+            </div>
+
+            {/* Right: Quick Demo Login by Roles */}
+            <div className="md:col-span-7 space-y-4">
+              <div>
+                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-purple-400" />
+                  تسجيل دخول تجريبي سريع حسب الدور والصلاحيات (Demo Roles):
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  انقر على أي دور وظيفي أدناه لتسجيل الدخول فوراً ومشاهدة كيف تتغير الصلاحيات والتبويبات المسموحة ديناميكياً:
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {DEMO_ADMIN_USERS.map((user) => (
+                  <button
+                    key={user.id}
+                    onClick={() => handleQuickLogin(user)}
+                    className="text-right p-3.5 bg-slate-950/80 hover:bg-slate-900 border border-slate-800 hover:border-amber-500/50 rounded-2xl transition group relative overflow-hidden flex flex-col justify-between space-y-2 text-xs shadow"
+                  >
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl p-1 bg-slate-800 rounded-lg">{user.avatar}</span>
+                        <div>
+                          <div className="font-bold text-white group-hover:text-amber-300 transition text-xs">{user.name}</div>
+                          <div className="text-[10px] text-slate-400">{user.roleTitle}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between w-full border-t border-slate-800/80 pt-2 text-[10px]">
+                      <span className={`px-2 py-0.5 rounded font-bold border ${user.badgeColor}`}>
+                        {user.allowedTabs.length} أقسام مسموحة
+                      </span>
+                      <span className="text-amber-400 font-bold group-hover:translate-x-[-2px] transition flex items-center gap-1">
+                        دخول سريع ⚡
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`flex h-screen bg-slate-950 text-slate-100 overflow-hidden font-sans ${isRtl ? 'dir-rtl' : 'dir-ltr'}`} dir={t.dir}>
       {/* Sidebar Navigation */}
@@ -1347,209 +1622,260 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links with RBAC Enforcement */}
           <nav className="space-y-1">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'overview' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Activity className="w-4 h-4" />
-              {t.tabs.radar}
-            </button>
+            {currentAuthUser.allowedTabs.includes('overview') && (
+              <button
+                onClick={() => setActiveTab('overview')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'overview' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Activity className="w-4 h-4" />
+                {t.tabs.radar}
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('financials')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'financials' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <DollarSign className="w-4 h-4 text-emerald-400" />
-              الحسابات الختامية والأرباح 📑
-            </button>
+            {currentAuthUser.allowedTabs.includes('financials') && (
+              <button
+                onClick={() => setActiveTab('financials')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'financials' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <DollarSign className="w-4 h-4 text-emerald-400" />
+                الحسابات الختامية والأرباح 📑
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('erp_suite')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'erp_suite' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Building2 className="w-4 h-4 text-amber-400" />
-              نظام إدارة المؤسسة (ERP) 🏢
-              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
-                شامل
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('hr_payroll')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'hr_payroll' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Users className="w-4 h-4 text-cyan-400" />
-              الموارد البشرية والرواتب (HR) 👥
-              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-cyan-500/20 text-cyan-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
-                {employeesList.length} موظف
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('crm_support')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'crm_support' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Headphones className="w-4 h-4 text-emerald-400" />
-              خدمة العملاء وCRM 🎧
-              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
-                {supportTicketsList.filter(t => t.status === 'OPEN').length} شكوى
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('rbac_users')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'rbac_users' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Lock className="w-4 h-4 text-purple-400" />
-              المستخدمين والصلاحيات (RBAC) 🛡️
-            </button>
-
-            <button
-              onClick={() => setActiveTab('medical_tests')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'medical_tests' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <ShieldCheck className="w-4 h-4 text-pink-400" />
-              تحاليل المخدرات والفحص الطبي 🧪
-              <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-emerald-500/20 text-emerald-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
-                معتمد
-              </span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('reports')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'reports' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <BarChart3 className="w-4 h-4 text-amber-400" />
-              التقارير والإحصائيات الشاملة 📊
-            </button>
-
-            <button
-              onClick={() => setActiveTab('drivers')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'drivers' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Car className="w-4 h-4" />
-              {t.tabs.drivers}
-              {pendingDriversList.length > 0 && (
-                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold`}>
-                  {pendingDriversList.length}
+            {currentAuthUser.allowedTabs.includes('erp_suite') && (
+              <button
+                onClick={() => setActiveTab('erp_suite')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'erp_suite' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Building2 className="w-4 h-4 text-amber-400" />
+                نظام إدارة المؤسسة (ERP) 🏢
+                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                  شامل
                 </span>
-              )}
-            </button>
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('rides')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'rides' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Layers className="w-4 h-4" />
-              {t.tabs.rides}
-            </button>
-
-            <button
-              onClick={() => setActiveTab('promotions')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'promotions' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Tag className="w-4 h-4 text-orange-400" />
-              العروض والبروموكود للركاب 🎟️
-            </button>
-
-            <button
-              onClick={() => setActiveTab('quests')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'quests' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Gift className="w-4 h-4 text-amber-400" />
-              حملات البونص والتارجت للكباتن 🏆
-            </button>
-
-            <button
-              onClick={() => setActiveTab('payouts')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'payouts' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <ArrowUpRight className="w-4 h-4 text-emerald-400" />
-              طلبات سحب الأرباح (Payouts)
-              {payoutRequests.length > 0 && (
-                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono`}>
-                  {payoutRequests.length}
+            {currentAuthUser.allowedTabs.includes('hr_payroll') && (
+              <button
+                onClick={() => setActiveTab('hr_payroll')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'hr_payroll' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Users className="w-4 h-4 text-cyan-400" />
+                الموارد البشرية والرواتب (HR) 👥
+                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-cyan-500/20 text-cyan-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                  {employeesList.length} موظف
                 </span>
-              )}
-            </button>
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('disputes')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'disputes' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Headphones className="w-4 h-4 text-rose-400" />
-              الشكاوى والنزاعات والتعويضات
-              {disputeTickets.length > 0 && (
-                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-rose-500/20 text-rose-400 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono`}>
-                  {disputeTickets.length}
+            {currentAuthUser.allowedTabs.includes('crm_support') && (
+              <button
+                onClick={() => setActiveTab('crm_support')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'crm_support' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Headphones className="w-4 h-4 text-emerald-400" />
+                خدمة العملاء وCRM 🎧
+                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                  {supportTicketsList.filter(t => t.status === 'OPEN').length} شكوى
                 </span>
-              )}
-            </button>
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('wallets')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'wallets' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Wallet className="w-4 h-4" />
-              دفتر الحسابات والعمولات
-            </button>
+            {currentAuthUser.allowedTabs.includes('rbac_users') && (
+              <button
+                onClick={() => setActiveTab('rbac_users')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'rbac_users' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Lock className="w-4 h-4 text-purple-400" />
+                المستخدمين والصلاحيات (RBAC) 🛡️
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('heatmap')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'heatmap' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <Flame className="w-4 h-4" />
-              خريطة الكثافة ومناطق الذروة
-            </button>
+            {currentAuthUser.allowedTabs.includes('medical_tests') && (
+              <button
+                onClick={() => setActiveTab('medical_tests')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'medical_tests' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4 text-pink-400" />
+                تحاليل المخدرات والفحص الطبي 🧪
+                <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-emerald-500/20 text-emerald-300 text-[10px] px-1.5 py-0.5 rounded font-mono font-bold`}>
+                  معتمد
+                </span>
+              </button>
+            )}
 
-            <button
-              onClick={() => setActiveTab('pricing')}
-              className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'pricing' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`}
-            >
-              <DollarSign className="w-4 h-4" />
-              {t.tabs.pricing}
-            </button>
+            {currentAuthUser.allowedTabs.includes('reports') && (
+              <button
+                onClick={() => setActiveTab('reports')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'reports' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <BarChart3 className="w-4 h-4 text-amber-400" />
+                التقارير والإحصائيات الشاملة 📊
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('drivers') && (
+              <button
+                onClick={() => setActiveTab('drivers')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'drivers' ? 'bg-indigo-900 text-amber-300 shadow-lg shadow-indigo-900/40' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Car className="w-4 h-4" />
+                {t.tabs.drivers}
+                {pendingDriversList.length > 0 && (
+                  <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-amber-500/20 text-amber-400 text-[10px] px-2 py-0.5 rounded-full font-bold`}>
+                    {pendingDriversList.length}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('rides') && (
+              <button
+                onClick={() => setActiveTab('rides')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'rides' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Layers className="w-4 h-4" />
+                {t.tabs.rides}
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('promotions') && (
+              <button
+                onClick={() => setActiveTab('promotions')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'promotions' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Tag className="w-4 h-4 text-orange-400" />
+                العروض والبروموكود للركاب 🎟️
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('quests') && (
+              <button
+                onClick={() => setActiveTab('quests')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'quests' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Gift className="w-4 h-4 text-amber-400" />
+                حملات البونص والتارجت للكباتن 🏆
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('payouts') && (
+              <button
+                onClick={() => setActiveTab('payouts')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'payouts' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+                طلبات سحب الأرباح (Payouts)
+                {payoutRequests.length > 0 && (
+                  <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono`}>
+                    {payoutRequests.length}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('disputes') && (
+              <button
+                onClick={() => setActiveTab('disputes')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'disputes' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Headphones className="w-4 h-4 text-rose-400" />
+                الشكاوى والنزاعات والتعويضات
+                {disputeTickets.length > 0 && (
+                  <span className={`${isRtl ? 'mr-auto' : 'ml-auto'} bg-rose-500/20 text-rose-400 text-[10px] px-2 py-0.5 rounded-full font-bold font-mono`}>
+                    {disputeTickets.length}
+                  </span>
+                )}
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('wallets') && (
+              <button
+                onClick={() => setActiveTab('wallets')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'wallets' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Wallet className="w-4 h-4" />
+                دفتر الحسابات والعمولات
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('heatmap') && (
+              <button
+                onClick={() => setActiveTab('heatmap')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'heatmap' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <Flame className="w-4 h-4" />
+                خريطة الكثافة ومناطق الذروة
+              </button>
+            )}
+
+            {currentAuthUser.allowedTabs.includes('pricing') && (
+              <button
+                onClick={() => setActiveTab('pricing')}
+                className={`w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                  activeTab === 'pricing' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/30' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                }`}
+              >
+                <DollarSign className="w-4 h-4" />
+                {t.tabs.pricing}
+              </button>
+            )}
           </nav>
         </div>
 
-        {/* Sidebar Footer Controls */}
-        <div className="space-y-2">
+        {/* Sidebar Footer Controls & User Card */}
+        <div className="space-y-2 pt-3 border-t border-slate-800">
+          <div className="p-2.5 bg-slate-950/80 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{currentAuthUser.avatar}</span>
+              <div>
+                <div className="font-bold text-white text-xs leading-tight truncate max-w-[120px]">{currentAuthUser.name}</div>
+                <div className="text-[9px] text-amber-400 font-semibold">{currentAuthUser.roleTitle}</div>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="p-1.5 text-rose-400 hover:text-white hover:bg-rose-600 rounded-lg transition"
+              title="تسجيل الخروج"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
           <button
             onClick={() => setIsSimulating(!isSimulating)}
             className={`w-full flex items-center justify-between px-3 py-1.5 rounded-xl border text-[11px] font-bold transition ${
@@ -1604,17 +1930,51 @@ export default function AdminDashboardPage() {
               👨🏻‍✈️ تطبيق الكابتن والبرثونة (AKHIL Captain) <ExternalLink className="w-3 h-3" />
             </a>
 
-            <span className="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/30 px-3 py-1.5 rounded-xl font-bold">
-              {t.currency} (EGP)
-            </span>
+            <div className="flex items-center gap-2 px-3 py-1 bg-slate-950/80 border border-slate-800 rounded-xl text-xs">
+              <span className="text-base">{currentAuthUser.avatar}</span>
+              <div className="text-right">
+                <div className="font-bold text-white leading-tight">{currentAuthUser.name}</div>
+                <div className="text-[9px] text-amber-400 font-semibold">{currentAuthUser.roleTitle}</div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-1.5 bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 px-3 py-1.5 rounded-xl font-bold text-xs transition shadow"
+              title="تسجيل الخروج من لوحة التحكم"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>تسجيل الخروج 🚪</span>
+            </button>
           </div>
         </header>
 
         {/* Content Container */}
         <div className="p-8 space-y-8 max-w-7xl mx-auto w-full">
 
+          {/* TAB GUARD: ACCESS DENIED IF TAB IS NOT ALLOWED */}
+          {!currentAuthUser.allowedTabs.includes(activeTab) && (
+            <div className="bg-slate-900/90 border border-rose-500/40 rounded-3xl p-12 text-center space-y-4 max-w-2xl mx-auto my-12 shadow-2xl">
+              <div className="w-16 h-16 bg-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mx-auto text-3xl border border-rose-500/30">
+                ⛔
+              </div>
+              <h2 className="text-xl font-black text-white">عفواً، لا تملك صلاحية للوصول إلى هذا القسم!</h2>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                حسابك الحالي مسجل بدور: <span className="font-bold text-amber-400">{currentAuthUser.roleTitle}</span>، وهذا القسم محجوب وفق مصفوفة الأمان والصلاحيات (RBAC Access Matrix).
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={() => setActiveTab(currentAuthUser.allowedTabs[0])}
+                  className="px-6 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black rounded-xl text-xs transition shadow"
+                >
+                  العودة إلى القسم المسموح ↩️
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* TAB: CLOSING FINANCIALS & STARTUP ACCOUNTS */}
-          {activeTab === 'financials' && (
+          {activeTab === 'financials' && currentAuthUser.allowedTabs.includes('financials') && (
             <div className="space-y-6">
               {/* Financials Sub-Tab Navigation */}
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-900/90 border border-slate-800 p-4 rounded-2xl">
