@@ -182,6 +182,13 @@ export default function AdminDashboardPage() {
   ]);
 
   // Promo Codes & Marketing Campaigns
+  const [promoCodesList, setPromoCodesList] = useState([
+    { code: 'AKHIL50', type: 'نسبة مئوية (50%)', maxDiscount: '25.00 ج.م', uses: 842, budgetSpent: '16,840 ج.م', target: 'الركاب الجدد (أول مشوار)', isActive: true },
+    { code: 'WEEKEND20', type: 'نسبة مئوية (20%)', maxDiscount: '20.00 ج.م', uses: 419, budgetSpent: '6,285 ج.م', target: 'مشاوير الخميس والجمعة', isActive: true },
+    { code: 'STUDENT15', type: 'نسبة مئوية (15%)', maxDiscount: '15.00 ج.م', uses: 290, budgetSpent: '3,480 ج.م', target: 'منطقة الجامعات والطلاب', isActive: true },
+    { code: 'AKHIL30', type: 'مبلغ ثابت (30 ج.م)', maxDiscount: '30.00 ج.م', uses: 512, budgetSpent: '15,360 ج.م', target: 'مكافآت برنامج دعوة الأصدقاء', isActive: true },
+  ]);
+
   // Closing Financials Datasets (P&L, Balance Sheet, Cash Flow, Unit Economics)
   const closingFinancialsData = {
     '2026_Q2': {
