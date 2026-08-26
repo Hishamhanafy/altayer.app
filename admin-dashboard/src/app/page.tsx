@@ -56,11 +56,107 @@ export default function AdminDashboardPage() {
   // Reports Filter State (Daily, Weekly, Monthly, Yearly)
   const [reportPeriod, setReportPeriod] = useState<'daily' | 'weekly' | 'monthly' | 'yearly'>('monthly');
 
+  // Interactive Data Entry Modals State
+  const [showAddDriverModal, setShowAddDriverModal] = useState(false);
+  const [newDriver, setNewDriver] = useState({ name: '', phone: '', car: '', plate: '', category: 'ECONOMY' });
+
+  const [showAddMedicalModal, setShowAddMedicalModal] = useState(false);
+  const [newMedical, setNewMedical] = useState({
+    driverName: '',
+    phone: '',
+    car: '',
+    labName: 'معامل البرج (Al-Borg Lab)',
+    testType: 'تحليل سموم ومخدرات شامل (7 مواد)',
+    testDate: '26/08/2026',
+    expiryDate: '26/02/2027',
+    result: 'NEGATIVE',
+  });
+
+  const [showAddPromoModal, setShowAddPromoModal] = useState(false);
+  const [newPromo, setNewPromo] = useState({ code: '', type: 'نسبة مئوية (20%)', maxDiscount: '25.00 ج.م', target: 'جميع الركاب' });
+
   const t = translations[lang];
   const isRtl = t.dir === 'rtl';
 
   const toggleLanguage = () => {
     setLang(prev => (prev === 'ar' ? 'en' : 'ar'));
+  };
+
+  const handleCreateDriver = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDriver.name || !newDriver.phone) {
+      alert('يرجى كتابة اسم الكابتن ورقم الهاتف!');
+      return;
+    }
+    const created = {
+      id: Date.now().toString(),
+      name: newDriver.name,
+      phone: newDriver.phone,
+      car: newDriver.car || 'تويوتا كورولا 2023',
+      plate: newDriver.plate || 'ق هـ و 9876',
+      category: newDriver.category,
+      date: 'الآن (مضاف يدوياً)',
+    };
+    setPendingDriversList(prev => [created, ...prev]);
+    setShowAddDriverModal(false);
+    setNewDriver({ name: '', phone: '', car: '', plate: '', category: 'ECONOMY' });
+    alert('تمت إضافة الكابتن بنجاح إلى قائمة الانتظار والاعتماد 🟢');
+  };
+
+  const handleCreateMedical = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMedical.driverName) {
+      alert('يرجى إدخال اسم الكابتن!');
+      return;
+    }
+    const created = {
+      id: `MED-${Date.now().toString().slice(-4)}`,
+      driverName: newMedical.driverName,
+      phone: newMedical.phone || '+201000000000',
+      car: newMedical.car || 'سيارة معتمدة',
+      labName: newMedical.labName,
+      testType: newMedical.testType,
+      testDate: newMedical.testDate,
+      expiryDate: newMedical.expiryDate,
+      result: newMedical.result,
+      criminalRecord: 'VALID',
+      status: newMedical.result === 'NEGATIVE' ? 'ACTIVE' : 'SUSPENDED',
+      certificateUrl: 'https://akhil.app/certs/new.pdf',
+    };
+    setMedicalTestsList(prev => [created, ...prev]);
+    setShowAddMedicalModal(false);
+    setNewMedical({
+      driverName: '',
+      phone: '',
+      car: '',
+      labName: 'معامل البرج (Al-Borg Lab)',
+      testType: 'تحليل سموم ومخدرات شامل (7 مواد)',
+      testDate: '26/08/2026',
+      expiryDate: '26/02/2027',
+      result: 'NEGATIVE',
+    });
+    alert('تم حفظ نتيجة التحليل الطبي والفحص بنجاح في المنظومة 🟢');
+  };
+
+  const handleCreatePromo = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPromo.code) {
+      alert('يرجى إدخال كود الخصم!');
+      return;
+    }
+    const created = {
+      code: newPromo.code.toUpperCase(),
+      type: newPromo.type,
+      maxDiscount: newPromo.maxDiscount,
+      uses: 0,
+      budgetSpent: '0 ج.م',
+      target: newPromo.target,
+      isActive: true,
+    };
+    setPromoCodesList(prev => [created, ...prev]);
+    setShowAddPromoModal(false);
+    setNewPromo({ code: '', type: 'نسبة مئوية (20%)', maxDiscount: '25.00 ج.م', target: 'جميع الركاب' });
+    alert(`تم إنشاء كود الخصم (${created.code}) وتفعيله فوراً للركاب 🎟️🟢`);
   };
 
   // Live Simulation ticker
@@ -810,19 +906,28 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
 
-                {/* Filter Tabs */}
-                <div className="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1 text-xs font-bold">
-                  {(['all', 'valid', 'expired', 'pending'] as const).map((filter) => (
-                    <button
-                      key={filter}
-                      onClick={() => setMedicalFilter(filter)}
-                      className={`px-3 py-1.5 rounded-lg transition ${
-                        medicalFilter === filter ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      {filter === 'all' ? 'جميع الكباتن' : filter === 'valid' ? 'تحاليل سارية 🟢' : filter === 'expired' ? 'تحاليل منتهية ⚠️' : 'قيد الفحص ⏳'}
-                    </button>
-                  ))}
+                {/* Filter Tabs & Add Action */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="bg-slate-950 p-1 rounded-xl border border-slate-800 flex gap-1 text-xs font-bold">
+                    {(['all', 'valid', 'expired', 'pending'] as const).map((filter) => (
+                      <button
+                        key={filter}
+                        onClick={() => setMedicalFilter(filter)}
+                        className={`px-3 py-1.5 rounded-lg transition ${
+                          medicalFilter === filter ? 'bg-indigo-900 text-amber-300 font-black shadow' : 'text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        {filter === 'all' ? 'جميع الكباتن' : filter === 'valid' ? 'تحاليل سارية 🟢' : filter === 'expired' ? 'تحاليل منتهية ⚠️' : 'قيد الفحص ⏳'}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={() => setShowAddMedicalModal(true)}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition shadow-lg shadow-pink-600/20"
+                  >
+                    <span>➕</span> تسجيل فحص طبي جديد 🧪
+                  </button>
                 </div>
               </div>
 
@@ -1226,9 +1331,17 @@ export default function AdminDashboardPage() {
                   <h2 className="font-bold text-lg text-white">إدارة العروض والبروموكود للركاب (Promotions & Coupons)</h2>
                   <p className="text-xs text-slate-400 mt-0.5">إنشاء كوبونات الخصم، ومتابعة ميزانية الحملات التسويقية</p>
                 </div>
-                <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-bold font-mono">
-                  إجمالي ما وفره الركاب: 41,965 ج.م
-                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowAddPromoModal(true)}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black px-3.5 py-2 rounded-xl transition shadow-lg shadow-amber-500/20"
+                  >
+                    <span>➕</span> إنشاء كود خصم جديد 🎟️
+                  </button>
+                  <span className="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-xl font-bold font-mono">
+                    إجمالي التوفير: 41,965 ج.م
+                  </span>
+                </div>
               </div>
 
               <div className="overflow-x-auto">
@@ -1392,6 +1505,12 @@ export default function AdminDashboardPage() {
                   <h2 className="font-bold text-lg text-white">{t.drivers.title}</h2>
                   <p className="text-xs text-slate-400 mt-0.5">مراجعة الهوية الوطنية ورخص القيادة والسيارة قبل التفعيل في مصر</p>
                 </div>
+                <button
+                  onClick={() => setShowAddDriverModal(true)}
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black px-3.5 py-2 rounded-xl transition shadow-lg shadow-amber-500/20"
+                >
+                  <span>➕</span> إضافة كابتن / برثونة جديد 👨🏻‍✈️
+                </button>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -1620,6 +1739,290 @@ export default function AdminDashboardPage() {
             </div>
           )}
         </div>
+
+        {/* MODAL 1: ADD NEW DRIVER / PARTHONA */}
+        {showAddDriverModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>👨🏻‍✈️</span> إضافة وتسجيل كابتن / برثونة جديد
+                </h3>
+                <button
+                  onClick={() => setShowAddDriverModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateDriver} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">اسم الكابتن بالكامل:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: يوسف إبراهيم الشناوي"
+                    value={newDriver.name}
+                    onChange={(e) => setNewDriver({ ...newDriver, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رقم الهاتف:</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="+201012345678"
+                      value={newDriver.phone}
+                      onChange={(e) => setNewDriver({ ...newDriver, phone: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">نوع الخدمة / الفئة:</label>
+                    <select
+                      value={newDriver.category}
+                      onChange={(e) => setNewDriver({ ...newDriver, category: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="ECONOMY">AKHIL ECONOMY (اقتصادي)</option>
+                      <option value="PLUS">AKHIL PLUS (بلس)</option>
+                      <option value="BUSINESS">AKHIL BUSINESS (أعمال)</option>
+                      <option value="PARTHONA">AKHIL PARTHONA (برثونة 🌸)</option>
+                      <option value="BOX">AKHIL BOX (توصيل طرود 📫)</option>
+                      <option value="SCOOTER">AKHIL SCOOTER (سكوتر)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">طراز وسنة المركبة:</label>
+                    <input
+                      type="text"
+                      placeholder="مثال: كيا سيراتو 2023"
+                      value={newDriver.car}
+                      onChange={(e) => setNewDriver({ ...newDriver, car: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">رقم اللوحات المعدنية:</label>
+                    <input
+                      type="text"
+                      placeholder="مثال: أ ب ج 1234"
+                      value={newDriver.plate}
+                      onChange={(e) => setNewDriver({ ...newDriver, plate: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl transition shadow"
+                  >
+                    حفظ وإضافة الكابتن فوراً 🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddDriverModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 2: ADD MEDICAL / DRUG TEST RECORD */}
+        {showAddMedicalModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🧪</span> تسجيل نتيجة فحص طبي وتحليل مخدرات
+                </h3>
+                <button
+                  onClick={() => setShowAddMedicalModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateMedical} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">اسم الكابتن:</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: محمود السيد"
+                    value={newMedical.driverName}
+                    onChange={(e) => setNewMedical({ ...newMedical, driverName: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">المعمل المعتمد:</label>
+                    <select
+                      value={newMedical.labName}
+                      onChange={(e) => setNewMedical({ ...newMedical, labName: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="معامل البرج (Al-Borg Lab)">معامل البرج (Al-Borg Lab)</option>
+                      <option value="معامل المختبر (Al-Mokhtabar)">معامل المختبر (Al-Mokhtabar)</option>
+                      <option value="المعامل المركزية لوزارة الصحة">المعامل المركزية لوزارة الصحة</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">نتيجة التحليل:</label>
+                    <select
+                      value={newMedical.result}
+                      onChange={(e) => setNewMedical({ ...newMedical, result: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="NEGATIVE">سلبي (سليم وخالٍ من السموم 🟢)</option>
+                      <option value="PENDING_LAB">قيد الفحص المعملي ⏳</option>
+                      <option value="EXPIRED">منتهي الصلاحية ⚠️</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">تاريخ الفحص:</label>
+                    <input
+                      type="text"
+                      value={newMedical.testDate}
+                      onChange={(e) => setNewMedical({ ...newMedical, testDate: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">تاريخ انتهاء الصلاحية (6 أشهر):</label>
+                    <input
+                      type="text"
+                      value={newMedical.expiryDate}
+                      onChange={(e) => setNewMedical({ ...newMedical, expiryDate: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-pink-600 hover:bg-pink-500 text-white font-bold rounded-xl transition shadow"
+                  >
+                    حفظ وتوثيق التحليل في السجل 🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddMedicalModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* MODAL 3: ADD NEW PROMO CODE */}
+        {showAddPromoModal && (
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-3xl p-6 max-w-lg w-full space-y-5 shadow-2xl">
+              <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 className="font-extrabold text-base text-white flex items-center gap-2">
+                  <span>🎟️</span> إنشاء وتفعيل كود خصم جديد (Promo Code)
+                </h3>
+                <button
+                  onClick={() => setShowAddPromoModal(false)}
+                  className="text-slate-400 hover:text-white text-lg font-bold"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <form onSubmit={handleCreatePromo} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">رمز كود الخصم (Promo Code):</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="مثال: CAIRO2026 أو EID30"
+                    value={newPromo.code}
+                    onChange={(e) => setNewPromo({ ...newPromo, code: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono uppercase font-bold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">نوع الخصم:</label>
+                    <select
+                      value={newPromo.type}
+                      onChange={(e) => setNewPromo({ ...newPromo, type: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                    >
+                      <option value="نسبة مئوية (50%)">نسبة مئوية (50%)</option>
+                      <option value="نسبة مئوية (30%)">نسبة مئوية (30%)</option>
+                      <option value="نسبة مئوية (20%)">نسبة مئوية (20%)</option>
+                      <option value="مبلغ ثابت (25 ج.م)">مبلغ ثابت (25 ج.م)</option>
+                      <option value="مبلغ ثابت (50 ج.م)">مبلغ ثابت (50 ج.م)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-slate-300 font-bold block mb-1">الحد الأقصى للتوفير:</label>
+                    <input
+                      type="text"
+                      value={newPromo.maxDiscount}
+                      onChange={(e) => setNewPromo({ ...newPromo, maxDiscount: e.target.value })}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-slate-300 font-bold block mb-1">الجمهور المستهدف:</label>
+                  <input
+                    type="text"
+                    value={newPromo.target}
+                    onChange={(e) => setNewPromo({ ...newPromo, target: e.target.value })}
+                    placeholder="مثال: ركاب أول مشوار / منطقة الجامعات"
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"
+                  />
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="submit"
+                    className="flex-1 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl transition shadow"
+                  >
+                    تفعيل كود الخصم فوراً للركاب 🎟️🟢
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddPromoModal(false)}
+                    className="py-2.5 px-4 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+                  >
+                    إلغاء
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
