@@ -86,6 +86,7 @@ export default function RiderWebApp() {
   const [destination, setDestination] = useState<GeoLocation>(PRESET_LOCATIONS[6]);
   const [showLocationModal, setShowLocationModal] = useState<'pickup' | 'dest' | null>(null);
   const [locationSearchQuery, setLocationSearchQuery] = useState<string>('');
+  const [mapClickMode, setMapClickMode] = useState<'pickup' | 'dest'>('dest');
   
   const [step, setStep] = useState<'create' | 'bidding' | 'en_route' | 'completed'>('create');
   const [selectedDriver, setSelectedDriver] = useState<any>(null);
@@ -230,7 +231,7 @@ export default function RiderWebApp() {
                 </div>
 
                 {/* Pickup & Destination Inputs */}
-                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2.5 shadow-lg">
+                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 space-y-2 shadow-lg relative">
                   {/* Pickup Selector */}
                   <div 
                     onClick={() => setShowLocationModal('pickup')}
@@ -251,7 +252,23 @@ export default function RiderWebApp() {
                     </span>
                   </div>
 
-                  <div className="h-px bg-slate-800 mr-5" />
+                  {/* Swap Button & Divider */}
+                  <div className="flex items-center justify-between pr-3 pl-1">
+                    <div className="h-px bg-slate-800 flex-1 mr-2" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const temp = pickup;
+                        setPickup(destination);
+                        setDestination(temp);
+                      }}
+                      className="px-2.5 py-1 bg-slate-800 hover:bg-indigo-900 text-amber-300 text-[10px] font-bold rounded-lg border border-slate-700 hover:border-amber-500/40 transition flex items-center gap-1 shadow"
+                      title="عكس نقطة الانطلاق والوجهة"
+                    >
+                      <span>🔁</span>
+                      عكس الاتجاه
+                    </button>
+                  </div>
 
                   {/* Destination Selector */}
                   <div 
@@ -274,30 +291,50 @@ export default function RiderWebApp() {
                   </div>
                 </div>
 
-                {/* Live Interactive Map with Dynamic Route & Pickup Marker */}
+                {/* Live Interactive Map with Map Mode Selector (Pickup / Destination) */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center px-1">
                     <span className="text-[11px] font-bold text-slate-300 flex items-center gap-1.5">
-                      <span>🗺️</span> الخريطة المباشرة ({tripDistanceKm} كم)
+                      <span>🗺️</span> الخريطة ({tripDistanceKm} كم)
                     </span>
-                    <span className="text-[9px] text-amber-400 font-semibold">
-                      💡 اضغط على أي مكان بالخريطة لتغيير الانطلاق
-                    </span>
+                    <div className="flex items-center gap-1 bg-slate-950 p-0.5 rounded-lg border border-slate-800 text-[9px] font-bold">
+                      <button
+                        type="button"
+                        onClick={() => setMapClickMode('pickup')}
+                        className={`px-2 py-0.5 rounded transition ${mapClickMode === 'pickup' ? 'bg-emerald-600 text-white font-black' : 'text-slate-400 hover:text-white'}`}
+                      >
+                        📍 تحديد الانطلاق
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setMapClickMode('dest')}
+                        className={`px-2 py-0.5 rounded transition ${mapClickMode === 'dest' ? 'bg-amber-500 text-slate-950 font-black' : 'text-slate-400 hover:text-white'}`}
+                      >
+                        🏁 تحديد الوجهة
+                      </button>
+                    </div>
                   </div>
+
                   <LiveInteractiveMap
                     height="210px"
                     center={[pickup.lat, pickup.lng]}
-                    zoom={13}
+                    zoom={12}
                     onMapClick={(lat, lng) => {
-                      setPickup({
-                        id: 'custom',
-                        name: `موقع محدد على الخريطة (${lat.toFixed(3)}, ${lng.toFixed(3)})`,
+                      const clickedLocation: GeoLocation = {
+                        id: `custom-${Date.now()}`,
+                        name: `موقع محدد (${lat.toFixed(3)}, ${lng.toFixed(3)})`,
                         area: 'موقع جغرافي',
                         governorate: lat < 30.01 ? 'الجيزة' : 'القاهرة',
                         lat,
                         lng,
-                        icon: '📍'
-                      });
+                        icon: mapClickMode === 'pickup' ? '📍' : '🏁'
+                      };
+
+                      if (mapClickMode === 'pickup') {
+                        setPickup(clickedLocation);
+                      } else {
+                        setDestination(clickedLocation);
+                      }
                     }}
                     markers={[
                       { id: 'pickup', lat: pickup.lat, lng: pickup.lng, title: `الانطلاق: ${pickup.name}`, type: 'pickup' },
