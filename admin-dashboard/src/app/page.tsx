@@ -55,7 +55,7 @@ import {
 } from 'lucide-react';
 import { translations, Locale } from '../locales/translations';
 
-export interface AdminUserProfile {
+interface AdminUserProfile {
   id: string;
   name: string;
   email: string;
@@ -67,7 +67,7 @@ export interface AdminUserProfile {
   allowedTabs: Array<'overview' | 'financials' | 'erp_suite' | 'hr_payroll' | 'crm_support' | 'rbac_users' | 'medical_tests' | 'reports' | 'drivers' | 'rides' | 'wallets' | 'payouts' | 'disputes' | 'quests' | 'promotions' | 'heatmap' | 'pricing'>;
 }
 
-export const DEMO_ADMIN_USERS: AdminUserProfile[] = [
+const DEMO_ADMIN_USERS: AdminUserProfile[] = [
   {
     id: 'ADM-001',
     name: 'هشام حنفي (Super Admin 👑)',
